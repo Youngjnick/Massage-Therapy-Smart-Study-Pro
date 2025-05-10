@@ -1,0 +1,293 @@
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #38c172, #1f9d55);
+  color: white;
+  margin: 0;
+  padding: 24px;
+  line-height: 1.5;
+}
+.app-container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+.title-bar-box {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+.title-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.app-icon {
+  width: 48px;
+  height: 48px;
+}
+.title-text h1 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+.title-text h2 {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0;
+}
+.header-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.control, .start-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.control:hover, .start-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.inline-controls {
+  display: flex;
+  gap: 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.inline-icon svg {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+.quiz-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.question-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.question-icon svg {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.answers .answer {
+  background: rgba(255, 255, 255, 0.10);
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.answers .answer:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.feedback {
+  margin: 16px 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.feedback svg {
+  width: 16px;
+  height: 16px;
+}
+.progress-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+.progress-bar {
+  flex: 1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #b0f2b6, #7be495);
+  transition: width 0.4s ease;
+}
+
+/* Glow & Glassmorphism Enhancements */
+.title-bar-box,
+.quiz-card {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.title-text h1,
+.title-text h2,
+.control,
+.start-btn,
+.inline-controls span,
+.quiz-header,
+.question-text,
+.answers .answer,
+.feedback,
+.progress-section span {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.control, .start-btn {
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1),
+              inset 0 0 0 1px rgba(255,255,255,0.2);
+}
+
+.progress-fill {
+  background: linear-gradient(to right, #d0ffc8, #84e9ae);
+  filter: brightness(1.15);
+}
+
+/* ✨ Final visual matching enhancements */
+
+.title-bar-box,
+.quiz-card {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.3),
+    inset 0 0 16px rgba(255, 255, 255, 0.05);
+}
+
+.app-icon {
+  border-radius: 14px;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.12);
+  width: 56px;
+  height: 56px;
+}
+
+.control:hover,
+.start-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.answers .answer.selected {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+  border: 2px solid #ffffff66;
+}
+
+.inline-icon svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.progress-bar {
+  box-shadow: inset 0 0 6px rgba(255,255,255,0.12), 0 0 8px rgba(255,255,255,0.05);
+}
+
+/* ✨ Final enhancements: background gradients, highlights, and answer glass effects */
+
+.quiz-card,
+.title-bar-box {
+  background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.quiz-card::before,
+.title-bar-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #ffffff66, #ffffff11, #ffffff66);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 1;
+  z-index: -1;
+}
+
+.answers .answer {
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: inset 0 0 6px rgba(255,255,255,0.05), 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.answers .answer.selected {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+/* 🔹 Final mockup fidelity enhancements */
+
+/* Divider bar under topic/streak */
+.quiz-header::after {
+  content: "";
+  display: block;
+  margin-top: 10px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255,255,255,0.15), rgba(255,255,255,0));
+}
+
+/* Segmented progress bar style */
+.progress-bar {
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255,255,255,0.25) 0 8px,
+    rgba(255,255,255,0.05) 8px 16px
+  );
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 0 6px rgba(255,255,255,0.12), 0 0 8px rgba(255,255,255,0.05);
+}
+
+/* Brighter green background gradient */
+body {
+  background: linear-gradient(to bottom right, #3fd88a, #1b854f);
+}
+
+/* Crisper card borders */
+.quiz-card,
+.title-bar-box {
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.35),
+    inset 0 0 16px rgba(255, 255, 255, 0.06);
+}
