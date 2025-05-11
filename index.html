@@ -1,62 +1,120 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Massage Therapy Smart Study Pro</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<script defer="" src="script.js"></script>
-<link href="styles.css" rel="stylesheet"/></head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Massage Therapy Smart Study Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="icon.png" type="image/png"/>
+  <script defer src="app.js"></script>
+  <link href="styles.css" rel="stylesheet"/>
+</head>
 <body>
-<div class="app-container">
-<header class="title-bar-box">
-<div class="title-bar">
-<img alt="App Icon" class="app-icon" src="icon.png"/>
-<div class="title-text">
-<h1>Massage Therapy</h1>
-<h2>Smart Study Pro</h2>
-</div>
-</div>
-<div class="header-controls">
-<button class="control">Focus ▾</button>
-<button class="control">Quiz Length ▾</button>
-<button class="start-btn">Start Quiz</button>
-</div>
-<div class="inline-controls">
-<div class="inline-pair"><svg fill="white" height="16" viewBox="0 0 24 24" width="16"><path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path></svg><span>Smart Learning</span></div>
-<div class="inline-pair"><svg fill="white" height="16" viewBox="0 0 24 24" width="16"><rect height="11" width="3" x="3" y="10"></rect><rect height="15" width="3" x="10" y="6"></rect><rect height="19" width="3" x="17" y="2"></rect></svg><span>View Analytics</span></div>
-<div class="inline-pair"><svg fill="white" height="16" viewBox="0 0 24 24" width="16"><path d="M19.43 12.98a7.98 7.98 0 000-1.96l2.11-1.65a1 1 0 00.24-1.32l-2-3.46a1 1 0 00-1.28-.44l-2.49 1a7.974 7.974 0 00-1.69-.98L14.5 2.5a1 1 0 00-1-.5h-4a1 1 0 00-1 .5l-.38 2.59a7.974 7.974 0 00-1.69.98l-2.49-1a1 1 0 00-1.28.44l-2 3.46a1 1 0 00.24 1.32l2.11 1.65a7.98 7.98 0 000 1.96l-2.11 1.65a1 1 0 00-.24 1.32l2 3.46a1 1 0 001.28.44l2.49-1c.53.39 1.1.72 1.69.98L8.5 21.5a1 1 0 001 .5h4a1 1 0 001-.5l.38-2.59c.59-.26 1.16-.59 1.69-.98l2.49 1a1 1 0 001.28-.44l2-3.46a1 1 0 00-.24-1.32l-2.11-1.65zM12 15a3 3 0 110-6 3 3 0 010 6z"></path></svg><span>Settings</span></div>
-</div>
-</header>
-<div class="quiz-card">
-<div class="quiz-header">
-<span>TOPIC: <strong>Ethics</strong></span>
-<span>Streak: 3</span>
-</div>
-<div class="question-block">
-<div class="question-icon">
-<svg fill="white" height="24" viewbox="0 0 24 24" width="24"><path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path></svg>
-</div>
-<div class="question-text">What is informed consent?</div>
-</div>
-<div class="answers">
-<div class="answer">A. Permission after full disclosure</div>
-<div class="answer">B. Assumed permission once session begins</div>
-</div>
-<div class="feedback">
-<svg fill="white" height="16" viewbox="0 0 24 24" width="16"><path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path></svg>
-        Correct! Informed consent requires disclosure.
+  <div class="app-container">
+    <header class="title-bar-box">
+      <div class="title-bar">
+        <img alt="App Icon" class="app-icon" src="icon.png"/>
+        <div class="title-text">
+          <h1>Massage Therapy</h1>
+          <h2>Smart Study Pro</h2>
+        </div>
       </div>
-<div class="progress-section">
-<span>Progress</span>
-<div class="progress-bar">
-<div class="progress-fill" style="width: 60%;"></div>
-</div>
-<span>60%</span>
-</div>
-</div>
-</div>
+      <div class="header-controls">
+        <select class="control" data-topic>
+        </select>
+        <select class="control" data-quiz-length>
+          <option value="5">5 Questions</option>
+          <option value="10">10 Questions</option>
+          <option value="20">20 Questions</option>
+          <option value="all">All Questions</option>
+        </select>
+        <button class="start-btn">Start Quiz</button>
+      </div>
+      <div class="header-actions" style="display: flex; gap: 24px; align-items: center; justify-content: space-evenly;">
+        <div class="smart-learning">
+          <a href="#" class="settings-link" style="text-decoration: none; color: white; display: flex; align-items: center;">
+        <svg fill="white" height="16" viewBox="0 0 24 24" width="16" style="vertical-align: middle; margin-right: 8px;">
+          <path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path>
+        </svg> Smart Learning
+          </a>
+        </div>
+        <div class="view-analytics">
+          <a href="#" class="analytics-link" style="text-decoration: none; color: white; display: flex; align-items: center;">
+        <svg fill="white" height="16" viewBox="0 0 24 24" width="16" style="vertical-align: middle; margin-right: 4px;">
+          <path d="M3 17h2v-7H3v7zm4 0h2v-4H7v4zm4 0h2V7h-2v10zm4 0h2v-2h-2v2zm4 0h2v-10h-2v10z"></path>
+        </svg> View Analytics
+          </a>
+        </div>
+        <div class="settings">
+          <a href="#" class="settings-link" style="text-decoration: none; color: white; display: flex; align-items: center;">
+        <svg fill="white" height="16" viewBox="0 0 24 24" width="16" style="vertical-align: middle; margin-right: 4px;"></svg>
+              <svg fill="white" height="16" viewBox="0 0 24 24" width="16" style="vertical-align: middle; margin-right: 4px;">
+                <path d="M12 1a2 2 0 0 1 2 2v1.1a7.96 7.96 0 0 1 2.83 1.17l.78-.78a2 2 0 1 1 2.83 2.83l-.78.78A7.96 7.96 0 0 1 20.9 10H22a2 2 0 1 1 0 4h-1.1a7.96 7.96 0 0 1-1.17 2.83l.78.78a2 2 0 1 1-2.83 2.83l-.78-.78A7.96 7.96 0 0 1 14 20.9V22a2 2 0 1 1-4 0v-1.1a7.96 7.96 0 0 1-2.83-1.17l-.78.78a2 2 0 1 1-2.83-2.83l.78-.78A7.96 7.96 0 0 1 3.1 14H2a2 2 0 1 1 0-4h1.1a7.96 7.96 0 0 1 1.17-2.83l-.78-.78a2 2 0 1 1 2.83-2.83l.78.78A7.96 7.96 0 0 1 10 3.1V2a2 2 0 0 1 2-2zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"></path>
+              </svg>
+              Settings
+            </a>
+      </div>
+    </header>
+    <div class="quiz-card hidden">
+      <div class="quiz-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 140px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg fill="white" height="16" viewBox="0 0 24 24" width="16">
+              <path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path>
+            </svg>
+            <span>TOPIC: <strong></strong></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg fill="white" height="16" viewBox="0 0 24 24" width="16">
+              <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path>
+            </svg>
+            <span>Streak: <span id="quizStreak">0</span></span>
+          </div>
+        </div></svg>
+      </div>
+      <div class="question-block">
+        <div class="question-icon">
+          <svg fill="white" height="24" viewBox="0 0 24 24" width="24"><path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path></svg>
+        </div>
+        <div class="question-text" id="question">Question goes here</div>
+      </div>
+      <div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="progress-section">
+        <span>Progress</span>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%;"></div>
+        </div>
+        <span>0%</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    fetch('smart_questions_cleaned.json')
+      .then(response => response.json())
+      .then(data => {
+        const questionData = data[0]; // Example: Fetch the first question
+        document.getElementById('question').textContent = questionData.question;
+
+        // Populate answers
+        const answersContainer = document.getElementById('answers');
+        questionData.answers.forEach((answer, index) => {
+          const answerDiv = document.createElement('div');
+          answerDiv.className = 'answer';
+          answerDiv.textContent = `${String.fromCharCode(65 + index)}. ${answer}`;
+          answersContainer.appendChild(answerDiv);
+        });
+
+        // Populate feedback
+        const feedbackContainer = document.getElementById('feedback');
+        feedbackContainer.innerHTML = `
+          <svg fill="white" height="16" viewbox="0 0 24 24" width="16">
+            <path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path>
+          </svg>
+          Correct Answer: ${questionData.answers[questionData.correct]}
+        `;
+      })
+      .catch(error => console.error('Error loading questions:', error));
+  </script>
 </body>
 </html>
