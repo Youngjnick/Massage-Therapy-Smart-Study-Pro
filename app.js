@@ -156,19 +156,63 @@ function openModal(title, content) {
       </div>
     </div>
   `;
- document.body.appendChild(modal);
+  document.body.appendChild(modal);
 
-  // Close Modal
-  modal.querySelector('.close-modal').addEventListener('click', () => {
-    console.log('Close button clicked');
+  // Close Modal when clicking anywhere inside the modal
+  modal.addEventListener('click', () => {
     modal.remove();
   });
 
-  // Optional: Close the modal when clicking outside of it
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.remove();
-    }
+  // Prevent closing when clicking on the modal content
+  modal.querySelector('.modal').addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Close Modal when clicking the close button
+  modal.querySelector('.close-modal').addEventListener('click', () => {
+    modal.remove();
+  });
+}
+
+// Toggle Modal Function
+function toggleModal(title, content) {
+  // Check if the modal already exists
+  const existingModal = document.querySelector('.modal-overlay');
+  if (existingModal) {
+    // If the modal exists, remove it (hide it)
+    existingModal.remove();
+    return;
+  }
+
+  // If the modal doesn't exist, create and show it
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h2>${title}</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        ${content}
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Close Modal when clicking the close button
+  modal.querySelector('.close-modal').addEventListener('click', () => {
+    modal.remove();
+  });
+
+  // Prevent closing when clicking on the modal content
+  modal.querySelector('.modal').addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Close Modal when clicking outside the modal content
+  modal.addEventListener('click', () => {
+    modal.remove();
   });
 }
 
@@ -189,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .join('');
 
-    openModal(
+    toggleModal(
       'Smart Learning',
       `
         <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
@@ -318,7 +362,16 @@ function renderAccuracyChart(correct, incorrect) {
 }
 
 function showNotification(title, message, imageUrl) {
-  const container = document.getElementById('notification-container');
+  // Create the notification container if it doesn't exist
+  let container = document.getElementById('notification-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'notification-container';
+    container.className = 'notification-container';
+    document.body.appendChild(container);
+  }
+
+  // Create the notification element
   const notification = document.createElement('div');
   notification.className = 'notification';
   notification.innerHTML = `
@@ -327,21 +380,21 @@ function showNotification(title, message, imageUrl) {
     <img src="${imageUrl}" alt="${title}" />
   `;
 
+  // Append the notification to the container
   container.appendChild(notification);
-  container.classList.remove('hidden');
 
   // Automatically remove the notification after 3.5 seconds
   setTimeout(() => {
     notification.remove();
     if (container.children.length === 0) {
-      container.classList.add('hidden');
+      container.remove(); // Remove the container if no notifications are left
     }
   }, 3500);
 }
 
 // Example usage
 showNotification(
-  'New Achievement Unlocked!',
-  'Streak Master: Achieve a streak of 10 correct answers.',
-  'badges/streak_10.png'
+  'Welcome!',
+  'Challenge your skills with Massage Therapy Smart Study PRO!',
+  'badges/welcome.png' // Replace with the path to a welcome image
 );
