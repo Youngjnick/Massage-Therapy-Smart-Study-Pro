@@ -244,9 +244,10 @@ document.querySelector('.view-analytics a').addEventListener('click', (e) => {
 
   const stats = {
     totalQuestions: 50,
-    correctAnswers: 40,
+    correctAnswers: 30,
     incorrectAnswers: 10,
-    accuracy: Math.round((40 / 50) * 100), // 80%
+    unansweredQuestions: 10, // Calculate unanswered questions
+    accuracy: Math.round((30 / 50) * 100), // 60%
     streak: streak,
   };
 
@@ -254,12 +255,13 @@ document.querySelector('.view-analytics a').addEventListener('click', (e) => {
     'View Analytics',
     `
       <p>Track your progress, accuracy, and streaks over time to measure your improvement.</p>
-      <div style="display: flex; justify-content: space-around; align-items: center;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <canvas id="accuracyChart" width="200" height="200"></canvas>
-        <ul>
+        <ul style="list-style: none; padding: 0; text-align: left;">
           <li><strong>Total Questions Attempted:</strong> ${stats.totalQuestions}</li>
           <li><strong>Correct Answers:</strong> ${stats.correctAnswers}</li>
           <li><strong>Incorrect Answers:</strong> ${stats.incorrectAnswers}</li>
+          <li><strong>Unanswered Questions:</strong> ${stats.unansweredQuestions}</li>
           <li><strong>Accuracy:</strong> ${stats.accuracy}%</li>
           <li><strong>Current Streak:</strong> ${stats.streak}</li>
         </ul>
@@ -268,7 +270,7 @@ document.querySelector('.view-analytics a').addEventListener('click', (e) => {
   );
 
   // Render the chart after the modal is opened
-  renderAccuracyChart(stats.correctAnswers, stats.incorrectAnswers);
+  renderAccuracyChart(stats.correctAnswers, stats.incorrectAnswers, stats.unansweredQuestions);
 });
 
 // Update Settings Modal
@@ -331,16 +333,18 @@ function showBadgeModal(badge) {
   );
 }
 
-function renderAccuracyChart(correct, incorrect) {
+function renderAccuracyChart(correct, incorrect, unanswered) {
   const ctx = document.getElementById('accuracyChart').getContext('2d');
   new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['Correct', 'Incorrect'],
+      labels: ['Correct', 'Incorrect', 'Unanswered'],
       datasets: [{
-        data: [correct, incorrect],
-        backgroundColor: ['#4caf50', '#f44336'], // Green for correct, red for incorrect
-        borderWidth: 1,
+        data: [correct, incorrect, unanswered],
+        backgroundColor: ['#6BCB77', '#FF6B6B', '#FFD93D'], // Green, Red, Yellow
+        hoverBackgroundColor: ['#8FDCA8', '#FF8787', '#FFE066'], // Lighter shades for hover
+        borderWidth: 2,
+        borderColor: '#ffffff', // White border for a clean look
       }],
     },
     options: {
@@ -348,8 +352,14 @@ function renderAccuracyChart(correct, incorrect) {
       plugins: {
         legend: {
           position: 'bottom',
+          labels: {
+            font: {
+              size: 14,
+            },
+          },
         },
       },
+      cutout: '75%', // Narrower ring for a sleek look
     },
   });
 }
