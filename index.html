@@ -119,6 +119,21 @@
         `;
       })
       .catch(error => console.error('Error loading questions:', error));
+
+    toggleModal(
+      'Smart Learning',
+      `
+        <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
+        <div class="badge-grid">
+          ${badges.map(badge => `
+            <div class="badge-item ${earnedBadges.includes(badge.id) ? '' : 'unearned'}">
+              <img src="badges/${badge.id}.png" alt="${badge.name}" />
+              <p>${badge.name}</p>
+            </div>
+          `).join('')}
+        </div>
+      `
+    );
   </script>
 </body>
 </html>

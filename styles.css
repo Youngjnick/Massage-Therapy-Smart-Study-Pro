@@ -338,10 +338,10 @@ body {
   backdrop-filter: blur(15px); /* Glassmorphism effect */
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); /* Add depth */
-  padding: 24px;
-  max-width: 420px; /* Limit the modal width */
+  padding: 16px; /* Reduce padding for smaller screens */
+  max-width: 360px; /* Limit the modal width */
   width: 90%; /* Responsive width */
-  max-height: 90%; /* Limit the modal height to 90% of the viewport */
+  max-height: 80%; /* Limit the modal height to 80% of the viewport */
   overflow-y: auto; /* Enable vertical scrolling if content overflows */
   color: white;
   text-align: center;
@@ -349,14 +349,54 @@ body {
   animation: slideIn 0.4s ease-out; /* Slide-in animation */
 }
 
-.modal-header h2 {
-  font-size: 1.2rem; /* Adjust font size for smaller screens */
-  margin-bottom: 8px;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.modal-body p {
+.modal-header h2 {
+  font-size: 1rem; /* Reduce header font size */
+  margin: 0;
+}
+
+.modal-body {
   font-size: 0.9rem; /* Adjust body text size */
   line-height: 1.4;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 20px; /* Adjust size for smaller screens */
+  color: white;
+  cursor: pointer;
+  position: absolute;
+  top: 8px; /* Ensure the close button is always visible */
+  right: 8px;
+  z-index: 10;
+}
+
+.close-modal:hover {
+  color: #ff6b6b; /* Add a hover effect for better UX */
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 12px; /* Further reduce padding for very small screens */
+    max-width: 95%; /* Ensure the modal fits within the screen */
+    max-height: 75%; /* Reduce height for smaller screens */
+  }
+
+  .modal-header h2 {
+    font-size: 0.9rem; /* Further reduce the header font size */
+  }
+
+  .modal-body {
+    font-size: 0.85rem; /* Further reduce the body text size */
+  }
 }
 
 /* Modal Overlay */
