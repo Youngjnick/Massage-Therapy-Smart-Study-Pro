@@ -95,8 +95,15 @@ function handleAnswerClick(isCorrect, btn) {
   if (isCorrect) correct++;
   setTimeout(() => {
     current++;
-    if (current >= quiz.length) return showSummary();
+    if (current >= quiz.length) {
+      showSummary(); // Show summary notification
+      return;
+    }
     renderQuestion();
+
+    // Dynamically update the chart
+    const unanswered = quiz.length - current;
+    renderAccuracyChart(correct, current - correct, unanswered);
   }, 1500); // Delay to allow users to see feedback
 }
 
@@ -125,20 +132,18 @@ function shuffle(arr) {
 
 // Show Summary
 function showSummary() {
-  const modal = document.createElement('div');
-  modal.className = 'summary-modal';
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Quiz Summary</h2>
-      <p>You got ${correct} out of ${quiz.length} correct.</p>
-      <button class="close-btn">Close</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  document.querySelector('.close-btn').addEventListener('click', () => {
-    modal.remove();
-  });
-  checkBadges(); // Check badges after completing the quiz
+  // Calculate accuracy
+  const accuracy = quiz.length > 0 ? Math.round((correct / quiz.length) * 100) : 0;
+
+  // Show quiz summary as a notification
+  showNotification(
+    'Quiz Summary',
+    `You answered ${correct} out of ${quiz.length} questions correctly (${accuracy}% accuracy).`,
+    'badges/summary.png' // Replace with a relevant image path
+  );
+
+  // Check badges after completing the quiz
+  checkBadges();
 }
 
 // Open Modal Function
@@ -242,15 +247,22 @@ document.addEventListener('DOMContentLoaded', () => {
 document.querySelector('.view-analytics a').addEventListener('click', (e) => {
   e.preventDefault();
 
+  // Dynamically calculate stats
+  const totalQuestions = quiz.length;
+  const unansweredQuestions = totalQuestions - current;
+  const incorrectAnswers = current - correct;
+  const accuracy = totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+
   const stats = {
-    totalQuestions: 50,
-    correctAnswers: 30,
-    incorrectAnswers: 10,
-    unansweredQuestions: 10, // Calculate unanswered questions
-    accuracy: Math.round((30 / 50) * 100), // 60%
-    streak: streak,
+    totalQuestions,
+    correctAnswers: correct,
+    incorrectAnswers,
+    unansweredQuestions,
+    accuracy,
+    streak,
   };
 
+  // Open the modal
   openModal(
     'View Analytics',
     `
@@ -297,6 +309,10 @@ document.querySelector('.settings a').addEventListener('click', (e) => {
         <br />
         <button type="submit">Save Settings</button>
       </form>
+      <hr />
+      <button id="resetAllButton" style="background-color: red; color: white; padding: 10px; border: none; cursor: pointer;">
+        Reset All
+      </button>
     `
   );
 
@@ -308,6 +324,11 @@ document.querySelector('.settings a').addEventListener('click', (e) => {
     const isTimerEnabled = document.getElementById('timerToggle').checked;
     console.log('Settings Saved:', { difficulty, isTimerEnabled });
     // Save settings or update app behavior
+  });
+
+  // Add functionality to the Reset All button
+  document.getElementById('resetAllButton').addEventListener('click', () => {
+    resetAll();
   });
 });
 
@@ -333,9 +354,18 @@ function showBadgeModal(badge) {
   );
 }
 
+let accuracyChart; // Declare a global variable to hold the chart instance
+
 function renderAccuracyChart(correct, incorrect, unanswered) {
   const ctx = document.getElementById('accuracyChart').getContext('2d');
-  new Chart(ctx, {
+
+  // If the chart already exists, destroy it before creating a new one
+  if (accuracyChart) {
+    accuracyChart.destroy();
+  }
+
+  // Create a new chart instance
+  accuracyChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: ['Correct', 'Incorrect', 'Unanswered'],
@@ -401,3 +431,23 @@ showNotification(
   'Challenge your skills with Massage Therapy Smart Study PRO!',
   'badges/welcome.png' // Replace with the path to a welcome image
 );
+
+function saveStats() {
+  const stats = {
+    correct,
+    streak,
+    current,
+    quizLength: quiz.length,
+  };
+  localStorage.setItem('userStats', JSON.stringify(stats));
+}
+
+function loadStats() {
+  const savedStats = JSON.parse(localStorage.getItem('userStats'));
+  if (savedStats) {
+    correct = savedStats.correct || 0;
+    streak = savedStats.streak || 0;
+    current = savedStats.current || 0;
+    quiz = quiz.slice(0, savedStats.quizLength || quiz.length);
+  }
+}
