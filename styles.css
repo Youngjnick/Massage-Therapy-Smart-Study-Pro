@@ -334,13 +334,29 @@ body {
 
 /* Modal */
 .modal {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 90%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px); /* Glassmorphism effect */
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); /* Add depth */
+  padding: 24px;
+  max-width: 420px; /* Limit the modal width */
+  width: 90%; /* Responsive width */
+  max-height: 90%; /* Limit the modal height to 90% of the viewport */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  color: white;
   text-align: center;
   position: relative;
+  animation: slideIn 0.4s ease-out; /* Slide-in animation */
+}
+
+.modal-header h2 {
+  font-size: 1.2rem; /* Adjust font size for smaller screens */
+  margin-bottom: 8px;
+}
+
+.modal-body p {
+  font-size: 0.9rem; /* Adjust body text size */
+  line-height: 1.4;
 }
 
 /* Modal Overlay */
@@ -592,12 +608,14 @@ canvas {
 /* Modal */
 .modal {
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px); /* Stronger blur for a glassmorphism effect */
+  backdrop-filter: blur(15px); /* Glassmorphism effect */
   border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5); /* Add depth */
   padding: 24px;
-  max-width: 420px;
-  width: 90%;
+  max-width: 420px; /* Limit the modal width */
+  width: 90%; /* Responsive width */
+  max-height: 90%; /* Limit the modal height to 90% of the viewport */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
   color: white;
   text-align: center;
   position: relative;
@@ -740,4 +758,32 @@ canvas {
     opacity: 0;
     transform: translateY(-10px);
   }
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 12px; /* Reduce padding further for very small screens */
+    max-width: 95%; /* Increase the width slightly for very small screens */
+  }
+
+  .modal-header h2 {
+    font-size: 1rem; /* Further reduce the header font size */
+  }
+
+  .modal-body p {
+    font-size: 0.85rem; /* Further reduce the body text size */
+  }
+}
+
+.modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }

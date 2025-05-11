@@ -221,24 +221,17 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.smart-learning a').addEventListener('click', (e) => {
     e.preventDefault();
 
-    const badgeGrid = badges
-      .map(badge => {
-        const isEarned = earnedBadges.includes(badge.id);
-        return `
-          <div class="badge-item ${isEarned ? '' : 'unearned'}">
-            <img src="badges/${badge.id}.png" alt="${badge.name}" />
-            <p>${badge.name}</p>
-          </div>
-        `;
-      })
-      .join('');
-
     toggleModal(
       'Smart Learning',
       `
         <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
         <div class="badge-grid">
-          ${badgeGrid}
+          ${badges.map(badge => `
+            <div class="badge-item ${earnedBadges.includes(badge.id) ? '' : 'unearned'}">
+              <img src="badges/${badge.id}.png" alt="${badge.name}" />
+              <p>${badge.name}</p>
+            </div>
+          `).join('')}
         </div>
       `
     );
