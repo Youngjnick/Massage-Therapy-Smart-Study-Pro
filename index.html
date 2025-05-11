@@ -107,6 +107,13 @@
       <img src="badges/streak_10.png" alt="Streak Master" style="width: 100px; height: 100px;" />
     </div>
   </div>
+  <div id="notification-container" class="notification-container hidden">
+    <div class="notification">
+      <h3>New Achievement Unlocked!</h3>
+      <p>Streak Master: Achieve a streak of 10 correct answers.</p>
+      <img src="badges/streak_10.png" alt="Streak Master" />
+    </div>
+  </div>
   <script>
     fetch('smart_questions_cleaned.json')
       .then(response => response.json())

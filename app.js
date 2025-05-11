@@ -316,3 +316,32 @@ function renderAccuracyChart(correct, incorrect) {
     },
   });
 }
+
+function showNotification(title, message, imageUrl) {
+  const container = document.getElementById('notification-container');
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerHTML = `
+    <h3>${title}</h3>
+    <p>${message}</p>
+    <img src="${imageUrl}" alt="${title}" />
+  `;
+
+  container.appendChild(notification);
+  container.classList.remove('hidden');
+
+  // Automatically remove the notification after 3.5 seconds
+  setTimeout(() => {
+    notification.remove();
+    if (container.children.length === 0) {
+      container.classList.add('hidden');
+    }
+  }, 3500);
+}
+
+// Example usage
+showNotification(
+  'New Achievement Unlocked!',
+  'Streak Master: Achieve a streak of 10 correct answers.',
+  'badges/streak_10.png'
+);
