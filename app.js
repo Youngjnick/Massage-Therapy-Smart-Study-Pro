@@ -48,38 +48,24 @@ function loadQuestions() {
   } else {
     loadAllQuestionModules();
   }
-
-  // After loading questions and before using them:
-  const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
-  questions.forEach(q => {
-    q.bookmarked = bookmarks.includes(q.id);
-  });
 }
 
 function populateTopics(questionsArr) {
-  // Extract unique topics
-  const topics = [...new Set(questionsArr.map((q) => q.topic))];
-
-  // Sort topics alphabetically
-  const sortedTopics = topics.filter((topic) => topic).sort((a, b) => a.localeCompare(b));
-
-  // Get the topic dropdown element
+  const topics = [...new Set(questionsArr.map((q) => q.topic))]
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
   const topicSelect = document.querySelector('.control[data-topic]');
   if (!topicSelect) {
     console.error('Topic dropdown element not found.');
     return;
   }
-
-  // Clear existing options
   topicSelect.innerHTML = `
     <option value="" disabled selected>-- Select Topic --</option>
     <option value="unanswered">Unanswered Questions</option>
     <option value="missed">Missed Questions</option>
     <option value="bookmarked">Bookmarked Questions</option>
   `;
-
-  // Add sorted topics to the dropdown
-  sortedTopics.forEach((topic) => {
+  topics.forEach((topic) => {
     const option = document.createElement('option');
     option.value = topic;
     option.textContent = topic;
