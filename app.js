@@ -3,6 +3,11 @@ let selectedTopic = "";
 let quiz = [];
 let correct = 0;
 let streak = 0;
+let missedQuestions = [];
+let unansweredQuestions = [];
+let bookmarkedQuestions = [];
+let questions = [];
+let historyChart; // Add this at the top of your file
 
 const badges = [
   { id: 'streak_10', name: 'Streak Master', description: 'Achieve a streak of 10 correct answers.', condition: () => streak >= 10 },
@@ -13,41 +18,105 @@ const badges = [
 let earnedBadges = JSON.parse(localStorage.getItem('earnedBadges')) || [];
 earnedBadges = earnedBadges.filter(badgeId => badges.some(b => b.id === badgeId)); // Remove invalid IDs
 
-// Fetch questions and populate topics
-fetch('smart_questions_cleaned.json')
-  .then(res => {
-    if (!res.ok) throw new Error('Failed to fetch questions');
-    return res.json();
-  })
-  .then(data => {
-    questions = data;
-    const topics = [...new Set(data.map(q => q.topic))];
-    const topicSelect = document.querySelector('.control[data-topic]');
-    topics.forEach(topic => {
+const cachedQuestions = localStorage.getItem('questions');
+if (cachedQuestions) {
+  questions = JSON.parse(cachedQuestions);
+  unansweredQuestions = [...questions];
+  loadUserData(); // <-- Add this here!
+  const topics = [...new Set(questions.map(q => q.topic))];
+  console.log([...new Set(questions.map(q => q.topic))]);
+  const topicSelect = document.querySelector('.control[data-topic]');
+  topics.forEach(topic => {
+    if (isUnlocked(topic)) {
       const opt = document.createElement('option');
       opt.value = topic;
       opt.textContent = topic;
       topicSelect.appendChild(opt);
-    });
-  })
-  .catch(error => {
-    console.error('Error fetching questions:', error);
-    alert('Failed to load questions. Please try again later.');
+    }
   });
+  document.querySelector('.start-btn').disabled = false; // Enable start button
+  document.getElementById('loading').style.display = 'none'; // Hide loading
+
+  questions.forEach(q => {
+    if (q.image) {
+      const img = new Image();
+      img.src = q.image;
+    }
+  });
+} else {
+  fetch('smart_questions_cleaned.json')
+    .then(res => res.json())
+    .then(data => {
+      questions = data;
+      localStorage.setItem('questions', JSON.stringify(data));
+      unansweredQuestions = [...questions];
+      loadUserData(); // <-- And here!
+      const topics = [...new Set(data.map(q => q.topic))];
+      console.log([...new Set(questions.map(q => q.topic))]);
+      const topicSelect = document.querySelector('.control[data-topic]');
+      topics.forEach(topic => {
+        if (isUnlocked(topic)) {
+          const opt = document.createElement('option');
+          opt.value = topic;
+          opt.textContent = topic;
+          topicSelect.appendChild(opt);
+        }
+      });
+      document.querySelector('.start-btn').disabled = false; // Enable start button
+      document.getElementById('loading').style.display = 'none'; // Hide loading
+
+      questions.forEach(q => {
+        if (q.image) {
+          const img = new Image();
+          img.src = q.image;
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching questions:', error);
+      alert('Failed to load questions. Please try again later.');
+      document.getElementById('loading').textContent = 'Failed to load questions.';
+    });
+}
+
+const topicSelect = document.querySelector('.control[data-topic]');
+topicSelect.addEventListener('change', () => {
+  selectedTopic = topicSelect.value;
+});
 
 // Start Quiz
 document.querySelector('.start-btn').addEventListener('click', () => {
   const topic = document.querySelector('.control[data-topic]').value;
+  const lengthSelect = document.querySelector('.control[data-quiz-length]');
+  let quizLength = lengthSelect.value === 'all' ? Infinity : parseInt(lengthSelect.value, 10);
+
+  let availableQuestions = [];
   if (!topic || topic === '-- Select Topic --') return;
-  selectedTopic = topic;
-  const length = document.querySelector('.control[data-quiz-length]').value || 5;
-  const filtered = questions.filter(q => q.topic === topic);
-  quiz = shuffle([...filtered]).slice(0, length === 'all' ? filtered.length : parseInt(length));
+
+  if (topic === 'unanswered') {
+    availableQuestions = questions.filter(q => !q.answered);
+  } else if (topic === 'missed') {
+    availableQuestions = questions.filter(q => q.missed);
+  } else if (topic === 'bookmarked') {
+    availableQuestions = bookmarkedQuestions;
+  } else {
+    availableQuestions = questions.filter(q => q.topic === topic);
+  }
+
+  // Always respect quiz length, even for "unanswered"
+  quiz = availableQuestions.slice(0, quizLength);
+
+  if (quiz.length === 0) {
+    alert('No questions available for this selection.');
+    return;
+  }
+
   current = 0;
   correct = 0;
   streak = 0;
   document.querySelector('.quiz-card').classList.remove('hidden');
   renderQuestion();
+  renderAccuracyChart(0, 0, quiz.length);
 });
 
 // Handle Length Selection
@@ -58,9 +127,28 @@ document.querySelectorAll('.control[data-length]').forEach(btn => {
   });
 });
 
+// Shuffle Array
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
 // Render Question
 function renderQuestion() {
+  if (!quiz || quiz.length === 0) {
+    document.querySelector('.quiz-card').innerHTML = '<p>No missed questions to review!</p>';
+    return;
+  }
   const q = quiz[current];
+  if (!q) {
+    document.querySelector('.quiz-card').classList.add('hidden');
+    return;
+  }
+
+  // Remove any existing bookmark, report, and suggest buttons
+  const quizHeader = document.querySelector('.quiz-header');
+  quizHeader.querySelectorAll('.bookmark-btn, .report-btn, .suggest-btn').forEach(btn => btn.remove());
+
+  // ...existing code...
   document.querySelector('.quiz-header strong').textContent = selectedTopic;
   document.querySelector('.question-text').textContent = q.question;
   const answersDiv = document.getElementById('answers');
@@ -69,34 +157,187 @@ function renderQuestion() {
     const btn = document.createElement('div');
     btn.className = 'answer';
     btn.textContent = `${String.fromCharCode(65 + i)}. ${a}`;
+    btn.setAttribute('aria-label', `Answer ${String.fromCharCode(65 + i)}: ${a}`);
+    btn.tabIndex = 0;
     btn.addEventListener('click', () => handleAnswerClick(i === q.correct, btn));
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        handleAnswerClick(i === q.correct, btn);
+      }
+    });
     answersDiv.appendChild(btn);
   });
   document.querySelector('.feedback').textContent = "";
+
+  // Add the bookmark button (top right)
+  const bookmarkBtn = document.createElement('button');
+  bookmarkBtn.textContent = q.bookmarked ? 'Unbookmark' : 'Bookmark';
+  bookmarkBtn.className = 'bookmark-btn';
+  bookmarkBtn.setAttribute('aria-label', q.bookmarked ? 'Unbookmark this question' : 'Bookmark this question');
+  bookmarkBtn.style.float = 'right';
+  bookmarkBtn.addEventListener('click', () => {
+    if (!quiz[current].bookmarked) {
+      quiz[current].bookmarked = true;
+      if (!bookmarkedQuestions.some(q => q.id === quiz[current].id)) {
+        bookmarkedQuestions.push(quiz[current]);
+      }
+      bookmarkBtn.textContent = 'Unbookmark';
+      showNotification('Bookmarked!', 'Question added to bookmarks.', 'badges/bookmarked.png');
+    } else {
+      quiz[current].bookmarked = false;
+      bookmarkedQuestions = bookmarkedQuestions.filter(q => q.id !== quiz[current].id);
+      bookmarkBtn.textContent = 'Bookmark';
+      showNotification('Unbookmarked!', 'Question removed from bookmarks.', 'badges/bookmarked.png');
+      // If viewing bookmarked questions, remove from quiz and show next
+      if (selectedTopic === 'bookmarked') {
+        quiz.splice(current, 1);
+        if (quiz.length === 0) {
+          alert('No more bookmarked questions.');
+          document.querySelector('.quiz-card').classList.add('hidden');
+          return;
+        }
+        if (current >= quiz.length) current = 0;
+        renderQuestion();
+        return;
+      }
+    }
+  });
+  quizHeader.appendChild(bookmarkBtn);
+
+  // Add the suggest question button (bottom left)
+  const quizCard = document.querySelector('.quiz-card');
+  // Remove old suggest/report buttons if present
+  quizCard.querySelectorAll('.suggest-btn, .report-btn').forEach(btn => btn.remove());
+
+  const suggestBtn = document.createElement('button');
+  suggestBtn.textContent = 'Suggest a Question';
+  suggestBtn.className = 'suggest-btn';
+  suggestBtn.style.position = 'absolute';
+  suggestBtn.style.left = '16px';
+  suggestBtn.style.bottom = '16px';
+  suggestBtn.addEventListener('click', () => {
+    openModal(
+      'Suggest a Question',
+      `
+        <form id="suggestForm">
+          <label>Question:<br><input type="text" id="suggestQ" required></label><br>
+          <label>Answer A:<br><input type="text" id="suggestA" required></label><br>
+          <label>Answer B:<br><input type="text" id="suggestB" required></label><br>
+          <label>Answer C:<br><input type="text" id="suggestC"></label><br>
+          <label>Answer D:<br><input type="text" id="suggestD"></label><br>
+          <label>Correct Answer (A/B/C/D):<br><input type="text" id="suggestCorrect" required maxlength="1"></label><br>
+          <label>Topic:<br><input type="text" id="suggestTopic" required></label><br>
+          <button type="submit">Submit</button>
+        </form>
+      `
+    );
+    document.getElementById('suggestForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const suggestion = {
+        question: document.getElementById('suggestQ').value,
+        answers: [
+          document.getElementById('suggestA').value,
+          document.getElementById('suggestB').value,
+          document.getElementById('suggestC').value,
+          document.getElementById('suggestD').value,
+        ].filter(Boolean),
+        correct: ['A','B','C','D'].indexOf(document.getElementById('suggestCorrect').value.toUpperCase()),
+        topic: document.getElementById('suggestTopic').value,
+        submittedAt: new Date().toISOString()
+      };
+      await submitSuggestionToFirestore(suggestion);
+      showNotification('Thank you!', 'Your suggestion has been submitted.', 'badges/summary.png');
+      document.querySelector('.modal-overlay').remove();
+    });
+  });
+  quizCard.appendChild(suggestBtn);
+
+  // Add the report question button (bottom right)
+  const reportBtn = document.createElement('button');
+  reportBtn.textContent = 'Report Question';
+  reportBtn.className = 'report-btn';
+  reportBtn.style.position = 'absolute';
+  reportBtn.style.right = '16px';
+  reportBtn.style.bottom = '16px';
+  reportBtn.setAttribute('aria-label', 'Report this question');
+  reportBtn.addEventListener('click', () => {
+    openModal(
+      'Report Question',
+      `
+        <form id="reportForm">
+          <p>Why are you reporting this question?</p>
+          <textarea id="reportReason" required style="width:100%;height:60px;"></textarea><br>
+          <button type="submit">Submit Report</button>
+        </form>
+      `
+    );
+    document.getElementById('reportForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const report = {
+        questionId: quiz[current].id,
+        question: quiz[current].question,
+        reason: document.getElementById('reportReason').value,
+        reportedAt: new Date().toISOString()
+      };
+      await submitReportToFirestore(report);
+      showNotification('Thank you!', 'Your report has been submitted.', 'badges/summary.png');
+      document.querySelector('.modal-overlay').remove();
+    });
+  });
+  quizCard.appendChild(reportBtn);
 }
 
 // Handle Answer Click
 function handleAnswerClick(isCorrect, btn) {
+  if (!quiz[current]) return;
   btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-  updateStreak(isCorrect); // Update streak
-  updateProgress(current + 1, quiz.length); // Update progress bar
+  updateStreak(isCorrect);
+  updateProgress(current + 1, quiz.length);
 
-  // Show feedback for incorrect answers
   const feedback = document.querySelector('.feedback');
+  const qid = quiz[current].id;
+
   if (!isCorrect) {
     const correctAnswer = quiz[current].answers[quiz[current].correct];
     feedback.textContent = `Incorrect! The correct answer is: ${correctAnswer}`;
     feedback.style.color = 'red';
+
+    // Add to missedQuestions if not already present
+    if (!missedQuestions.includes(qid)) {
+      missedQuestions.push(qid);
+      saveUserData();
+    }
+    quiz[current].stats = quiz[current].stats || { correct: 0, incorrect: 0 };
+    quiz[current].stats.incorrect++;
+
+    const now = Date.now();
+    localStorage.setItem('review_' + qid, JSON.stringify({
+      lastMissed: now,
+      interval: 24 * 60 * 60 * 1000 // 1 day, increase on each miss
+    }));
   } else {
     feedback.textContent = 'Correct!';
     feedback.style.color = 'green';
+
+    // Remove from missedQuestions if answered correctly
+    missedQuestions = missedQuestions.filter(id => id !== qid);
+    saveUserData();
+    quiz[current].stats = quiz[current].stats || { correct: 0, incorrect: 0 };
+    quiz[current].stats.correct++;
   }
 
+  const explanation = quiz[current].explanation || '';
+  feedback.innerHTML += explanation ? `<br><em>${explanation}</em>` : '';
+
   if (isCorrect) correct++;
+
+  // Remove from unansweredQuestions as before
+  unansweredQuestions = unansweredQuestions.filter(q => q.id !== qid);
+
   setTimeout(() => {
     current++;
     if (current >= quiz.length) {
-      showSummary(); // Show summary notification
+      showSummary();
       return;
     }
     renderQuestion();
@@ -104,7 +345,7 @@ function handleAnswerClick(isCorrect, btn) {
     // Dynamically update the chart
     const unanswered = quiz.length - current;
     renderAccuracyChart(correct, current - correct, unanswered);
-  }, 1500); // Delay to allow users to see feedback
+  }, 1500);
 }
 
 // Update Streak
@@ -125,11 +366,6 @@ function updateProgress(current, total) {
   document.querySelector('.progress-section span:last-child').textContent = `${progress}%`;
 }
 
-// Shuffle Array
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
-}
-
 // Show Summary
 function showSummary() {
   // Calculate accuracy
@@ -144,52 +380,61 @@ function showSummary() {
 
   // Check badges after completing the quiz
   checkBadges();
+
+  // Show "Review Missed" if there are missed questions
+  if (missedQuestions.length > 0) {
+    const reviewBtn = document.createElement('button');
+    reviewBtn.textContent = 'Review Missed Questions';
+    reviewBtn.className = 'modal-btn';
+    reviewBtn.onclick = () => {
+      console.log('Missed:', missedQuestions);
+      quiz = questions.filter(q => missedQuestions.includes(q.id));
+      console.log('Quiz for review:', quiz);
+      current = 0;
+      correct = 0;
+      streak = 0;
+      document.querySelector('.quiz-card').classList.remove('hidden');
+      renderQuestion();
+      document.querySelector('.notification-container')?.remove();
+    };
+    setTimeout(() => {
+      document.body.appendChild(reviewBtn);
+      setTimeout(() => reviewBtn.remove(), 5000); // Remove after 5s
+    }, 500); // Show after summary
+  }
+
+  // Show "Smart Review" if there are smart review questions
+  if (getSmartReviewQuestions().length > 0) {
+    const smartReviewBtn = document.createElement('button');
+    smartReviewBtn.textContent = 'Smart Review Questions';
+    smartReviewBtn.className = 'modal-btn';
+    smartReviewBtn.onclick = () => {
+      quiz = getSmartReviewQuestions();
+      current = 0; correct = 0; streak = 0;
+      document.querySelector('.quiz-card').classList.remove('hidden');
+      renderQuestion();
+      document.querySelector('.notification-container')?.remove();
+    };
+    setTimeout(() => {
+      document.body.appendChild(smartReviewBtn);
+      setTimeout(() => smartReviewBtn.remove(), 5000); // Remove after 5s
+    }, 500); // Show after summary
+  }
+
+  saveQuizResult(); // Save to history
 }
 
 // Open Modal Function
-function openModal(title, content) {
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay';
-  modal.innerHTML = `
-    <div class="modal">
-      <div class="modal-header">
-        <h2>${title}</h2>
-        <button class="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        ${content}
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  // Close Modal when clicking anywhere inside the modal
-  modal.addEventListener('click', () => {
-    modal.remove();
-  });
-
-  // Prevent closing when clicking on the modal content
-  modal.querySelector('.modal').addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-
-  // Close Modal when clicking the close button
-  modal.querySelector('.close-modal').addEventListener('click', () => {
-    modal.remove();
-  });
-}
-
-// Toggle Modal Function
-function toggleModal(title, content) {
-  // Check if the modal already exists
+function openModal(title, content, toggle = false) {
   const existingModal = document.querySelector('.modal-overlay');
-  if (existingModal) {
-    // If the modal exists, remove it (hide it)
+
+  // If toggle is true and the modal exists, close it
+  if (toggle && existingModal) {
     existingModal.remove();
     return;
   }
 
-  // If the modal doesn't exist, create and show it
+  // Create and display the modal
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
   modal.innerHTML = `
@@ -205,19 +450,17 @@ function toggleModal(title, content) {
   `;
   document.body.appendChild(modal);
 
-  // Close Modal when clicking the close button
-  modal.querySelector('.close-modal').addEventListener('click', () => {
-    modal.remove();
-  });
+  // Close modal when clicking the close button or outside the modal
+  modal.querySelector('.close-modal').addEventListener('click', () => modal.remove());
+  modal.addEventListener('click', () => modal.remove());
+  modal.querySelector('.modal').addEventListener('click', (e) => e.stopPropagation());
+  modal.querySelector('.close-modal').setAttribute('aria-label', 'Close modal');
 
-  // Prevent closing when clicking on the modal content
-  modal.querySelector('.modal').addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-
-  // Close Modal when clicking outside the modal content
-  modal.addEventListener('click', () => {
-    modal.remove();
+  document.addEventListener('keydown', function escListener(e) {
+    if (e.key === 'Escape') {
+      modal.remove();
+      document.removeEventListener('keydown', escListener);
+    }
   });
 }
 
@@ -226,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.smart-learning a').addEventListener('click', (e) => {
     e.preventDefault();
 
-    toggleModal(
+    openModal(
       'Smart Learning',
       `
         <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
@@ -238,9 +481,19 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `).join('')}
         </div>
-      `
+      `,
+      true // Pass true if you want toggling behavior
     );
   });
+
+  // Show progress chart by default
+  const stats = {
+    correct: correct,
+    incorrect: quiz.length - correct,
+    unanswered: quiz.length > 0 ? quiz.length - current : 0
+  };
+  renderAccuracyChart(stats.correct, stats.incorrect, stats.unanswered);
+  renderHistoryChart(); // Always show history chart on load
 });
 
 // Update View Analytics Modal
@@ -249,7 +502,7 @@ document.querySelector('.view-analytics a').addEventListener('click', (e) => {
 
   // Dynamically calculate stats
   const totalQuestions = quiz.length;
-  const unansweredQuestions = totalQuestions - current;
+  const unansweredQuestionsCount = totalQuestions - current;
   const incorrectAnswers = current - correct;
   const accuracy = totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
 
@@ -257,10 +510,19 @@ document.querySelector('.view-analytics a').addEventListener('click', (e) => {
     totalQuestions,
     correctAnswers: correct,
     incorrectAnswers,
-    unansweredQuestions,
+    unansweredQuestions: unansweredQuestionsCount,
     accuracy,
     streak,
   };
+
+  // Mastery heatmap HTML
+  const topicStats = getTopicMastery();
+  const masteryHtml = Object.entries(topicStats).map(([topic, stat]) => {
+    const acc = stat.total ? stat.correct / stat.total : 0;
+    return `<li style="background:${masteryColor(acc)};padding:4px 8px;border-radius:4px;margin:2px 0;">
+      <strong>${topic}:</strong> ${(acc*100).toFixed(0)}% mastery
+    </li>`;
+  }).join('');
 
   // Open the modal
   openModal(
@@ -277,12 +539,17 @@ document.querySelector('.view-analytics a').addEventListener('click', (e) => {
           <li><strong>Accuracy:</strong> ${stats.accuracy}%</li>
           <li><strong>Current Streak:</strong> ${stats.streak}</li>
         </ul>
+        <h4 style="margin-top:16px;">Mastery by Topic</h4>
+        <ul style="margin-top:0">${masteryHtml}</ul>
+        <h4 style="margin-top:16px;">Quiz History</h4>
+        <canvas id="historyChart" width="300" height="120"></canvas>
       </div>
     `
   );
 
-  // Render the chart after the modal is opened
+  // Render the charts after the modal is opened
   renderAccuracyChart(stats.correctAnswers, stats.incorrectAnswers, stats.unansweredQuestions);
+  renderHistoryChart();
 });
 
 // Update Settings Modal
@@ -307,9 +574,16 @@ document.querySelector('.settings a').addEventListener('click', (e) => {
           <input type="checkbox" id="timerToggle" />
         </label>
         <br />
+        <label>
+          <input type="checkbox" id="adaptiveModeToggle" /> Enable Adaptive Mode
+        </label>
+        <br />
         <button type="submit">Save Settings</button>
       </form>
       <hr />
+      <button id="exportProgressBtn" type="button">Export Progress</button>
+      <input type="file" id="importProgressInput" style="display:none" accept=".json" />
+      <button id="importProgressBtn" type="button">Import Progress</button>
       <button id="resetAllButton" style="background-color: red; color: white; padding: 10px; border: none; cursor: pointer;">
         Reset All
       </button>
@@ -320,17 +594,28 @@ document.querySelector('.settings a').addEventListener('click', (e) => {
   const form = document.getElementById('settingsForm');
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const difficulty = document.getElementById('difficultySelect').value;
-    const isTimerEnabled = document.getElementById('timerToggle').checked;
-    console.log('Settings Saved:', { difficulty, isTimerEnabled });
-    // Save settings or update app behavior
+    const adaptiveMode = document.getElementById('adaptiveModeToggle').checked;
+    const randomMode = document.getElementById('randomModeToggle').checked;
+    localStorage.setItem('adaptiveMode', adaptiveMode);
+    localStorage.setItem('randomMode', randomMode);
+    // ...other settings...
   });
 
   // Add functionality to the Reset All button
   document.getElementById('resetAllButton').addEventListener('click', () => {
     resetAll();
   });
+
+  // When opening the settings modal
+  document.getElementById('difficultySelect').value = localStorage.getItem('difficulty') || 'easy';
+  document.getElementById('timerToggle').checked = JSON.parse(localStorage.getItem('timerEnabled') || 'false');
+  document.getElementById('adaptiveModeToggle').checked = JSON.parse(localStorage.getItem('adaptiveMode') || 'true');
+  document.getElementById('randomModeToggle').checked = JSON.parse(localStorage.getItem('randomMode') || 'false');
 });
+
+if (localStorage.getItem('adaptiveMode') === null) {
+  localStorage.setItem('adaptiveMode', 'true');
+}
 
 function checkBadges() {
   badges.forEach(badge => {
@@ -357,7 +642,10 @@ function showBadgeModal(badge) {
 let accuracyChart; // Declare a global variable to hold the chart instance
 
 function renderAccuracyChart(correct, incorrect, unanswered) {
-  const ctx = document.getElementById('accuracyChart').getContext('2d');
+  const ctxElem = document.getElementById('accuracyChart');
+  if (!ctxElem) return; // Exit if the canvas doesn't exist
+
+  const ctx = ctxElem.getContext('2d');
 
   // If the chart already exists, destroy it before creating a new one
   if (accuracyChart) {
@@ -373,7 +661,7 @@ function renderAccuracyChart(correct, incorrect, unanswered) {
         data: [correct, incorrect, unanswered],
         backgroundColor: ['#6BCB77', '#FF6B6B', '#FFD93D'], // Green, Red, Yellow
         hoverBackgroundColor: ['#8FDCA8', '#FF8787', '#FFE066'], // Lighter shades for hover
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor: '#ffffff', // White border for a clean look
       }],
     },
@@ -389,8 +677,41 @@ function renderAccuracyChart(correct, incorrect, unanswered) {
           },
         },
       },
-      cutout: '75%', // Narrower ring for a sleek look
+      cutout: '85%', // Narrower ring for a sleek look
     },
+  });
+}
+
+function renderHistoryChart() {
+  const results = JSON.parse(localStorage.getItem('quizResults')) || [];
+  if (!results.length) return;
+  const ctx = document.getElementById('historyChart').getContext('2d');
+
+  // Destroy previous chart if it exists
+  if (historyChart) {
+    historyChart.destroy();
+  }
+
+  historyChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: results.map(r => new Date(r.date).toLocaleDateString()),
+      datasets: [
+        {
+          label: 'Accuracy (%)',
+          data: results.map(r => Math.round((r.score / r.total) * 100)),
+          borderColor: '#007bff',
+          fill: false,
+        },
+        {
+          label: 'Streak',
+          data: results.map(r => r.streak),
+          borderColor: '#FFD93D',
+          fill: false,
+        }
+      ]
+    },
+    options: { responsive: true }
   });
 }
 
@@ -449,5 +770,146 @@ function loadStats() {
     streak = savedStats.streak || 0;
     current = savedStats.current || 0;
     quiz = quiz.slice(0, savedStats.quizLength || quiz.length);
+  }
+}
+
+function saveUserData() {
+  localStorage.setItem('missedQuestions', JSON.stringify(missedQuestions));
+  // ...other saves
+}
+
+function loadUserData() {
+  missedQuestions = JSON.parse(localStorage.getItem('missedQuestions')) || [];
+  // ...other loads
+}
+
+function getTopicMastery() {
+  // Aggregate stats by topic
+  const topicStats = {};
+  questions.forEach(q => {
+    if (!q.topic) return;
+    if (!topicStats[q.topic]) topicStats[q.topic] = { correct: 0, incorrect: 0, total: 0 };
+    topicStats[q.topic].correct += q.stats?.correct || 0;
+    topicStats[q.topic].incorrect += q.stats?.incorrect || 0;
+    topicStats[q.topic].total += (q.stats?.correct || 0) + (q.stats?.incorrect || 0);
+  });
+  return topicStats;
+}
+
+function masteryColor(accuracy) {
+  if (accuracy >= 0.85) return '#6BCB77'; // green
+  if (accuracy >= 0.6) return '#FFD93D'; // yellow
+  return '#FF6B6B'; // red
+}
+
+function saveQuizResult() {
+  const results = JSON.parse(localStorage.getItem('quizResults')) || [];
+  results.push({
+    streak,
+    total: quiz.length,
+    score: correct,
+    date: new Date().toISOString(),
+  });
+  localStorage.setItem('quizResults', JSON.stringify(results));
+  renderHistoryChart(); // Update chart after saving results
+}
+
+function getNextQuestion() {
+  // Example: If last 3 correct, increase difficulty
+  const lastResults = quiz.slice(Math.max(0, current - 3), current).map(q => q.stats?.correct > 0);
+  let nextDifficulty = 'easy';
+  if (lastResults.every(Boolean)) nextDifficulty = 'moderate';
+  if (lastResults.length === 3 && lastResults.every(Boolean) && quiz[current-1]?.difficulty === 'moderate') nextDifficulty = 'hard';
+  // Pick a question of nextDifficulty not yet answered
+  return questions.find(q => q.difficulty === nextDifficulty && !quiz.includes(q));
+}
+
+function getDueForReview() {
+  const now = Date.now();
+  return questions.filter(q => {
+    const review = JSON.parse(localStorage.getItem('review_' + q.id));
+    if (!review) return false;
+    return now - review.lastMissed > review.interval;
+  });
+}
+
+function getWeakTopics() {
+  const mastery = getTopicMastery();
+  return Object.entries(mastery)
+    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / a[1].total))
+    .map(([topic]) => topic);
+}
+
+function getAdaptiveQuizLength() {
+  if (streak >= 10) return 20; // longer quiz for high streak
+  if (streak >= 5) return 10;
+  if (streak <= 2) return 5;   // shorter quiz if struggling
+  return 7; // default
+}
+
+function isUnlocked(topic) {
+  const mastery = getTopicMastery();
+  if (topic === 'Advanced') {
+    return (mastery['Basics']?.correct / mastery['Basics']?.total) > 0.8;
+  }
+  return true;
+}
+
+function getDailyChallenge() {
+  const today = new Date().toISOString().slice(0, 10);
+  const challengeKey = 'challenge_' + today;
+  let challenge = JSON.parse(localStorage.getItem(challengeKey));
+  if (!challenge) {
+    // Pick 5 random weak-topic questions
+    const weakTopics = getWeakTopics().slice(0, 2);
+    const pool = questions.filter(q => weakTopics.includes(q.topic));
+    challenge = shuffle(pool).slice(0, 5);
+    localStorage.setItem(challengeKey, JSON.stringify(challenge));
+  }
+  return challenge;
+}
+
+// To start daily challenge:
+quiz = getDailyChallenge();
+
+function getSmartReviewQuestions() {
+  return questions.filter(q => (q.stats?.incorrect || 0) > 1 || ((q.stats?.correct || 0) / ((q.stats?.correct || 0) + (q.stats?.incorrect || 0))) < 0.7);
+}
+
+function getWeeklyStats() {
+  const results = JSON.parse(localStorage.getItem('quizResults')) || [];
+  const now = Date.now();
+  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+  return results.filter(r => new Date(r.date).getTime() > weekAgo);
+}
+
+// --- FIREBASE CONFIG ---
+// Replace with your own config from Firebase Console
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  // ...other config...
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// --- END FIREBASE CONFIG ---
+
+async function submitSuggestionToFirestore(suggestion) {
+  try {
+    await db.collection('suggestedQuestions').add(suggestion);
+  } catch (error) {
+    showNotification('Error', 'Failed to submit suggestion. Try again later.', 'badges/summary.png');
+    console.error('Firestore error:', error);
+  }
+}
+
+async function submitReportToFirestore(report) {
+  try {
+    await db.collection('reportedQuestions').add(report);
+  } catch (error) {
+    showNotification('Error', 'Failed to submit report. Try again later.', 'badges/summary.png');
+    console.error('Firestore error:', error);
   }
 }

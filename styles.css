@@ -824,6 +824,15 @@ canvas {
   border-radius: 4px;
 }
 
-.modal::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+.modal-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 12px;
+}
+.modal-btn:hover {
+  background: #0056b3;
 }

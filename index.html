@@ -10,8 +10,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link href="styles.css" rel="stylesheet"/>
-  <script defer src="app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase App (core) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <!-- Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script defer src="app.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -25,6 +29,10 @@
       </div>
       <div class="header-controls">
         <select class="control" data-topic>
+          <option value="" disabled selected>-- Select Topic --</option>
+          <option value="unanswered">Unanswered Questions</option>
+          <option value="missed">Missed Questions</option>
+          <option value="bookmarked">Bookmarked Questions</option>
         </select>
         <select class="control" data-quiz-length>
           <option value="5">5 Questions</option>
@@ -32,7 +40,7 @@
           <option value="20">20 Questions</option>
           <option value="all">All Questions</option>
         </select>
-        <button class="start-btn">Start Quiz</button>
+        <button class="start-btn" disabled>Start Quiz</button>
       </div>
       <div class="header-actions" style="display: flex; gap: 24px; align-items: center; justify-content: space-evenly;">
         <div class="smart-learning">
@@ -93,47 +101,7 @@
         </div>
         <span>0%</span>
       </div>
-  <script>
-    fetch('smart_questions_cleaned.json')
-      .then(response => response.json())
-      .then(data => {
-        const questionData = data[0]; // Example: Fetch the first question
-        document.getElementById('question').textContent = questionData.question;
-
-        // Populate answers
-        const answersContainer = document.getElementById('answers');
-        questionData.answers.forEach((answer, index) => {
-          const answerDiv = document.createElement('div');
-          answerDiv.className = 'answer';
-          answerDiv.textContent = `${String.fromCharCode(65 + index)}. ${answer}`;
-          answersContainer.appendChild(answerDiv);
-        });
-
-        // Populate feedback
-        const feedbackContainer = document.getElementById('feedback');
-        feedbackContainer.innerHTML = `
-          <svg fill="white" height="16" viewbox="0 0 24 24" width="16">
-            <path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path>
-          </svg>
-          Correct Answer: ${questionData.answers[questionData.correct]}
-        `;
-      })
-      .catch(error => console.error('Error loading questions:', error));
-
-    toggleModal(
-      'Smart Learning',
-      `
-        <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
-        <div class="badge-grid">
-          ${badges.map(badge => `
-            <div class="badge-item ${earnedBadges.includes(badge.id) ? '' : 'unearned'}">
-              <img src="badges/${badge.id}.png" alt="${badge.name}" />
-              <p>${badge.name}</p>
-            </div>
-          `).join('')}
-        </div>
-      `
-    );
-  </script>
+      <div id="loading" style="text-align:center; margin-top:2em;">Loading questions...</div>
+      <canvas id="historyChart" width="300" height="120"></canvas>
 </body>
 </html>
