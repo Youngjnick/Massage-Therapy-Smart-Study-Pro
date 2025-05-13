@@ -7,7 +7,7 @@ let missedQuestions = [];
 let unansweredQuestions = [];
 let bookmarkedQuestions = [];
 let questions = [];
-let historyChart; // Add this at the top of your file
+let historyChart;
 
 const badges = [
   { id: 'streak_10', name: 'Streak Master', description: 'Achieve a streak of 10 correct answers.', condition: () => streak >= 10 },
@@ -16,119 +16,8 @@ const badges = [
   { id: 'first_quiz', name: 'First Quiz', description: 'Complete your first quiz.', condition: () => quiz.length > 0 && current >= quiz.length },
 ];
 let earnedBadges = JSON.parse(localStorage.getItem('earnedBadges')) || [];
-earnedBadges = earnedBadges.filter(badgeId => badges.some(b => b.id === badgeId)); // Remove invalid IDs
+earnedBadges = earnedBadges.filter(badgeId => badges.some(b => b.id === badgeId));
 
-const cachedQuestions = localStorage.getItem('questions');
-if (cachedQuestions) {
-  questions = JSON.parse(cachedQuestions);
-  unansweredQuestions = [...questions];
-  loadUserData(); // <-- Add this here!
-  const topics = [...new Set(questions.map(q => q.topic))];
-  console.log([...new Set(questions.map(q => q.topic))]);
-  const topicSelect = document.querySelector('.control[data-topic]');
-  topics.forEach(topic => {
-    if (isUnlocked(topic)) {
-      const opt = document.createElement('option');
-      opt.value = topic;
-      opt.textContent = topic;
-      topicSelect.appendChild(opt);
-    }
-  });
-  document.querySelector('.start-btn').disabled = false; // Enable start button
-  document.getElementById('loading').style.display = 'none'; // Hide loading
-
-  questions.forEach(q => {
-    if (q.image) {
-      const img = new Image();
-      img.src = q.image;
-    }
-  });
-} else {
-  fetch('smart_questions_cleaned.json')
-    .then(res => res.json())
-    .then(data => {
-      questions = data;
-      localStorage.setItem('questions', JSON.stringify(data));
-      unansweredQuestions = [...questions];
-      loadUserData(); // <-- And here!
-      const topics = [...new Set(data.map(q => q.topic))];
-      console.log([...new Set(questions.map(q => q.topic))]);
-      const topicSelect = document.querySelector('.control[data-topic]');
-      topics.forEach(topic => {
-        if (isUnlocked(topic)) {
-          const opt = document.createElement('option');
-          opt.value = topic;
-          opt.textContent = topic;
-          topicSelect.appendChild(opt);
-        }
-      });
-      document.querySelector('.start-btn').disabled = false; // Enable start button
-      document.getElementById('loading').style.display = 'none'; // Hide loading
-
-      questions.forEach(q => {
-        if (q.image) {
-          const img = new Image();
-          img.src = q.image;
-        }
-      });
-    })
-    .catch(error => {
-      console.error('Error fetching questions:', error);
-      alert('Failed to load questions. Please try again later.');
-      document.getElementById('loading').textContent = 'Failed to load questions.';
-    });
-}
-
-const topicSelect = document.querySelector('.control[data-topic]');
-topicSelect.addEventListener('change', () => {
-  selectedTopic = topicSelect.value;
-});
-
-// Start Quiz
-document.querySelector('.start-btn').addEventListener('click', () => {
-  const topic = document.querySelector('.control[data-topic]').value;
-  const lengthSelect = document.querySelector('.control[data-quiz-length]');
-  let quizLength = lengthSelect.value === 'all' ? Infinity : parseInt(lengthSelect.value, 10);
-
-  let availableQuestions = [];
-  if (!topic || topic === '-- Select Topic --') return;
-
-  // Example in your start quiz logic
-  if (topic === 'unanswered') {
-    availableQuestions = shuffle(questions.filter(q => !q.answered));
-  } else if (topic === 'missed') {
-    availableQuestions = shuffle(questions.filter(q => q.missed));
-  } else if (topic === 'bookmarked') {
-    availableQuestions = shuffle(bookmarkedQuestions);
-  } else {
-    availableQuestions = shuffle(questions.filter(q => q.topic === topic));
-  }
-
-  // Always respect quiz length, even for "unanswered"
-  quiz = availableQuestions.slice(0, quizLength);
-
-  if (quiz.length === 0) {
-    alert('No questions available for this selection.');
-    return;
-  }
-
-  current = 0;
-  correct = 0;
-  streak = 0;
-  document.querySelector('.quiz-card').classList.remove('hidden');
-  renderQuestion();
-  renderAccuracyChart(0, 0, quiz.length);
-});
-
-// Handle Length Selection
-document.querySelectorAll('.control[data-length]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.control[data-length]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
-
-// Shuffle Array
 function shuffle(array) {
   let m = array.length, t, i;
   while (m) {
@@ -140,7 +29,111 @@ function shuffle(array) {
   return array;
 }
 
-// Render Question
+// Load questions and topics
+function loadQuestions() {
+  const cachedQuestions = localStorage.getItem('questions');
+  if (cachedQuestions) {
+    questions = JSON.parse(cachedQuestions);
+    unansweredQuestions = [...questions];
+    loadUserData();
+    populateTopics(questions);
+    document.querySelector('.start-btn').disabled = false;
+    document.getElementById('loading').style.display = 'none';
+    preloadImages(questions);
+  } else {
+    fetch('smart_questions_cleaned.json')
+      .then(res => res.json())
+      .then(data => {
+        questions = data;
+        localStorage.setItem('questions', JSON.stringify(data));
+        unansweredQuestions = [...questions];
+        loadUserData();
+        populateTopics(data);
+        document.querySelector('.start-btn').disabled = false;
+        document.getElementById('loading').style.display = 'none';
+        preloadImages(data);
+      })
+      .catch(error => {
+        console.error('Error fetching questions:', error);
+        alert('Failed to load questions. Please try again later.');
+        document.getElementById('loading').textContent = 'Failed to load questions.';
+      });
+  }
+}
+
+function populateTopics(questionsArr) {
+  const topics = [...new Set(questionsArr.map(q => q.topic))];
+  const topicSelect = document.querySelector('.control[data-topic]');
+  topicSelect.innerHTML = '<option>-- Select Topic --</option>';
+  topics.forEach(topic => {
+    if (isUnlocked(topic)) {
+      const opt = document.createElement('option');
+      opt.value = topic;
+      opt.textContent = topic;
+      topicSelect.appendChild(opt);
+    }
+  });
+}
+
+function preloadImages(questionsArr) {
+  questionsArr.forEach(q => {
+    if (q.image) {
+      const img = new Image();
+      img.src = q.image;
+    }
+  });
+}
+
+// Event listeners for topic and quiz start
+document.addEventListener('DOMContentLoaded', () => {
+  loadQuestions();
+  const topicSelect = document.querySelector('.control[data-topic]');
+  topicSelect.addEventListener('change', () => {
+    selectedTopic = topicSelect.value;
+  });
+
+  document.querySelector('.start-btn').addEventListener('click', () => {
+    const topic = topicSelect.value;
+    const lengthSelect = document.querySelector('.control[data-quiz-length]');
+    let quizLength = lengthSelect.value === 'all' ? Infinity : parseInt(lengthSelect.value, 10);
+
+    let availableQuestions = [];
+    if (!topic || topic === '-- Select Topic --') return;
+
+    if (topic === 'unanswered') {
+      availableQuestions = shuffle(questions.filter(q => !q.answered));
+    } else if (topic === 'missed') {
+      availableQuestions = shuffle(questions.filter(q => q.missed));
+    } else if (topic === 'bookmarked') {
+      availableQuestions = shuffle(bookmarkedQuestions);
+    } else {
+      availableQuestions = shuffle(questions.filter(q => q.topic === topic));
+    }
+
+    quiz = availableQuestions.slice(0, quizLength);
+
+    if (quiz.length === 0) {
+      alert('No questions available for this selection.');
+      return;
+    }
+
+    current = 0;
+    correct = 0;
+    streak = 0;
+    document.querySelector('.quiz-card').classList.remove('hidden');
+    renderQuestion();
+    renderAccuracyChart(0, 0, quiz.length);
+  });
+
+  document.querySelectorAll('.control[data-length]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.control[data-length]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+});
+
+// Main renderQuestion function
 function renderQuestion() {
   if (!quiz || quiz.length === 0) {
     document.querySelector('.quiz-card').innerHTML = '<p>No missed questions to review!</p>';
@@ -152,17 +145,42 @@ function renderQuestion() {
     return;
   }
 
-  // --- Shuffle answers and track correct index ---
-  // Create an array of answer objects with their original index
+  // Shuffle answers and track correct index
   const answerObjs = q.answers.map((a, i) => ({
     text: a,
     isCorrect: i === q.correct
   }));
-  // Shuffle the answerObjs array
   shuffle(answerObjs);
 
-  // ...existing code...
+  // Header row with topic, streak, and bookmark
   const quizHeader = document.querySelector('.quiz-header');
+  const oldHeaderRow = quizHeader.querySelector('.quiz-header-row');
+  if (oldHeaderRow) oldHeaderRow.remove();
+
+  const headerRow = document.createElement('div');
+  headerRow.className = 'quiz-header-row';
+
+  const topicStreak = document.createElement('div');
+  topicStreak.className = 'topic-streak';
+  topicStreak.innerHTML = `
+    <span>TOPIC: <strong>${selectedTopic}</strong></span>
+    <span style="margin-left: 16px;">Streak: <span id="quizStreak">${streak}</span></span>
+  `;
+
+  const bookmarkBtn = document.createElement('button');
+  bookmarkBtn.className = 'bookmark-btn';
+  bookmarkBtn.textContent = q.bookmarked ? 'Unbookmark' : 'Bookmark';
+  bookmarkBtn.setAttribute('aria-label', q.bookmarked ? 'Unbookmark this question' : 'Bookmark this question');
+  bookmarkBtn.addEventListener('click', () => {
+    q.bookmarked = !q.bookmarked;
+    bookmarkBtn.textContent = q.bookmarked ? 'Unbookmark' : 'Bookmark';
+    // Update bookmarkedQuestions array and save if needed
+  });
+
+  headerRow.appendChild(topicStreak);
+  headerRow.appendChild(bookmarkBtn);
+  quizHeader.appendChild(headerRow);
+
   document.querySelector('.quiz-header strong').textContent = selectedTopic;
   document.querySelector('.question-text').textContent = q.question;
   const answersDiv = document.getElementById('answers');
@@ -183,59 +201,13 @@ function renderQuestion() {
   });
   document.querySelector('.feedback').textContent = "";
 
-  // Add the bookmark button (top right)
-  // Remove any existing bookmark button
-  const oldBookmarkBtn = quizHeader.querySelector('.bookmark-btn');
-  if (oldBookmarkBtn) oldBookmarkBtn.remove();
-
-  const bookmarkBtn = document.createElement('button');
-  bookmarkBtn.textContent = q.bookmarked ? 'Unbookmark' : 'Bookmark';
-  bookmarkBtn.className = 'bookmark-btn';
-  bookmarkBtn.setAttribute('aria-label', q.bookmarked ? 'Unbookmark this question' : 'Bookmark this question');
-  bookmarkBtn.style.float = 'right';
-  bookmarkBtn.addEventListener('click', () => {
-    if (!quiz[current].bookmarked) {
-      quiz[current].bookmarked = true;
-      if (!bookmarkedQuestions.some(q => q.id === quiz[current].id)) {
-        bookmarkedQuestions.push(quiz[current]);
-      }
-      bookmarkBtn.textContent = 'Unbookmark';
-      showNotification('Bookmarked!', 'Question added to bookmarks.', 'badges/bookmarked.png');
-    } else {
-      quiz[current].bookmarked = false;
-      bookmarkedQuestions = bookmarkedQuestions.filter(q => q.id !== quiz[current].id);
-      bookmarkBtn.textContent = 'Bookmark';
-      showNotification('Unbookmarked!', 'Question removed from bookmarks.', 'badges/bookmarked.png');
-      // If viewing bookmarked questions, remove from quiz and show next
-      if (selectedTopic === 'bookmarked') {
-        quiz.splice(current, 1);
-        if (quiz.length === 0) {
-          alert('No more bookmarked questions.');
-          document.querySelector('.quiz-card').classList.add('hidden');
-          return;
-        }
-        if (current >= quiz.length) current = 0;
-        renderQuestion();
-        return;
-      }
-    }
-  });
-  quizHeader.appendChild(bookmarkBtn);
-
-  // Add the suggest question button (bottom left)
-  const quizCard = document.querySelector('.quiz-card');
   // Remove old action button containers if present
+  const quizCard = document.querySelector('.quiz-card');
   quizCard.querySelectorAll('.question-actions').forEach(el => el.remove());
 
-  // Create a flex container for action buttons
+  // Action buttons (suggest, report, flag)
   const actionsDiv = document.createElement('div');
   actionsDiv.className = 'question-actions';
-  actionsDiv.style.display = 'flex';
-  actionsDiv.style.justifyContent = 'space-between';
-  actionsDiv.style.alignItems = 'center';
-  actionsDiv.style.gap = '8px';
-  actionsDiv.style.marginTop = '16px';
-  actionsDiv.style.flexWrap = 'wrap';
 
   // Suggest Button
   const suggestBtn = document.createElement('button');
@@ -244,18 +216,16 @@ function renderQuestion() {
   suggestBtn.addEventListener('click', () => {
     openModal(
       'Suggest a Question',
-      `
-        <form id="suggestForm">
-          <label>Question:<br><input type="text" id="suggestQ" required></label><br>
-          <label>Answer A:<br><input type="text" id="suggestA" required></label><br>
-          <label>Answer B:<br><input type="text" id="suggestB" required></label><br>
-          <label>Answer C:<br><input type="text" id="suggestC"></label><br>
-          <label>Answer D:<br><input type="text" id="suggestD"></label><br>
-          <label>Correct Answer (A/B/C/D):<br><input type="text" id="suggestCorrect" required maxlength="1"></label><br>
-          <label>Topic:<br><input type="text" id="suggestTopic" required></label><br>
-          <button type="submit">Submit</button>
-        </form>
-      `
+      `<form id="suggestForm">
+        <label>Question:<br><input type="text" id="suggestQ" required></label><br>
+        <label>Answer A:<br><input type="text" id="suggestA" required></label><br>
+        <label>Answer B:<br><input type="text" id="suggestB" required></label><br>
+        <label>Answer C:<br><input type="text" id="suggestC"></label><br>
+        <label>Answer D:<br><input type="text" id="suggestD"></label><br>
+        <label>Correct Answer (A/B/C/D):<br><input type="text" id="suggestCorrect" required maxlength="1"></label><br>
+        <label>Topic:<br><input type="text" id="suggestTopic" required></label><br>
+        <button type="submit">Submit</button>
+      </form>`
     );
     document.getElementById('suggestForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -284,13 +254,11 @@ function renderQuestion() {
   reportBtn.addEventListener('click', () => {
     openModal(
       'Report Question',
-      `
-        <form id="reportForm">
-          <p>Why are you reporting this question?</p>
-          <textarea id="reportReason" required style="width:100%;height:60px;"></textarea><br>
-          <button type="submit">Submit Report</button>
-        </form>
-      `
+      `<form id="reportForm">
+        <p>Why are you reporting this question?</p>
+        <textarea id="reportReason" required style="width:100%;height:60px;"></textarea><br>
+        <button type="submit">Submit Report</button>
+      </form>`
     );
     document.getElementById('reportForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -315,17 +283,14 @@ function renderQuestion() {
     let unclearFlags = JSON.parse(localStorage.getItem('unclearFlags') || '{}');
     unclearFlags[qid] = (unclearFlags[qid] || 0) + 1;
     localStorage.setItem('unclearFlags', JSON.stringify(unclearFlags));
-    // Optionally, send to Firestore:
-    // await db.collection('unclearFlags').add({ qid, flaggedAt: new Date().toISOString() });
     showNotification('Thank you!', 'This question has been flagged as unclear.', 'badges/summary.png');
   });
 
-  // Add buttons to the container
   actionsDiv.appendChild(suggestBtn);
   actionsDiv.appendChild(reportBtn);
   actionsDiv.appendChild(flagBtn);
 
-  // Add the rating stars (if you want them inline)
+  // Add the rating stars
   const rateDiv = document.createElement('div');
   rateDiv.className = 'rate-question';
   rateDiv.innerHTML = `
@@ -334,8 +299,12 @@ function renderQuestion() {
   `;
   actionsDiv.appendChild(rateDiv);
 
-  // Append the actionsDiv to the quizCard
   quizCard.appendChild(actionsDiv);
+
+  // Enable/disable buttons as needed
+  bookmarkBtn.disabled = !q;
+  flagBtn.disabled = !q;
+  reportBtn.disabled = !q;
 }
 
 // Handle Answer Click

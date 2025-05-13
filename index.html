@@ -71,20 +71,13 @@
     </header>
     <div class="quiz-card visible">
       <div class="quiz-header">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 140px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <svg fill="white" height="16" viewBox="0 0 24 24" width="16">
-              <path d="M20.3 5.7a1 1 0 00-1.4-1.4L9 14.17l-3.9-3.9a1 1 0 10-1.4 1.42l4.6 4.6a1 1 0 001.4 0l11-11z"></path>
-            </svg>
-            <span>TOPIC: <strong></strong></span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <svg fill="white" height="16" viewBox="0 0 24 24" width="16">
-              <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path>
-            </svg>
+        <div class="quiz-header-row">
+          <div class="topic-streak-bookmark">
+            <span>Topic: <strong></strong></span>
             <span>Streak: <span id="quizStreak">0</span></span>
+            <button class="bookmark-btn">Bookmark</button>
           </div>
-        </div></svg>
+        </div>
       </div>
       <div class="question-block">
         <div class="question-icon">
@@ -103,5 +96,10 @@
       </div>
       <div id="loading" style="text-align:center; margin-top:2em;">Loading questions...</div>
       <canvas id="historyChart" width="300" height="120"></canvas>
+      <div class="question-actions">
+        <button class="suggest-btn">Suggest a Question</button>
+        <button class="flag-unclear-btn" disabled>Flag as Unclear</button>
+        <button class="report-btn" disabled>Report Question</button>
+      </div>
 </body>
 </html>
