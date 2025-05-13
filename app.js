@@ -323,6 +323,57 @@ function renderQuestion() {
   actionsDiv.appendChild(reportBtn);
   actionsDiv.appendChild(flagBtn);
 
+  // Add the rating stars
+  const rateDiv = document.createElement('div');
+  rateDiv.className = 'rate-question';
+  rateDiv.innerHTML = `
+    <span>Rate: </span>
+    ${[1, 2, 3, 4, 5]
+      .map(
+        (n) =>
+          `<span class="star" data-star="${n}" style="cursor:pointer;font-size:1.2em;color:#ccc;">&#9734;</span>`
+      )
+      .join('')}
+  `;
+  actionsDiv.appendChild(rateDiv);
+
+  // Add interactivity to the stars
+  const stars = rateDiv.querySelectorAll('.star');
+  stars.forEach((star, index) => {
+    star.addEventListener('click', () => {
+      // Fill all stars up to the clicked one with gold
+      stars.forEach((s, i) => {
+        s.style.color = i <= index ? 'gold' : '#ccc';
+      });
+
+      // Save the rating to localStorage or send it to the server
+      const rating = index + 1;
+      const qid = quiz[current].id;
+      let ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
+      ratings[qid] = rating;
+      localStorage.setItem('questionRatings', JSON.stringify(ratings));
+
+      showNotification('Thank you!', `You rated this question ${rating} stars.`, 'badges/summary.png');
+    });
+
+    // Highlight stars on hover
+    star.addEventListener('mouseover', () => {
+      stars.forEach((s, i) => {
+        s.style.color = i <= index ? 'gold' : '#ccc';
+      });
+    });
+
+    // Reset stars to the saved rating or default on mouseout
+    star.addEventListener('mouseout', () => {
+      const qid = quiz[current].id;
+      const ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
+      const savedRating = ratings[qid] || 0;
+      stars.forEach((s, i) => {
+        s.style.color = i < savedRating ? 'gold' : '#ccc';
+      });
+    });
+  });
+
   quizCard.appendChild(actionsDiv);
 
   // Enable/disable buttons as needed
@@ -1052,42 +1103,3 @@ function getBookmarkedQuestions(allQuestions) {
   const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
   return allQuestions.filter(q => bookmarks.includes(q.id));
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.rate-question').forEach(function (rateDiv) {
-    const stars = rateDiv.querySelectorAll('.star');
-    let selected = 0;
-
-    stars.forEach((star, idx) => {
-      // Highlight stars on hover
-      star.addEventListener('mouseenter', function () {
-        stars.forEach((s, i) => {
-          s.textContent = i <= idx ? '★' : '☆';
-        });
-      });
-
-      // Remove hover effect when mouse leaves
-      star.addEventListener('mouseleave', function () {
-        stars.forEach((s, i) => {
-          s.textContent = i < selected ? '★' : '☆';
-        });
-      });
-
-      // Set selected stars on click
-      star.addEventListener('click', function () {
-        selected = idx + 1;
-        stars.forEach((s, i) => {
-          s.textContent = i < selected ? '★' : '☆';
-        });
-
-        // Save rating to localStorage (optional)
-        const qid = rateDiv.getAttribute('data-question-id');
-        if (qid) {
-          let ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
-          ratings[qid] = selected;
-          localStorage.setItem('questionRatings', JSON.stringify(ratings));
-        }
-      });
-    });
-  });
-});
