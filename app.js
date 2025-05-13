@@ -214,15 +214,23 @@ function renderQuestion() {
 
   // Add the suggest question button (bottom left)
   const quizCard = document.querySelector('.quiz-card');
-  // Remove old suggest/report buttons if present
-  quizCard.querySelectorAll('.suggest-btn, .report-btn').forEach(btn => btn.remove());
+  // Remove old action button containers if present
+  quizCard.querySelectorAll('.question-actions').forEach(el => el.remove());
 
+  // Create a flex container for action buttons
+  const actionsDiv = document.createElement('div');
+  actionsDiv.className = 'question-actions';
+  actionsDiv.style.display = 'flex';
+  actionsDiv.style.justifyContent = 'space-between';
+  actionsDiv.style.alignItems = 'center';
+  actionsDiv.style.gap = '8px';
+  actionsDiv.style.marginTop = '16px';
+  actionsDiv.style.flexWrap = 'wrap';
+
+  // Suggest Button
   const suggestBtn = document.createElement('button');
   suggestBtn.textContent = 'Suggest a Question';
   suggestBtn.className = 'suggest-btn';
-  suggestBtn.style.position = 'absolute';
-  suggestBtn.style.left = '16px';
-  suggestBtn.style.bottom = '16px';
   suggestBtn.addEventListener('click', () => {
     openModal(
       'Suggest a Question',
@@ -258,16 +266,11 @@ function renderQuestion() {
       document.querySelector('.modal-overlay').remove();
     });
   });
-  quizCard.appendChild(suggestBtn);
 
-  // Add the report question button (bottom right)
+  // Report Button
   const reportBtn = document.createElement('button');
   reportBtn.textContent = 'Report Question';
   reportBtn.className = 'report-btn';
-  reportBtn.style.position = 'absolute';
-  reportBtn.style.right = '16px';
-  reportBtn.style.bottom = '16px';
-  reportBtn.setAttribute('aria-label', 'Report this question');
   reportBtn.addEventListener('click', () => {
     openModal(
       'Report Question',
@@ -292,7 +295,37 @@ function renderQuestion() {
       document.querySelector('.modal-overlay').remove();
     });
   });
-  quizCard.appendChild(reportBtn);
+
+  // Flag as Unclear Button
+  const flagBtn = document.createElement('button');
+  flagBtn.textContent = 'Flag as Unclear';
+  flagBtn.className = 'flag-unclear-btn';
+  flagBtn.addEventListener('click', async () => {
+    const qid = quiz[current].id;
+    let unclearFlags = JSON.parse(localStorage.getItem('unclearFlags') || '{}');
+    unclearFlags[qid] = (unclearFlags[qid] || 0) + 1;
+    localStorage.setItem('unclearFlags', JSON.stringify(unclearFlags));
+    // Optionally, send to Firestore:
+    // await db.collection('unclearFlags').add({ qid, flaggedAt: new Date().toISOString() });
+    showNotification('Thank you!', 'This question has been flagged as unclear.', 'badges/summary.png');
+  });
+
+  // Add buttons to the container
+  actionsDiv.appendChild(suggestBtn);
+  actionsDiv.appendChild(reportBtn);
+  actionsDiv.appendChild(flagBtn);
+
+  // Add the rating stars (if you want them inline)
+  const rateDiv = document.createElement('div');
+  rateDiv.className = 'rate-question';
+  rateDiv.innerHTML = `
+    <span>Rate: </span>
+    ${[1,2,3,4,5].map(n => `<span class="star" data-star="${n}" style="cursor:pointer;font-size:1.2em;">&#9734;</span>`).join('')}
+  `;
+  actionsDiv.appendChild(rateDiv);
+
+  // Append the actionsDiv to the quizCard
+  quizCard.appendChild(actionsDiv);
 }
 
 // Handle Answer Click
@@ -618,7 +651,6 @@ document.querySelector('.settings a').addEventListener('click', (e) => {
   document.getElementById('difficultySelect').value = localStorage.getItem('difficulty') || 'easy';
   document.getElementById('timerToggle').checked = JSON.parse(localStorage.getItem('timerEnabled') || 'false');
   document.getElementById('adaptiveModeToggle').checked = JSON.parse(localStorage.getItem('adaptiveMode') || 'true');
-  document.getElementById('randomModeToggle').checked = JSON.parse(localStorage.getItem('randomMode') || 'false');
 });
 
 if (localStorage.getItem('adaptiveMode') === null) {
@@ -921,3 +953,53 @@ async function submitReportToFirestore(report) {
     console.error('Firestore error:', error);
   }
 }
+
+function getAdaptiveQuiz(questions, quizLength, streak) {
+  let difficulty = 'easy';
+  if (streak >= 5) difficulty = 'moderate';
+  if (streak >= 10) difficulty = 'hard';
+  const filtered = questions.filter(q => q.difficulty === difficulty);
+  return shuffle(filtered).slice(0, quizLength);
+}
+
+function getBalancedQuiz(questions, quizLength) {
+  const byTopic = {};
+  questions.forEach(q => {
+    if (!byTopic[q.topic]) byTopic[q.topic] = [];
+    byTopic[q.topic].push(q);
+  });
+  Object.values(byTopic).forEach(arr => shuffle(arr));
+  const topics = Object.keys(byTopic);
+  const quiz = [];
+  let i = 0;
+  while (quiz.length < quizLength && topics.length) {
+    const topic = topics[i % topics.length];
+    if (byTopic[topic].length) {
+      quiz.push(byTopic[topic].pop());
+    }
+    i++;
+  }
+  return quiz;
+}
+
+function getWeakTopicQuiz(questions, mastery, quizLength) {
+  const weakTopics = Object.entries(mastery)
+    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))
+    .map(([topic]) => topic);
+  const pool = questions.filter(q => weakTopics.includes(q.topic));
+  return shuffle(pool).slice(0, quizLength);
+}
+
+function filterLowQualityQuestions(questions) {
+  const ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
+  const unclearFlags = JSON.parse(localStorage.getItem('unclearFlags') || '{}');
+  // Exclude questions with rating <= 2 or flagged as unclear 2+ times
+  return questions.filter(q => {
+    const qid = q.id;
+    return (ratings[qid] === undefined || ratings[qid] > 2) && (unclearFlags[qid] === undefined || unclearFlags[qid] < 2);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // your code that uses document.getElementById(...)
+});

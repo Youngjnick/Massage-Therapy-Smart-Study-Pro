@@ -836,3 +836,25 @@ canvas {
 .modal-btn:hover {
   background: #0056b3;
 }
+
+.question-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.question-actions button,
+.question-actions .rate-question {
+  flex: 1 1 120px;
+  min-width: 100px;
+  margin: 4px 0;
+}
+@media (max-width: 600px) {
+  .question-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+}
