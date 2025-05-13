@@ -46,28 +46,7 @@ function loadQuestions() {
     preloadImages(questions);
     bookmarkedQuestions = getBookmarkedQuestions(questions);
   } else {
-    fetch('smart_questions_cleaned.json')
-      .then(res => res.json())
-      .then(data => {
-        questions = data;
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
-        questions.forEach(q => {
-          q.bookmarked = bookmarks.includes(q.id);
-        });
-        localStorage.setItem('questions', JSON.stringify(data));
-        unansweredQuestions = [...questions];
-        loadUserData();
-        populateTopics(data);
-        document.querySelector('.start-btn').disabled = false;
-        document.getElementById('loading').style.display = 'none';
-        preloadImages(data);
-        bookmarkedQuestions = getBookmarkedQuestions(questions);
-      })
-      .catch(error => {
-        console.error('Error fetching questions:', error);
-        alert('Failed to load questions. Please try again later.');
-        document.getElementById('loading').textContent = 'Failed to load questions.';
-      });
+    loadAllQuestionModules();
   }
 
   // After loading questions and before using them:
@@ -119,9 +98,7 @@ function preloadImages(questionsArr) {
 
 // Event listeners for topic and quiz start
 document.addEventListener('DOMContentLoaded', () => {
-  loadQuestions().then(() => {
-    populateTopics(questions); // Dynamically update the topics
-  });
+  loadQuestions();
   const topicSelect = document.querySelector('.control[data-topic]');
   topicSelect.addEventListener('change', () => {
     selectedTopic = topicSelect.value;
@@ -1114,30 +1091,30 @@ function getBookmarkedQuestions(allQuestions) {
  * Loads all JSON question modules and dynamically adds topics.
  */
 async function loadAllQuestionModules() {
-  try {
-    const folderPath = './questions/';
-    const questionFiles = ['Test 1 Questions.json', 'Test 2 Questions.json', 'Test 3 Questions.json'];
-
-    const allQuestions = [];
-    for (const file of questionFiles) {
-      const response = await fetch(`${folderPath}${file}`);
-      if (!response.ok) {
-        console.error(`Failed to load ${file}: ${response.statusText}`);
-        continue;
+  const files = [
+    'questions/test1.json',
+    'questions/test2.json',
+    'questions/test3.json'
+  ];
+  let allQuestions = [];
+  for (const file of files) {
+    try {
+      const res = await fetch(file);
+      if (res.ok) {
+        const data = await res.json();
+        allQuestions = allQuestions.concat(data);
       }
-      const questions = await response.json();
-      allQuestions.push(...questions);
+    } catch (e) {
+      console.error('Failed to load', file, e);
     }
-
-    // Extract unique topics
-    const topics = [...new Set(allQuestions.map((q) => q.topic))];
-
-    // Initialize the quiz and topics
-    initializeQuiz(allQuestions);
-    renderTopics(topics);
-  } catch (error) {
-    console.error('Error loading question modules:', error);
   }
+  questions = allQuestions;
+  localStorage.setItem('questions', JSON.stringify(questions));
+  populateTopics(questions);
+  document.querySelector('.start-btn').disabled = false;
+  document.getElementById('loading').style.display = 'none';
+  preloadImages(questions);
+  bookmarkedQuestions = getBookmarkedQuestions(questions);
 }
 
 /**
