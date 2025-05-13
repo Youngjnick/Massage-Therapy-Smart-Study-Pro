@@ -78,31 +78,33 @@ function loadQuestions() {
 }
 
 function populateTopics(questionsArr) {
-  const topics = [...new Set(questionsArr.map(q => q.topic))];
+  // Extract unique topics
+  const topics = [...new Set(questionsArr.map((q) => q.topic))];
+
+  // Sort topics alphabetically
+  const sortedTopics = topics.filter((topic) => topic).sort((a, b) => a.localeCompare(b));
+
+  // Get the topic dropdown element
   const topicSelect = document.querySelector('.control[data-topic]');
-  topicSelect.innerHTML = '<option>-- Select Topic --</option>';
+  if (!topicSelect) {
+    console.error('Topic dropdown element not found.');
+    return;
+  }
 
-  // Add special options at the top
-  const specialOptions = [
-    { value: 'unanswered', text: 'Unanswered Questions' },
-    { value: 'missed', text: 'Missed Questions' },
-    { value: 'bookmarked', text: 'Bookmarked Questions' }
-  ];
-  specialOptions.forEach(opt => {
+  // Clear existing options
+  topicSelect.innerHTML = `
+    <option value="" disabled selected>-- Select Topic --</option>
+    <option value="unanswered">Unanswered Questions</option>
+    <option value="missed">Missed Questions</option>
+    <option value="bookmarked">Bookmarked Questions</option>
+  `;
+
+  // Add sorted topics to the dropdown
+  sortedTopics.forEach((topic) => {
     const option = document.createElement('option');
-    option.value = opt.value;
-    option.textContent = opt.text;
+    option.value = topic;
+    option.textContent = topic;
     topicSelect.appendChild(option);
-  });
-
-  // Add topic options
-  topics.forEach(topic => {
-    if (isUnlocked(topic)) {
-      const opt = document.createElement('option');
-      opt.value = topic;
-      opt.textContent = topic;
-      topicSelect.appendChild(opt);
-    }
   });
 }
 
@@ -117,7 +119,9 @@ function preloadImages(questionsArr) {
 
 // Event listeners for topic and quiz start
 document.addEventListener('DOMContentLoaded', () => {
-  loadQuestions();
+  loadQuestions().then(() => {
+    populateTopics(questions); // Dynamically update the topics
+  });
   const topicSelect = document.querySelector('.control[data-topic]');
   topicSelect.addEventListener('change', () => {
     selectedTopic = topicSelect.value;
@@ -339,7 +343,14 @@ function renderQuestion() {
 
   // Add interactivity to the stars
   const stars = rateDiv.querySelectorAll('.star');
+  const qid = quiz[current].id; // Get the current question ID
+  const ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
+  const savedRating = ratings[qid] || 0; // Get the saved rating for the current question
+
+  // Show stars by default based on the saved rating
   stars.forEach((star, index) => {
+    star.style.color = index < savedRating ? 'gold' : '#ccc'; // Fill stars up to the saved rating
+
     star.addEventListener('click', () => {
       // Fill all stars up to the clicked one with gold
       stars.forEach((s, i) => {
@@ -348,8 +359,6 @@ function renderQuestion() {
 
       // Save the rating to localStorage or send it to the server
       const rating = index + 1;
-      const qid = quiz[current].id;
-      let ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
       ratings[qid] = rating;
       localStorage.setItem('questionRatings', JSON.stringify(ratings));
 
@@ -365,9 +374,6 @@ function renderQuestion() {
 
     // Reset stars to the saved rating or default on mouseout
     star.addEventListener('mouseout', () => {
-      const qid = quiz[current].id;
-      const ratings = JSON.parse(localStorage.getItem('questionRatings') || '{}');
-      const savedRating = ratings[qid] || 0;
       stars.forEach((s, i) => {
         s.style.color = i < savedRating ? 'gold' : '#ccc';
       });
@@ -1058,7 +1064,7 @@ function getStrongestAndWeakestTopics() {
   const mastery = getTopicMastery();
   const sorted = Object.entries(mastery)
     .filter(([_, stat]) => stat.total > 0)
-    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total));
+    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / a[1].total));
   return {
     weakest: sorted[0],
     strongest: sorted[sorted.length - 1]
@@ -1103,3 +1109,163 @@ function getBookmarkedQuestions(allQuestions) {
   const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
   return allQuestions.filter(q => bookmarks.includes(q.id));
 }
+
+/**
+ * Loads all JSON question modules and dynamically adds topics.
+ */
+async function loadAllQuestionModules() {
+  try {
+    const folderPath = './questions/';
+    const questionFiles = ['Test 1 Questions.json', 'Test 2 Questions.json', 'Test 3 Questions.json'];
+
+    const allQuestions = [];
+    for (const file of questionFiles) {
+      const response = await fetch(`${folderPath}${file}`);
+      if (!response.ok) {
+        console.error(`Failed to load ${file}: ${response.statusText}`);
+        continue;
+      }
+      const questions = await response.json();
+      allQuestions.push(...questions);
+    }
+
+    // Extract unique topics
+    const topics = [...new Set(allQuestions.map((q) => q.topic))];
+
+    // Initialize the quiz and topics
+    initializeQuiz(allQuestions);
+    renderTopics(topics);
+  } catch (error) {
+    console.error('Error loading question modules:', error);
+  }
+}
+
+/**
+ * Renders the list of topics dynamically in the UI.
+ * @param {Array} topics - Array of unique topics.
+ */
+function renderTopics(topics) {
+  const topicContainer = document.getElementById('topicContainer'); // Ensure this element exists in your HTML
+  topicContainer.innerHTML = ''; // Clear existing topics
+
+  topics.forEach((topic) => {
+    const topicButton = document.createElement('button');
+    topicButton.textContent = topic;
+    topicButton.className = 'topic-btn';
+    topicButton.addEventListener('click', () => {
+      filterQuestionsByTopic(topic);
+    });
+    topicContainer.appendChild(topicButton);
+  });
+}
+
+/**
+ * Filters questions by the selected topic and reinitializes the quiz.
+ * @param {string} topic - The selected topic.
+ */
+function filterQuestionsByTopic(topic) {
+  const filteredQuestions = quiz.filter((q) => q.topic === topic);
+  initializeQuiz(filteredQuestions);
+}
+
+/**
+ * Initializes the quiz with the loaded questions.
+ * @param {Array} questions - The array of questions from all JSON files.
+ */
+function initializeQuiz(questions) {
+  if (!Array.isArray(questions) || questions.length === 0) {
+    console.error('No questions available to initialize the quiz.');
+    return;
+  }
+
+  // Replace the existing quiz array with the loaded questions
+  quiz = questions;
+
+  // Start rendering the first question
+  current = 0; // Reset to the first question
+  renderQuestion();
+}
+
+// Call the function to load all question modules when the app starts
+loadAllQuestionModules();
+
+// After loading all question modules
+loadAllQuestionModules().then((questions) => {
+  updateTopics(questions); // Update the topics dynamically
+});
+
+const fs = require('fs');
+const path = require('path');
+
+const folderPath = path.join(__dirname, 'questions');
+const questionFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.json'));
+console.log(questionFiles); // Outputs all JSON files in the folder
+
+/**
+ * Extracts unique topics from the questions array and updates the topic dropdown.
+ * @param {Array} questions - The array of questions.
+ */
+function updateTopics(questions) {
+  // Extract unique topics
+  const topics = [...new Set(questions.map((q) => q.topic))];
+
+  // Get the topic dropdown element
+  const topicDropdown = document.getElementById('topicDropdown'); // Ensure this element exists in your HTML
+  if (!topicDropdown) {
+    console.error('Topic dropdown element not found.');
+    return;
+  }
+
+  // Clear existing options
+  topicDropdown.innerHTML = '<option value="">--Select Topics--</option>';
+
+  // Add new topics to the dropdown
+  topics.forEach((topic) => {
+    const option = document.createElement('option');
+    option.value = topic;
+    option.textContent = topic;
+    topicDropdown.appendChild(option);
+  });
+}
+
+/**
+ * Updates the topic dropdown dynamically based on the loaded questions.
+ * @param {Array} questions - The array of questions.
+ */
+function updateTopicDropdown(questions) {
+  // Extract unique topics from the questions
+  const topics = [...new Set(questions.map((q) => q.topic))];
+
+  // Get the topic dropdown element
+  const topicDropdown = document.querySelector('[data-topic]');
+  if (!topicDropdown) {
+    console.error('Topic dropdown element not found.');
+    return;
+  }
+
+  // Clear existing options (except the default ones)
+  topicDropdown.innerHTML = `
+    <option value="" disabled selected>-- Select Topic --</option>
+    <option value="unanswered">Unanswered Questions</option>
+    <option value="missed">Missed Questions</option>
+    <option value="bookmarked">Bookmarked Questions</option>
+  `;
+
+  // Add new topics to the dropdown
+  topics.forEach((topic) => {
+    const option = document.createElement('option');
+    option.value = topic;
+    option.textContent = topic;
+    topicDropdown.appendChild(option);
+  });
+}
+
+// Example: Call this function after loading questions
+loadAllQuestionModules().then((questions) => {
+  updateTopicDropdown(questions); // Update the dropdown dynamically
+});
+
+// After loading all question modules
+loadAllQuestionModules().then((questions) => {
+  updateTopicDropdown(questions); // Dynamically update the topics
+});
