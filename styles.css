@@ -842,14 +842,8 @@ canvas {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 1px;
   flex-wrap: wrap;
-}
-.question-actions button,
-.question-actions .rate-question {
-  flex: 1 1 120px;
-  min-width: 100px;
-  margin: 4px 0;
 }
 .question-actions button,
 .question-actions .rate-question {
@@ -857,29 +851,6 @@ canvas {
   min-width: unset;
   width: auto;
   margin: 4px 0;
-}
-@media (max-width: 600px) {
-  .question-actions {
-    flex-direction: row;
-    align-items: stretch;
-    gap: 8px;
-  }
-  .question-actions button,
-  .question-actions .rate-question {
-    min-width: 0;
-    width: 100%;
-  }
-  .question-actions button {
-    font-size: 0.95rem;
-    padding: 8px 10px;
-  }
-  .question-actions button,
-  .question-actions .rate-question {
-    font-size: 1rem;      /* Match normal text size */
-    padding: 6px 8px;     /* Smaller padding */
-    min-width: unset;     /* Remove min width for tighter fit */
-    width: auto;          /* Let button size to content */
-  }
 }
 
 .quiz-header-row {
