@@ -881,11 +881,6 @@ canvas {
   gap: 16px;
 }
 @media (max-width: 600px) {
-  .quiz-header-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
   .topic-streak {
     flex-direction: column;
     align-items: flex-start;
@@ -900,4 +895,26 @@ canvas {
   justify-content: space-between;
   width: 100%;
 width: 100%;
+}
+
+.quiz-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.header-topic,
+.header-streak,
+.header-bookmark {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header-topic {
+  justify-content: flex-start;
+}
+.header-bookmark {
+  justify-content: flex-end;
 }
