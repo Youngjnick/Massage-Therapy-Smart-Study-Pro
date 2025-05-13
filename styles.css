@@ -866,6 +866,13 @@ canvas {
     font-size: 0.95rem;
     padding: 8px 10px;
   }
+  .question-actions button,
+  .question-actions .rate-question {
+    font-size: 1rem;      /* Match normal text size */
+    padding: 6px 8px;     /* Smaller padding */
+    min-width: unset;     /* Remove min width for tighter fit */
+    width: auto;          /* Let button size to content */
+  }
 }
 
 .quiz-header-row {
