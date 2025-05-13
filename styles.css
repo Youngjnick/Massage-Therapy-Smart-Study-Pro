@@ -851,6 +851,13 @@ canvas {
   min-width: 100px;
   margin: 4px 0;
 }
+.question-actions button,
+.question-actions .rate-question {
+  flex: unset;
+  min-width: unset;
+  width: auto;
+  margin: 4px 0;
+}
 @media (max-width: 600px) {
   .question-actions {
     flex-direction: row;
