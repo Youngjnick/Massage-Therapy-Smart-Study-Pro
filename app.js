@@ -93,14 +93,15 @@ document.querySelector('.start-btn').addEventListener('click', () => {
   let availableQuestions = [];
   if (!topic || topic === '-- Select Topic --') return;
 
+  // Example in your start quiz logic
   if (topic === 'unanswered') {
-    availableQuestions = questions.filter(q => !q.answered);
+    availableQuestions = shuffle(questions.filter(q => !q.answered));
   } else if (topic === 'missed') {
-    availableQuestions = questions.filter(q => q.missed);
+    availableQuestions = shuffle(questions.filter(q => q.missed));
   } else if (topic === 'bookmarked') {
-    availableQuestions = bookmarkedQuestions;
+    availableQuestions = shuffle(bookmarkedQuestions);
   } else {
-    availableQuestions = questions.filter(q => q.topic === topic);
+    availableQuestions = shuffle(questions.filter(q => q.topic === topic));
   }
 
   // Always respect quiz length, even for "unanswered"
@@ -128,8 +129,15 @@ document.querySelectorAll('.control[data-length]').forEach(btn => {
 });
 
 // Shuffle Array
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+function shuffle(array) {
+  let m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+  return array;
 }
 
 // Render Question
