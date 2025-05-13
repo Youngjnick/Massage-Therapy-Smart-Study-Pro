@@ -40,6 +40,7 @@ function loadQuestions() {
     document.querySelector('.start-btn').disabled = false;
     document.getElementById('loading').style.display = 'none';
     preloadImages(questions);
+    bookmarkedQuestions = getBookmarkedQuestions(questions);
   } else {
     fetch('smart_questions_cleaned.json')
       .then(res => res.json())
@@ -52,6 +53,7 @@ function loadQuestions() {
         document.querySelector('.start-btn').disabled = false;
         document.getElementById('loading').style.display = 'none';
         preloadImages(data);
+        bookmarkedQuestions = getBookmarkedQuestions(questions);
       })
       .catch(error => {
         console.error('Error fetching questions:', error);
@@ -189,7 +191,9 @@ function renderQuestion() {
   bookmarkBtn.addEventListener('click', () => {
     q.bookmarked = !q.bookmarked;
     bookmarkBtn.textContent = q.bookmarked ? 'Unbookmark' : 'Bookmark';
-    // Update bookmarkedQuestions array and save if needed
+    toggleBookmark(q.id); // <-- Save to localStorage
+    // Update the in-memory bookmarkedQuestions array
+    bookmarkedQuestions = getBookmarkedQuestions(questions);
   });
 
   headerRow.appendChild(topicStreak);
@@ -1026,3 +1030,20 @@ const analyticsHtml = `
     <li><strong>Flagged Questions:</strong> ${flaggedCount}</li>
   </ul>
 `;
+
+// Example: Save bookmarked question IDs
+function toggleBookmark(questionId) {
+  let bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+  if (bookmarks.includes(questionId)) {
+    bookmarks = bookmarks.filter(id => id !== questionId);
+  } else {
+    bookmarks.push(questionId);
+  }
+  localStorage.setItem('bookmarkedQuestions', JSON.stringify(bookmarks));
+}
+
+// Example: Get bookmarked questions
+function getBookmarkedQuestions(allQuestions) {
+  const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+  return allQuestions.filter(q => bookmarks.includes(q.id));
+}
