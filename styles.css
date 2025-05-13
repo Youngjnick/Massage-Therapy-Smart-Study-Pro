@@ -909,3 +909,30 @@ width: 100%;
 .header-bookmark {
   justify-content: flex-end;
 }
+
+.rate-question .star {
+  font-family: Arial, sans-serif; /* Ensure consistent font rendering */
+  font-size: 1.3em; /* Reduce font size for smaller stars */
+  color: transparent; /* Start with no fill */
+  cursor: pointer;
+  transition: color 0.2s, text-shadow 0.2s;
+  margin: 0px; /* Adjust spacing between stars */
+  text-shadow: 0 0 1px #FFD700; /* Gold outline */
+  width: 1em; /* Reduce width */
+  height: 1em; /* Reduce height */
+  text-align: center; /* Center align the stars */
+  line-height: 1; /* Prevent vertical alignment issues */
+  display: inline-block; /* Prevent layout shifts */
+}
+
+.rate-question .star.hovered,
+.rate-question .star.selected {
+  color: #FFD700; /* Solid gold fill */
+  text-shadow: 0 0 4px #FFD700; /* Glow effect for hover/selected */
+}
+
+.rate-question {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Space between "Rate" and the stars */
+}
