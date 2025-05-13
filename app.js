@@ -65,6 +65,21 @@ function populateTopics(questionsArr) {
   const topics = [...new Set(questionsArr.map(q => q.topic))];
   const topicSelect = document.querySelector('.control[data-topic]');
   topicSelect.innerHTML = '<option>-- Select Topic --</option>';
+
+  // Add special options at the top
+  const specialOptions = [
+    { value: 'unanswered', text: 'Unanswered Questions' },
+    { value: 'missed', text: 'Missed Questions' },
+    { value: 'bookmarked', text: 'Bookmarked Questions' }
+  ];
+  specialOptions.forEach(opt => {
+    const option = document.createElement('option');
+    option.value = opt.value;
+    option.textContent = opt.text;
+    topicSelect.appendChild(option);
+  });
+
+  // Add topic options
   topics.forEach(topic => {
     if (isUnlocked(topic)) {
       const opt = document.createElement('option');

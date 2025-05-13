@@ -862,14 +862,18 @@ canvas {
     min-width: 0;
     width: 100%;
   }
+  .question-actions button {
+    font-size: 0.95rem;
+    padding: 8px 10px;
+  }
 }
 
 .quiz-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 16px; /* Adjust as needed */
+  width: 100%;
 }
 .topic-streak {
   display: flex;
@@ -893,5 +897,7 @@ canvas {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
+width: 100%;
 }
