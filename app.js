@@ -152,25 +152,31 @@ function renderQuestion() {
     return;
   }
 
-  // Remove any existing bookmark, report, and suggest buttons
-  const quizHeader = document.querySelector('.quiz-header');
-  quizHeader.querySelectorAll('.bookmark-btn, .report-btn, .suggest-btn').forEach(btn => btn.remove());
+  // --- Shuffle answers and track correct index ---
+  // Create an array of answer objects with their original index
+  const answerObjs = q.answers.map((a, i) => ({
+    text: a,
+    isCorrect: i === q.correct
+  }));
+  // Shuffle the answerObjs array
+  shuffle(answerObjs);
 
   // ...existing code...
+  const quizHeader = document.querySelector('.quiz-header');
   document.querySelector('.quiz-header strong').textContent = selectedTopic;
   document.querySelector('.question-text').textContent = q.question;
   const answersDiv = document.getElementById('answers');
   answersDiv.innerHTML = "";
-  q.answers.forEach((a, i) => {
+  answerObjs.forEach((ansObj, i) => {
     const btn = document.createElement('div');
     btn.className = 'answer';
-    btn.textContent = `${String.fromCharCode(65 + i)}. ${a}`;
-    btn.setAttribute('aria-label', `Answer ${String.fromCharCode(65 + i)}: ${a}`);
+    btn.textContent = `${String.fromCharCode(65 + i)}. ${ansObj.text}`;
+    btn.setAttribute('aria-label', `Answer ${String.fromCharCode(65 + i)}: ${ansObj.text}`);
     btn.tabIndex = 0;
-    btn.addEventListener('click', () => handleAnswerClick(i === q.correct, btn));
+    btn.addEventListener('click', () => handleAnswerClick(ansObj.isCorrect, btn));
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
-        handleAnswerClick(i === q.correct, btn);
+        handleAnswerClick(ansObj.isCorrect, btn);
       }
     });
     answersDiv.appendChild(btn);
@@ -178,6 +184,10 @@ function renderQuestion() {
   document.querySelector('.feedback').textContent = "";
 
   // Add the bookmark button (top right)
+  // Remove any existing bookmark button
+  const oldBookmarkBtn = quizHeader.querySelector('.bookmark-btn');
+  if (oldBookmarkBtn) oldBookmarkBtn.remove();
+
   const bookmarkBtn = document.createElement('button');
   bookmarkBtn.textContent = q.bookmarked ? 'Unbookmark' : 'Bookmark';
   bookmarkBtn.className = 'bookmark-btn';
@@ -1000,6 +1010,35 @@ function filterLowQualityQuestions(questions) {
   });
 }
 
+function getStrongestAndWeakestTopics() {
+  const mastery = getTopicMastery();
+  const sorted = Object.entries(mastery)
+    .filter(([_, stat]) => stat.total > 0)
+    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total));
+  return {
+    weakest: sorted[0],
+    strongest: sorted[sorted.length - 1]
+  };
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   // your code that uses document.getElementById(...)
 });
+
+const { weakest, strongest } = getStrongestAndWeakestTopics();
+const dueForReview = getDueForReview().length;
+const avgRating = (() => {
+  const ratings = Object.values(JSON.parse(localStorage.getItem('questionRatings') || '{}'));
+  return ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(2) : 'N/A';
+})();
+const flaggedCount = Object.values(JSON.parse(localStorage.getItem('unclearFlags') || '{}')).filter(v => v >= 2).length;
+
+const analyticsHtml = `
+  <ul>
+    <li><strong>Strongest Topic:</strong> ${strongest ? strongest[0] : 'N/A'}</li>
+    <li><strong>Weakest Topic:</strong> ${weakest ? weakest[0] : 'N/A'}</li>
+    <li><strong>Questions Due for Review:</strong> ${dueForReview}</li>
+    <li><strong>Average Question Rating:</strong> ${avgRating}</li>
+    <li><strong>Flagged Questions:</strong> ${flaggedCount}</li>
+  </ul>
+`;
