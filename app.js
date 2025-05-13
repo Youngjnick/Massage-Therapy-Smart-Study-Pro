@@ -34,6 +34,10 @@ function loadQuestions() {
   const cachedQuestions = localStorage.getItem('questions');
   if (cachedQuestions) {
     questions = JSON.parse(cachedQuestions);
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+    questions.forEach(q => {
+      q.bookmarked = bookmarks.includes(q.id);
+    });
     unansweredQuestions = [...questions];
     loadUserData();
     populateTopics(questions);
@@ -46,6 +50,10 @@ function loadQuestions() {
       .then(res => res.json())
       .then(data => {
         questions = data;
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+        questions.forEach(q => {
+          q.bookmarked = bookmarks.includes(q.id);
+        });
         localStorage.setItem('questions', JSON.stringify(data));
         unansweredQuestions = [...questions];
         loadUserData();
@@ -61,6 +69,12 @@ function loadQuestions() {
         document.getElementById('loading').textContent = 'Failed to load questions.';
       });
   }
+
+  // After loading questions and before using them:
+  const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+  questions.forEach(q => {
+    q.bookmarked = bookmarks.includes(q.id);
+  });
 }
 
 function populateTopics(questionsArr) {

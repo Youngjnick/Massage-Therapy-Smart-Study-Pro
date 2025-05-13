@@ -853,7 +853,7 @@ canvas {
 }
 @media (max-width: 600px) {
   .question-actions {
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
     gap: 8px;
   }
