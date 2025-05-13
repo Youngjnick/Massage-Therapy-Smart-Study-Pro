@@ -881,6 +881,11 @@ canvas {
   gap: 16px;
 }
 @media (max-width: 600px) {
+  .quiz-header-row {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+  }
   .topic-streak {
     flex-direction: row;
     align-items: flex-start;
