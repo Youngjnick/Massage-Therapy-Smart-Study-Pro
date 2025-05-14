@@ -1,0 +1,70 @@
+1. Q: In complex SOAP notes, how should therapists record evolving client conditions?
+   A. Cross out old notes and rewrite
+   B. Use progressive documentation with updates in each section
+   C. Delete prior history
+   D. Only update during reassessment
+   Correct Answer: Use progressive documentation with updates in each section
+
+2. Q: What is a defensible SOAP note?
+   A. A note written only in medical codes
+   B. A legally sound and clinically accurate record
+   C. A handwritten note kept privately
+   D. A referral from another practitioner
+   Correct Answer: A legally sound and clinically accurate record
+
+3. Q: In legal or insurance audits, which SOAP section is scrutinized for clinical justification?
+   A. Plan
+   B. Subjective
+   C. Assessment
+   D. Objective
+   Correct Answer: Assessment
+
+4. Q: What method helps reduce bias in the Objective section of SOAP notes?
+   A. Using client metaphors
+   B. Stating only measurable findings
+   C. Avoiding documentation of findings
+   D. Adding emotional responses
+   Correct Answer: Stating only measurable findings
+
+5. Q: Why is precise anatomical terminology important in SOAP documentation?
+   A. To sound professional
+   B. To align with ethical scope and communication across disciplines
+   C. To impress clients
+   D. To reduce SOAP length
+   Correct Answer: To align with ethical scope and communication across disciplines
+
+6. Q: What legal risk arises from incomplete SOAP notes?
+   A. Therapist receives lower tips
+   B. Client may request a refund
+   C. Lack of documentation in claims or complaints
+   D. Therapist gets fewer clients
+   Correct Answer: Lack of documentation in claims or complaints
+
+7. Q: If a client provides inconsistent symptom reports, how should this be reflected?
+   A. Document both versions factually in Subjective
+   B. Ignore conflicting statements
+   C. Record only the recent version
+   D. Put it in Plan as a client goal
+   Correct Answer: Document both versions factually in Subjective
+
+8. Q: When might a SOAP note be subpoenaed?
+   A. In case of a malpractice claim
+   B. For social media content
+   C. For billing a friend
+   D. To apply for a license
+   Correct Answer: In case of a malpractice claim
+
+9. Q: How should a therapist address unclear findings in the Objective section?
+   A. Use vague terms like 'weird'
+   B. Leave it blank
+   C. Note uncertainty clearly and reference reassessment
+   D. Include client opinion instead
+   Correct Answer: Note uncertainty clearly and reference reassessment
+
+10. Q: Which approach best ensures SOAP note quality over time?
+   A. Copy-pasting old entries
+   B. Using a template without adjustments
+   C. Continuous learning and adapting documentation practices
+   D. Writing minimal notes
+   Correct Answer: Continuous learning and adapting documentation practices
+
