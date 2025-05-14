@@ -1,3 +1,4 @@
+console.log("✅ app.js loaded");
 let current = 0;
 let selectedTopic = "";
 let quiz = [];
