@@ -208,6 +208,105 @@
         "correct": 0,
         "incorrect": 0
       }
-    }
-  ]
-}
+[
+  {
+    "id": "arm_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the primary origin of the biceps brachii short head?",
+    "answers": ["Coracoid process", "Radial tuberosity", "Supraglenoid tubercle", "Olecranon process"],
+    "correct": 0,
+    "tags": ["arm", "origin", "biceps"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the biceps brachii insert?",
+    "answers": ["Coronoid process", "Deltoid tuberosity", "Radial tuberosity", "Ulnar tuberosity"],
+    "correct": 2,
+    "tags": ["arm", "insertion", "biceps"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What nerve innervates the biceps brachii?",
+    "answers": ["Radial nerve", "Ulnar nerve", "Musculocutaneous nerve", "Median nerve"],
+    "correct": 2,
+    "tags": ["arm", "innervation", "biceps"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_004",
+    "topic": "Anatomy",
+    "difficulty": "hard",
+    "question": "The triceps brachii has how many heads and what is their innervation?",
+    "answers": ["2 heads, radial nerve", "3 heads, radial nerve", "2 heads, axillary nerve", "3 heads, musculocutaneous nerve"],
+    "correct": 1,
+    "tags": ["arm", "innervation", "triceps"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_005",
+    "topic": "Anatomy",
+    "difficulty": "hard",
+    "question": "Which muscle originates on the anterior surface of the humerus and inserts on the ulnar tuberosity?",
+    "answers": ["Brachialis", "Biceps brachii", "Coracobrachialis", "Triceps brachii"],
+    "correct": 0,
+    "tags": ["arm", "origin", "insertion", "brachialis"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the insertion point of the triceps brachii?",
+    "answers": ["Radial tuberosity", "Coracoid process", "Olecranon process", "Deltoid tuberosity"],
+    "correct": 2,
+    "tags": ["arm", "insertion", "triceps"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_007",
+    "topic": "Anatomy",
+    "difficulty": "hard",
+    "question": "Which arm muscle originates on the coracoid process and inserts midway on the humerus?",
+    "answers": ["Biceps brachii", "Coracobrachialis", "Brachialis", "Triceps brachii"],
+    "correct": 1,
+    "tags": ["arm", "origin", "insertion", "coracobrachialis"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates the coracobrachialis muscle?",
+    "answers": ["Radial nerve", "Musculocutaneous nerve", "Median nerve", "Axillary nerve"],
+    "correct": 1,
+    "tags": ["arm", "innervation", "coracobrachialis"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_009",
+    "topic": "Anatomy",
+    "difficulty": "hard",
+    "question": "Which forearm flexor originates from the medial epicondyle and is innervated by the median nerve?",
+    "answers": ["Flexor carpi radialis", "Extensor digitorum", "Brachioradialis", "Supinator"],
+    "correct": 0,
+    "tags": ["arm", "forearm", "innervation", "origin"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  },
+  {
+    "id": "arm_010",
+    "topic": "Anatomy",
+    "difficulty": "hard",
+    "question": "Which muscle supinates the forearm and is innervated by the radial nerve?",
+    "answers": ["Pronator teres", "Biceps brachii", "Supinator", "Flexor carpi ulnaris"],
+    "correct": 2,
+    "tags": ["arm", "forearm", "function", "innervation"],
+    "stats": { "correct": 0, "incorrect": 0 }
+  }
+]
