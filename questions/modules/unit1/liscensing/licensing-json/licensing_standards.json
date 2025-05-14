@@ -1,0 +1,202 @@
+[
+  {
+    "id": "licensing_standards_001",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "Which national exam is required for licensure in many U.S. states for massage therapists?",
+    "answers": [
+      "NCBTMB",
+      "MBLEx",
+      "CPR",
+      "USMLE"
+    ],
+    "correct": 1,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_002",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "Which organization administers the MBLEx?",
+    "answers": [
+      "National Institutes of Health (NIH)",
+      "American Massage Therapy Association (AMTA)",
+      "Federation of State Massage Therapy Boards (FSMTB)",
+      "National Certification Board for Therapeutic Massage & Bodywork (NCBTMB)"
+    ],
+    "correct": 2,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_003",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "In most states, what is the minimum education requirement for massage licensure?",
+    "answers": [
+      "500 hours of approved training",
+      "A bachelor\u2019s degree",
+      "CPR certification only",
+      "200 hours of online coursework"
+    ],
+    "correct": 0,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_004",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "Which of the following is typically required to maintain massage licensure?",
+    "answers": [
+      "Daily meditation records",
+      "Continuing education credits",
+      "A letter of recommendation",
+      "Military service"
+    ],
+    "correct": 1,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_005",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "What is the primary purpose of massage licensing regulations?",
+    "answers": [
+      "To promote competition among therapists",
+      "To protect public health and safety",
+      "To encourage private practice only",
+      "To require therapists to work in spas"
+    ],
+    "correct": 1,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_006",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "Which agency sets massage therapy laws in each U.S. state?",
+    "answers": [
+      "FSMTB",
+      "Federal Trade Commission",
+      "Individual state licensing boards",
+      "National Health Association"
+    ],
+    "correct": 2,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_007",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "Which of the following is a typical reason for license suspension?",
+    "answers": [
+      "Changing business location",
+      "Using non-gluten oil",
+      "Violating scope of practice or committing ethics violations",
+      "Switching modalities too often"
+    ],
+    "correct": 2,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_008",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "What documentation is often required when applying for massage licensure?",
+    "answers": [
+      "Art portfolio",
+      "Proof of liability insurance, transcripts, and background check",
+      "Home address and resume only",
+      "Referral from chiropractor"
+    ],
+    "correct": 1,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_009",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "Which credential is issued upon passing the MBLEx?",
+    "answers": [
+      "LMT (Licensed Massage Therapist)",
+      "RMT (Registered Massage Therapist)",
+      "CMT (Certified Massage Trainer)",
+      "PT (Physical Therapist)"
+    ],
+    "correct": 0,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "licensing_standards_010",
+    "topic": "licensing_standards",
+    "difficulty": "intermediate",
+    "question": "What must a therapist do if they move to a different state?",
+    "answers": [
+      "Apply for reciprocity or meet the new state's licensing requirements",
+      "Keep practicing under their old license",
+      "Reapply for school training",
+      "Cancel all existing certifications"
+    ],
+    "correct": 0,
+    "tags": [
+      "licensing_standards"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  }
+]
