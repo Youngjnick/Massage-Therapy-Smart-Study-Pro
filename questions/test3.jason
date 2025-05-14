@@ -1,0 +1,108 @@
+{
+  "questions": [
+    {
+      "id": "anatomy_001",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "Approximately how many skeletal muscles are found in the human arm?",
+      "answers": ["10", "25", "35", "50"],
+      "correct": 1,
+      "tags": ["muscles", "arm", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_002",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "How many intrinsic muscles are typically found in the human hand?",
+      "answers": ["5", "10", "19", "25"],
+      "correct": 2,
+      "tags": ["muscles", "hand", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_003",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "What is the approximate number of skeletal muscles in the human leg?",
+      "answers": ["10", "20", "25", "30"],
+      "correct": 2,
+      "tags": ["muscles", "leg", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_004",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "How many muscles are estimated to be in the human foot?",
+      "answers": ["12", "16", "20", "24"],
+      "correct": 2,
+      "tags": ["muscles", "foot", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_005",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "About how many muscles are involved in facial expression and mastication?",
+      "answers": ["10", "20", "25", "30"],
+      "correct": 2,
+      "tags": ["muscles", "head", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_006",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "Roughly how many muscles are in the human neck, including both superficial and deep layers?",
+      "answers": ["8", "12", "15", "18"],
+      "correct": 2,
+      "tags": ["muscles", "neck", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_007",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "What is the estimated number of muscles in the human torso including the back, chest, and abdomen?",
+      "answers": ["15", "25", "30", "40"],
+      "correct": 2,
+      "tags": ["muscles", "torso", "anatomy"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_008",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "What is the estimated total number of major skeletal muscles across the arms, hands, legs, feet, head, neck, and torso?",
+      "answers": ["100", "130", "159", "200"],
+      "correct": 2,
+      "tags": ["muscles", "anatomy", "total"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    }
+  ]
+}
