@@ -1165,3 +1165,7 @@ async function loadAllJsonFiles() {
 
   return data.filter(Boolean);
 }
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("🌱 DOM Ready. Starting question loader...");
+  loadQuestions(); // or loadAllQuestionModules();
+});
