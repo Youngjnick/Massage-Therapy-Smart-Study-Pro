@@ -1095,3 +1095,30 @@ async function loadAllJsonFiles() {
   );
   return data.filter(Boolean);
 }
+
+async function loadAllQuestionModules() {
+  try {
+    const paths = await loadManifest();
+
+    const allQuestions = await Promise.all(
+      paths.map(async (path) => {
+        const response = await fetch(`questions/${path}`);
+        if (!response.ok) throw new Error(`Failed to load ${path}`);
+        return await response.json(); // Each file is an array of questions
+      })
+    );
+
+    questions = allQuestions.flat(); // Flatten nested arrays
+    questions.forEach(q => q.answered = false);
+    unansweredQuestions = [...questions];
+
+    localStorage.setItem('questions', JSON.stringify(questions));
+    updateTopicDropdown(questions);
+    document.querySelector('.start-btn').disabled = false;
+    document.getElementById('loading').style.display = 'none';
+    bookmarkedQuestions = getBookmarkedQuestions(questions);
+  } catch (err) {
+    console.error('❌ Error loading question modules:', err);
+    document.getElementById('loading').textContent = 'Failed to load questions.';
+  }
+}
