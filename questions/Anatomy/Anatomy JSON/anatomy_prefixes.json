@@ -1,0 +1,202 @@
+[
+  {
+    "id": "anatomy_prefixes_001",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "What does the root 'cardi/o' refer to?",
+    "answers": [
+      "Lungs",
+      "Heart",
+      "Liver",
+      "Kidney"
+    ],
+    "correct": 1,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_002",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "The root 'hepat/o' means:",
+    "answers": [
+      "Liver",
+      "Blood",
+      "Skin",
+      "Stomach"
+    ],
+    "correct": 0,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_003",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "What does 'neur/o' refer to?",
+    "answers": [
+      "Bone",
+      "Nerve",
+      "Muscle",
+      "Kidney"
+    ],
+    "correct": 1,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_004",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "The root 'dermat/o' means:",
+    "answers": [
+      "Skin",
+      "Tissue",
+      "Nerve",
+      "Muscle"
+    ],
+    "correct": 0,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_005",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "What does the root 'oste/o' refer to?",
+    "answers": [
+      "Bone",
+      "Muscle",
+      "Skin",
+      "Fat"
+    ],
+    "correct": 0,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_006",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "The root 'gastr/o' means:",
+    "answers": [
+      "Stomach",
+      "Liver",
+      "Muscle",
+      "Kidney"
+    ],
+    "correct": 0,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_007",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "What does 'arthr/o' refer to?",
+    "answers": [
+      "Joint",
+      "Lung",
+      "Eye",
+      "Skin"
+    ],
+    "correct": 0,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_008",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "The root 'my/o' refers to:",
+    "answers": [
+      "Brain",
+      "Muscle",
+      "Lung",
+      "Skin"
+    ],
+    "correct": 1,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_009",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "What does 'nephr/o' refer to?",
+    "answers": [
+      "Kidney",
+      "Liver",
+      "Pancreas",
+      "Bone"
+    ],
+    "correct": 0,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "anatomy_prefixes_010",
+    "topic": "anatomy_prefixes",
+    "difficulty": "intermediate",
+    "question": "The root 'pulmon/o' means:",
+    "answers": [
+      "Liver",
+      "Lung",
+      "Heart",
+      "Skin"
+    ],
+    "correct": 1,
+    "tags": [
+      "anatomy_prefixes"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "id": "rolfing_intro_001",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "What is the primary goal of Rolfing Structural Integration?",
+    "answers": [
+      "To relieve joint dislocations",
+      "To align the body in gravity by manipulating fascia",
+      "To enhance lymphatic flow",
+      "To reduce emotional tension only"
+    ],
+    "correct": 1,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_002",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "Who developed Rolfing Structural Integration?",
+    "answers": [
+      "Emil Vodder",
+      "Janet Travell",
+      "Dr. Ida Rolf",
+      "John Upledger"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_003",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "Which connective tissue does Rolfing primarily target?",
+    "answers": [
+      "Tendons",
+      "Ligaments",
+      "Fascia",
+      "Cartilage"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_004",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "Rolfing differs from traditional massage by focusing on:",
+    "answers": [
+      "Quick relaxation",
+      "Energy meridians",
+      "Long-term postural and structural changes",
+      "Temporary stress relief"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_005",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "How many sessions are typically involved in the traditional Rolfing series?",
+    "answers": [
+      "5",
+      "7",
+      "10",
+      "12"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_006",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "What was Dr. Ida Rolf's academic background?",
+    "answers": [
+      "Chiropractic and acupuncture",
+      "Physics and biochemistry",
+      "Biochemistry and mathematics",
+      "Psychology and neurology"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_007",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "In Rolfing, improved alignment of the body is believed to result in:",
+    "answers": [
+      "Increased muscle size",
+      "Reduced circulation",
+      "Improved energy efficiency and function",
+      "Less skin elasticity"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_008",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "Which of the following best describes the intensity of a typical Rolfing session?",
+    "answers": [
+      "Always gentle and soothing",
+      "Variable; can be deep and intense",
+      "Only light and superficial",
+      "Rhythmic percussion techniques"
+    ],
+    "correct": 1,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_009",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "What is the primary focus of the first few sessions of the Rolfing 10-series?",
+    "answers": [
+      "Integrating pelvic and spinal function",
+      "Addressing fascial restrictions in the arms",
+      "Balancing superficial layers of fascia",
+      "Mobilizing the diaphragm and thoracic spine"
+    ],
+    "correct": 2,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "rolfing_intro_010",
+    "topic": "rolfing_intro",
+    "difficulty": "intermediate",
+    "question": "Which professional institution certifies Rolfing practitioners?",
+    "answers": [
+      "Rolf Institute of Structural Integration",
+      "Massage Therapy Foundation",
+      "American Board of Manual Therapies",
+      "Structural Medicine Academy"
+    ],
+    "correct": 0,
+    "tags": [
+      "rolfing_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  }
+]

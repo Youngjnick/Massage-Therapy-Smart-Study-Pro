@@ -1,0 +1,70 @@
+1. Q: Which neurotransmitter is primarily responsible for muscle contraction?
+   A. Dopamine
+   B. Serotonin
+   C. Acetylcholine
+   D. Norepinephrine
+   Correct Answer: Acetylcholine
+
+2. Q: Which neurotransmitter is associated with mood regulation, appetite, and sleep?
+   A. Dopamine
+   B. GABA
+   C. Serotonin
+   D. Glutamate
+   Correct Answer: Serotonin
+
+3. Q: Dopamine plays a significant role in which of the following?
+   A. Muscle contraction
+   B. Pain inhibition
+   C. Motor control, reward, and motivation
+   D. Sleep regulation
+   Correct Answer: Motor control, reward, and motivation
+
+4. Q: Which neurotransmitter is the main excitatory chemical in the brain?
+   A. GABA
+   B. Serotonin
+   C. Norepinephrine
+   D. Glutamate
+   Correct Answer: Glutamate
+
+5. Q: Which neurotransmitter is the most common inhibitory neurotransmitter in the central nervous system?
+   A. GABA
+   B. Dopamine
+   C. Serotonin
+   D. Norepinephrine
+   Correct Answer: GABA
+
+6. Q: Which neurotransmitter is involved in the fight-or-flight response?
+   A. GABA
+   B. Norepinephrine
+   C. Dopamine
+   D. Acetylcholine
+   Correct Answer: Norepinephrine
+
+7. Q: Low levels of which neurotransmitter are associated with depression?
+   A. Serotonin
+   B. Acetylcholine
+   C. Dopamine
+   D. Glutamate
+   Correct Answer: Serotonin
+
+8. Q: What is the primary function of endorphins?
+   A. Stimulate digestion
+   B. Regulate mood swings
+   C. Block pain and promote a sense of well-being
+   D. Trigger reflexes
+   Correct Answer: Block pain and promote a sense of well-being
+
+9. Q: Which neurotransmitter helps regulate circadian rhythms and sleep cycles?
+   A. Acetylcholine
+   B. Dopamine
+   C. Melatonin
+   D. Serotonin
+   Correct Answer: Melatonin
+
+10. Q: Which neurotransmitter is elevated during alertness and stress responses?
+   A. GABA
+   B. Norepinephrine
+   C. Serotonin
+   D. Dopamine
+   Correct Answer: Norepinephrine
+
