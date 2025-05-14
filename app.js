@@ -1073,6 +1073,73 @@ function getBookmarkedQuestions(allQuestions) {
   return allQuestions.filter(q => bookmarks.includes(q.id));
 }
 
+/**
+ * Loads all JSON question modules and dynamically adds topics.
+ */
+async function loadAllQuestionModules() {
+  try {
+    const res = await fetch('questions/manifest.json');
+    const paths = await res.json();
+    console.log("📁 Loaded manifest paths:", paths);
+
+    const allQuestions = await Promise.all(
+      paths.map(async (path) => {
+        const response = await fetch(`questions/${path}`);
+        if (!response.ok) throw new Error(`❌ Failed to load ${path}`);
+        const data = await response.json();
+        console.log(`✅ Loaded ${path}`, data);
+        return data;
+      })
+    );
+
+    questions = allQuestions.flat();
+    console.log("🧠 Final question count:", questions.length);
+
+    questions.forEach(q => q.answered = false);
+    unansweredQuestions = [...questions];
+    localStorage.setItem('questions', JSON.stringify(questions));
+    updateTopicDropdown(questions);
+    document.querySelector('.start-btn').disabled = false;
+    document.getElementById('loading').style.display = 'none';
+    bookmarkedQuestions = getBookmarkedQuestions(questions);
+  } catch (err) {
+    console.error('❌ Error loading question modules:', err);
+    document.getElementById('loading').textContent = 'Failed to load questions.';
+  }
+}
+
+async function loadAllQuestions() {
+  const manifest = await fetch('questions/manifest.json').then(r => r.json());
+  const allQuestions = [];
+  for (const file of manifest) {
+    const questions = await fetch(`questions/${file}`).then(r => r.json());
+    allQuestions.push(...questions);
+  }
+  return allQuestions;
+}
+async function loadManifest() {
+  const response = await fetch('manifest.json');
+  return await response.json();
+}
+
+async function loadAllJsonFiles() {
+  const paths = await loadManifest();
+  const results = await Promise.all(
+    paths.map(async (path) => {
+      try {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Failed: ${path}`);
+        const data = await response.json();
+        return { path, data };
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    })
+  );
+  return results.filter(Boolean);
+}
+
 async function loadManifest() {
   const res = await fetch('questions/manifest.json');
   return await res.json();
@@ -1080,6 +1147,7 @@ async function loadManifest() {
 
 async function loadAllJsonFiles() {
   const paths = await loadManifest();
+
   const data = await Promise.all(
     paths.map(async path => {
       const fullPath = `questions/${path}`;
@@ -1093,32 +1161,6 @@ async function loadAllJsonFiles() {
       }
     })
   );
+
   return data.filter(Boolean);
-}
-
-async function loadAllQuestionModules() {
-  try {
-    const paths = await loadManifest();
-
-    const allQuestions = await Promise.all(
-      paths.map(async (path) => {
-        const response = await fetch(`questions/${path}`);
-        if (!response.ok) throw new Error(`Failed to load ${path}`);
-        return await response.json(); // Each file is an array of questions
-      })
-    );
-
-    questions = allQuestions.flat(); // Flatten nested arrays
-    questions.forEach(q => q.answered = false);
-    unansweredQuestions = [...questions];
-
-    localStorage.setItem('questions', JSON.stringify(questions));
-    updateTopicDropdown(questions);
-    document.querySelector('.start-btn').disabled = false;
-    document.getElementById('loading').style.display = 'none';
-    bookmarkedQuestions = getBookmarkedQuestions(questions);
-  } catch (err) {
-    console.error('❌ Error loading question modules:', err);
-    document.getElementById('loading').textContent = 'Failed to load questions.';
-  }
 }
