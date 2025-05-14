@@ -1108,3 +1108,50 @@ async function loadAllQuestions() {
   }
   return allQuestions;
 }
+async function loadManifest() {
+  const response = await fetch('manifest.json');
+  return await response.json();
+}
+
+async function loadAllJsonFiles() {
+  const paths = await loadManifest();
+  const results = await Promise.all(
+    paths.map(async (path) => {
+      try {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Failed: ${path}`);
+        const data = await response.json();
+        return { path, data };
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    })
+  );
+  return results.filter(Boolean);
+}
+
+async function loadManifest() {
+  const res = await fetch('questions/manifest.json');
+  return await res.json();
+}
+
+async function loadAllJsonFiles() {
+  const paths = await loadManifest();
+
+  const data = await Promise.all(
+    paths.map(async path => {
+      const fullPath = `questions/${path}`;
+      try {
+        const res = await fetch(fullPath);
+        if (!res.ok) throw new Error(`❌ Failed to load ${fullPath}`);
+        return { path: fullPath, data: await res.json() };
+      } catch (err) {
+        console.error(err);
+        return null;
+      }
+    })
+  );
+
+  return data.filter(Boolean);
+}
