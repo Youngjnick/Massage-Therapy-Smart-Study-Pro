@@ -1,0 +1,70 @@
+1. Q: What is the main function of the Golgi apparatus?
+   A. Energy production
+   B. Protein synthesis
+   C. Modifying, sorting, and packaging proteins and lipids
+   D. DNA replication
+   Correct Answer: Modifying, sorting, and packaging proteins and lipids
+
+2. Q: The Golgi apparatus works most closely with which organelle?
+   A. Mitochondria
+   B. Nucleolus
+   C. Rough ER
+   D. Centrioles
+   Correct Answer: Rough ER
+
+3. Q: What structure describes the flattened sacs that make up the Golgi apparatus?
+   A. Thylakoids
+   B. Cristae
+   C. Cisternae
+   D. Vesicles
+   Correct Answer: Cisternae
+
+4. Q: Which direction do proteins travel through the Golgi apparatus?
+   A. From trans face to cis face
+   B. Randomly
+   C. From nucleus directly to plasma membrane
+   D. From cis face to trans face
+   Correct Answer: From cis face to trans face
+
+5. Q: What does the Golgi apparatus create for secretion from the cell?
+   A. Microfilaments
+   B. Lysosomes and secretory vesicles
+   C. Ribosomes
+   D. Nucleotides
+   Correct Answer: Lysosomes and secretory vesicles
+
+6. Q: The Golgi modifies proteins by adding:
+   A. DNA strands
+   B. Cholesterol
+   C. Carbohydrate groups (glycosylation)
+   D. ATP
+   Correct Answer: Carbohydrate groups (glycosylation)
+
+7. Q: Which organelle often receives materials from the Golgi for digestion?
+   A. Nucleolus
+   B. Ribosome
+   C. Lysosome
+   D. Chloroplast
+   Correct Answer: Lysosome
+
+8. Q: Which face of the Golgi receives transport vesicles from the ER?
+   A. Trans face
+   B. Inner membrane
+   C. Cis face
+   D. Basal face
+   Correct Answer: Cis face
+
+9. Q: Golgi vesicles are especially abundant in cells that:
+   A. Are undergoing mitosis
+   B. Secrete hormones or enzymes
+   C. Are photosynthetic
+   D. Lack a nucleus
+   Correct Answer: Secrete hormones or enzymes
+
+10. Q: What is a key distinguishing feature of the Golgi apparatus under a microscope?
+   A. Membrane stacks arranged in layers
+   B. Beaded strands of RNA
+   C. Star-like mitochondria
+   D. Circular DNA rings
+   Correct Answer: Membrane stacks arranged in layers
+

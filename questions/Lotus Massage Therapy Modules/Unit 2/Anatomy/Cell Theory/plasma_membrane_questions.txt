@@ -1,0 +1,70 @@
+1. Q: What is the primary function of the plasma membrane?
+   A. To produce energy
+   B. To support the cell wall
+   C. To regulate what enters and exits the cell
+   D. To store genetic material
+   Correct Answer: To regulate what enters and exits the cell
+
+2. Q: The plasma membrane is composed mainly of:
+   A. Proteins and RNA
+   B. Lipids and cellulose
+   C. Phospholipids bilayer, cholesterol, and proteins
+   D. DNA and sugars
+   Correct Answer: Phospholipids bilayer, cholesterol, and proteins
+
+3. Q: What is the term for the plasma membrane's ability to allow some substances through but not others?
+   A. Selective permeability
+   B. Osmosis
+   C. Fluidity
+   D. Passive diffusion
+   Correct Answer: Selective permeability
+
+4. Q: Which part of the phospholipid bilayer is hydrophobic?
+   A. Phosphate heads
+   B. Lipid tails
+   C. Protein channels
+   D. Carbohydrate chains
+   Correct Answer: Lipid tails
+
+5. Q: Which of the following processes requires energy to move substances across the plasma membrane?
+   A. Osmosis
+   B. Facilitated diffusion
+   C. Active transport
+   D. Simple diffusion
+   Correct Answer: Active transport
+
+6. Q: What role do proteins play in the plasma membrane?
+   A. They store energy
+   B. They form the entire membrane
+   C. They assist in transport and communication
+   D. They absorb sunlight for photosynthesis
+   Correct Answer: They assist in transport and communication
+
+7. Q: Cholesterol in the plasma membrane functions to:
+   A. Make the membrane rigid and inflexible
+   B. Break down lipids
+   C. Maintain fluidity and stability of the membrane
+   D. Transport oxygen
+   Correct Answer: Maintain fluidity and stability of the membrane
+
+8. Q: Which transport method moves molecules from high to low concentration without energy?
+   A. Endocytosis
+   B. Active transport
+   C. Facilitated diffusion
+   D. Exocytosis
+   Correct Answer: Facilitated diffusion
+
+9. Q: What is endocytosis?
+   A. Movement of ions via protein pumps
+   B. The fusion of vesicles to expel waste
+   C. The process of bringing large molecules into the cell via vesicles
+   D. The passive movement of water
+   Correct Answer: The process of bringing large molecules into the cell via vesicles
+
+10. Q: Which structure is embedded within the membrane to help transport substances?
+   A. DNA strands
+   B. Ribosomes
+   C. Membrane proteins
+   D. Cytoskeleton fibers
+   Correct Answer: Membrane proteins
+

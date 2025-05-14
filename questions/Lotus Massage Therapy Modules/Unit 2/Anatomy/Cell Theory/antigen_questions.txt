@@ -1,0 +1,70 @@
+1. Q: What is an antigen?
+   A. A type of antibody
+   B. A protein that triggers an immune response
+   C. A white blood cell
+   D. A digestive enzyme
+   Correct Answer: A protein that triggers an immune response
+
+2. Q: Where are antigens commonly found?
+   A. On the surface of pathogens
+   B. Inside lysosomes
+   C. Within the cell nucleus
+   D. In mitochondria
+   Correct Answer: On the surface of pathogens
+
+3. Q: Which immune system cells recognize antigens?
+   A. Red blood cells
+   B. Neurons
+   C. T cells and B cells
+   D. Platelets
+   Correct Answer: T cells and B cells
+
+4. Q: What is the result of antigen recognition by B cells?
+   A. Secretion of digestive enzymes
+   B. Production of antibodies
+   C. Cell lysis
+   D. Increased oxygen transport
+   Correct Answer: Production of antibodies
+
+5. Q: Which type of antigen is produced by the body and normally not targeted by the immune system?
+   A. Foreign antigen
+   B. Self antigen
+   C. Pathogenic antigen
+   D. Autoantigen
+   Correct Answer: Self antigen
+
+6. Q: Which of the following best describes a vaccine’s role in immunity?
+   A. It directly kills pathogens
+   B. It introduces antigens to stimulate immune memory
+   C. It eliminates toxins from the body
+   D. It increases red blood cell production
+   Correct Answer: It introduces antigens to stimulate immune memory
+
+7. Q: An allergic reaction results from the immune system misidentifying what as harmful?
+   A. Self antigens
+   B. Water
+   C. Harmless foreign antigens
+   D. Antibodies
+   Correct Answer: Harmless foreign antigens
+
+8. Q: Major Histocompatibility Complex (MHC) proteins present antigens to:
+   A. Bacteria
+   B. T cells
+   C. Red blood cells
+   D. Platelets
+   Correct Answer: T cells
+
+9. Q: Which cells produce antibodies in response to antigens?
+   A. Macrophages
+   B. Helper T cells
+   C. Plasma B cells
+   D. Neutrophils
+   Correct Answer: Plasma B cells
+
+10. Q: What happens when the immune system attacks self antigens?
+   A. Viral infection occurs
+   B. A fever develops
+   C. An autoimmune disorder may result
+   D. Immunity is enhanced
+   Correct Answer: An autoimmune disorder may result
+

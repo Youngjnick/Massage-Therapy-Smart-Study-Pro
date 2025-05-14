@@ -1,0 +1,70 @@
+
+1. What is the primary difference between diffusion and facilitated diffusion?
+A) Diffusion requires energy; facilitated diffusion does not.
+B) Facilitated diffusion uses transport proteins; simple diffusion does not.
+C) Facilitated diffusion occurs only in plant cells.
+D) Diffusion moves molecules against the concentration gradient.
+Correct: B
+
+2. Osmosis is best described as:
+A) Movement of solutes from low to high concentration
+B) Movement of water through a selectively permeable membrane
+C) Movement of gases through capillaries
+D) Active transport of ions
+Correct: B
+
+3. Which of the following processes does NOT require a membrane protein?
+A) Facilitated diffusion
+B) Active transport
+C) Simple diffusion
+D) Secondary active transport
+Correct: C
+
+4. In filtration, molecules are forced through a membrane by:
+A) Osmotic pressure
+B) Hydrostatic pressure
+C) Concentration gradient
+D) Electrical charge
+Correct: B
+
+5. What do diffusion and osmosis have in common?
+A) Both require ATP
+B) Both involve solute movement
+C) Both move substances from high to low concentration
+D) Both only occur in kidney cells
+Correct: C
+
+6. Facilitated diffusion is necessary when:
+A) Molecules are very small
+B) Molecules are nonpolar
+C) Molecules are large or charged and need assistance
+D) Molecules move against the gradient
+Correct: C
+
+7. In osmosis, water moves toward:
+A) An area of lower solute concentration
+B) An area of equal solute concentration
+C) An area of higher solute concentration
+D) An area of higher pressure
+Correct: C
+
+8. Which process is primarily responsible for the exchange of oxygen and carbon dioxide in the lungs?
+A) Facilitated diffusion
+B) Active transport
+C) Osmosis
+D) Simple diffusion
+Correct: D
+
+9. Filtration is an important process in which organ?
+A) Brain
+B) Liver
+C) Kidneys
+D) Lungs
+Correct: C
+
+10. Which of the following best describes facilitated diffusion?
+A) It requires ATP to function
+B) It moves water molecules through aquaporins
+C) It uses carrier or channel proteins to move substances down the gradient
+D) It filters out large molecules using pressure
+Correct: C

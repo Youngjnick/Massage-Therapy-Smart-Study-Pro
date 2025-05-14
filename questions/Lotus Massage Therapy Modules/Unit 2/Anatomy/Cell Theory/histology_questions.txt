@@ -1,0 +1,70 @@
+1. Q: What does histology study?
+   A. The structure of organs
+   B. The body's electrical activity
+   C. The microscopic structure of tissues
+   D. Chemical properties of cells
+   Correct Answer: The microscopic structure of tissues
+
+2. Q: Which tool is essential for studying histology?
+   A. CT scanner
+   B. Telescope
+   C. Microscope
+   D. Stethoscope
+   Correct Answer: Microscope
+
+3. Q: Which of the following is NOT one of the four basic tissue types?
+   A. Epithelial
+   B. Connective
+   C. Muscular
+   D. Skeletal
+   Correct Answer: Skeletal
+
+4. Q: Which tissue type covers body surfaces and lines hollow organs?
+   A. Connective
+   B. Muscle
+   C. Epithelial
+   D. Nervous
+   Correct Answer: Epithelial
+
+5. Q: Which tissue type is responsible for transmitting electrical signals?
+   A. Muscle
+   B. Connective
+   C. Epithelial
+   D. Nervous
+   Correct Answer: Nervous
+
+6. Q: What is the function of connective tissue?
+   A. Secretes hormones
+   B. Contracts to produce movement
+   C. Supports and binds other tissues
+   D. Initiates nerve impulses
+   Correct Answer: Supports and binds other tissues
+
+7. Q: Which stain is commonly used to highlight nuclei in histological samples?
+   A. Gram stain
+   B. Hematoxylin
+   C. Eosin
+   D. Safranin
+   Correct Answer: Hematoxylin
+
+8. Q: Muscle tissue is specialized for what function?
+   A. Secretion
+   B. Conduction
+   C. Contraction
+   D. Absorption
+   Correct Answer: Contraction
+
+9. Q: Which connective tissue has a liquid matrix?
+   A. Adipose
+   B. Cartilage
+   C. Bone
+   D. Blood
+   Correct Answer: Blood
+
+10. Q: What is a pathologist most likely to use histology for?
+   A. Determining oxygen levels in the blood
+   B. Diagnosing tissue abnormalities or disease
+   C. Measuring heart rate
+   D. Performing surgery
+   Correct Answer: Diagnosing tissue abnormalities or disease
+

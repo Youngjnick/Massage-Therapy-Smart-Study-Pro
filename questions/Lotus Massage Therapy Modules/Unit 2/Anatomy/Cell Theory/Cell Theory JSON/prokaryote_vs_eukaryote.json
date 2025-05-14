@@ -1,0 +1,202 @@
+[
+  {
+    "id": "prokaryote_vs_eukaryote_001",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Which of the following is a defining characteristic of prokaryotic cells?",
+    "answers": [
+      "Presence of a nucleus",
+      "Membrane-bound organelles",
+      "Lack of a nucleus",
+      "Multicellular structure"
+    ],
+    "correct": 2,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_002",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Which type of cell has linear DNA stored in a nucleus?",
+    "answers": [
+      "Prokaryotic",
+      "Eukaryotic",
+      "Both",
+      "Neither"
+    ],
+    "correct": 1,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_003",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Bacteria are examples of which type of cell?",
+    "answers": [
+      "Eukaryotic",
+      "Animal",
+      "Prokaryotic",
+      "Plant"
+    ],
+    "correct": 2,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_004",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Which type of cells contain mitochondria?",
+    "answers": [
+      "Prokaryotic",
+      "Eukaryotic",
+      "Both",
+      "Neither"
+    ],
+    "correct": 1,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_005",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Prokaryotes typically reproduce through:",
+    "answers": [
+      "Binary fission",
+      "Mitosis",
+      "Meiosis",
+      "Budding"
+    ],
+    "correct": 0,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_006",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Eukaryotic cells are found in which of the following organisms?",
+    "answers": [
+      "Fungi",
+      "Plants",
+      "Animals",
+      "All of the above"
+    ],
+    "correct": 3,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_007",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Which of these structures is found in both prokaryotes and eukaryotes?",
+    "answers": [
+      "Nucleus",
+      "Mitochondria",
+      "Ribosomes",
+      "Golgi apparatus"
+    ],
+    "correct": 2,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_008",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "What distinguishes eukaryotic cells in terms of organization?",
+    "answers": [
+      "They are always unicellular",
+      "They lack internal membranes",
+      "They have compartmentalized organelles",
+      "They have circular DNA"
+    ],
+    "correct": 2,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_009",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "What shape is the DNA in most prokaryotes?",
+    "answers": [
+      "Linear",
+      "Double-helix inside nucleus",
+      "Circular",
+      "Segmented"
+    ],
+    "correct": 2,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "prokaryote_vs_eukaryote_010",
+    "topic": "prokaryote_vs_eukaryote",
+    "difficulty": "intermediate",
+    "question": "Which of the following structures is exclusive to eukaryotic cells?",
+    "answers": [
+      "Cytoplasm",
+      "Cell membrane",
+      "Endoplasmic reticulum",
+      "Ribosomes"
+    ],
+    "correct": 2,
+    "tags": [
+      "prokaryote_vs_eukaryote"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  }
+]
