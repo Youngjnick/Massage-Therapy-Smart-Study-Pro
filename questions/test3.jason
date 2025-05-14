@@ -103,6 +103,111 @@
         "correct": 0,
         "incorrect": 0
       }
+{
+  "questions": [
+    {
+      "id": "anatomy_009",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "Which group of muscles is responsible for extending the forearm at the elbow?",
+      "answers": ["Biceps brachii", "Triceps brachii", "Deltoid", "Brachialis"],
+      "correct": 1,
+      "tags": ["muscles", "arm", "function"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_010",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "Which of the following is a muscle of facial expression?",
+      "answers": ["Temporalis", "Orbicularis oculi", "Masseter", "Sternocleidomastoid"],
+      "correct": 1,
+      "tags": ["muscles", "head", "face"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_011",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "Which muscle is found in the anterior thigh and is part of the quadriceps group?",
+      "answers": ["Biceps femoris", "Semitendinosus", "Rectus femoris", "Gastrocnemius"],
+      "correct": 2,
+      "tags": ["muscles", "leg", "thigh"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_012",
+      "topic": "Anatomy",
+      "difficulty": "easy",
+      "question": "The 'thenar' muscles are located in which part of the body?",
+      "answers": ["Foot", "Back", "Hand", "Neck"],
+      "correct": 2,
+      "tags": ["muscles", "hand", "thenar"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_013",
+      "topic": "Anatomy",
+      "difficulty": "medium",
+      "question": "Which of these muscle groups helps in respiration by elevating the ribs?",
+      "answers": ["Intercostals", "Abdominals", "Deltoids", "Erector spinae"],
+      "correct": 0,
+      "tags": ["muscles", "torso", "respiration"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_014",
+      "topic": "Anatomy",
+      "difficulty": "medium",
+      "question": "Which deep back muscles are responsible for spinal extension and posture maintenance?",
+      "answers": ["Trapezius", "Latissimus dorsi", "Erector spinae", "Rhomboids"],
+      "correct": 2,
+      "tags": ["muscles", "torso", "back"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_015",
+      "topic": "Anatomy",
+      "difficulty": "medium",
+      "question": "Which muscle abducts the arm and forms the rounded contour of the shoulder?",
+      "answers": ["Trapezius", "Pectoralis major", "Deltoid", "Serratus anterior"],
+      "correct": 2,
+      "tags": ["muscles", "arm", "shoulder"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
+    },
+    {
+      "id": "anatomy_016",
+      "topic": "Anatomy",
+      "difficulty": "medium",
+      "question": "Which of these muscles is part of the hamstring group?",
+      "answers": ["Rectus femoris", "Gluteus maximus", "Semimembranosus", "Soleus"],
+      "correct": 2,
+      "tags": ["muscles", "leg", "posterior"],
+      "stats": {
+        "correct": 0,
+        "incorrect": 0
+      }
     }
   ]
 }
