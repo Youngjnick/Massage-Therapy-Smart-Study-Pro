@@ -1,0 +1,202 @@
+[
+  {
+    "id": "ashiatsu_intro_001",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "What is Ashiatsu massage primarily known for?",
+    "answers": [
+      "Using forearms for deep pressure",
+      "Use of wooden tools",
+      "Barefoot massage techniques with deep, broad pressure",
+      "Application of essential oils only"
+    ],
+    "correct": 2,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_002",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Which body part is primarily used by the therapist during Ashiatsu?",
+    "answers": [
+      "Hands",
+      "Elbows",
+      "Feet",
+      "Knees"
+    ],
+    "correct": 2,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_003",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Ashiatsu is most beneficial for which type of client?",
+    "answers": [
+      "Those sensitive to pressure",
+      "Clients seeking energetic balancing",
+      "Athletes and individuals needing deep tissue work",
+      "Children and elderly clients"
+    ],
+    "correct": 2,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_004",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Why are overhead bars often used in Ashiatsu massage?",
+    "answers": [
+      "For the client to hold onto",
+      "For the therapist\u2019s balance and control of pressure",
+      "To hang therapy tools",
+      "To attach light therapy equipment"
+    ],
+    "correct": 1,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_005",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "What does the term 'Ashiatsu' mean in Japanese?",
+    "answers": [
+      "Foot pressure",
+      "Deep tissue",
+      "Balance technique",
+      "Sliding stroke"
+    ],
+    "correct": 0,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_006",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Compared to traditional deep tissue massage, Ashiatsu provides:",
+    "answers": [
+      "Less pressure and more focus on stretching",
+      "A broader, more evenly distributed deep pressure",
+      "Only acupressure stimulation",
+      "No benefit for muscular conditions"
+    ],
+    "correct": 1,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_007",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Which client condition is a contraindication for Ashiatsu?",
+    "answers": [
+      "Chronic muscle pain",
+      "Mild anxiety",
+      "Recent surgery or spinal injuries",
+      "Muscle fatigue"
+    ],
+    "correct": 2,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_008",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "What surface is typically used for Ashiatsu massage?",
+    "answers": [
+      "Massage chair",
+      "Heated floor mat",
+      "Standard massage table with overhead support bars",
+      "Reclining couch"
+    ],
+    "correct": 2,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_009",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Which of the following best describes the therapist\u2019s movement in Ashiatsu?",
+    "answers": [
+      "Quick percussive taps",
+      "Slow, gliding barefoot strokes",
+      "Rapid stretching",
+      "Tapping and jostling"
+    ],
+    "correct": 1,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "ashiatsu_intro_010",
+    "topic": "ashiatsu_intro",
+    "difficulty": "intermediate",
+    "question": "Ashiatsu is particularly effective for which of the following outcomes?",
+    "answers": [
+      "Relaxing only the upper body",
+      "Improving skin texture",
+      "Elongating the spine and relieving deep muscular tension",
+      "Stimulating lymph nodes only"
+    ],
+    "correct": 2,
+    "tags": [
+      "ashiatsu_intro"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  }
+]

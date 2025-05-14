@@ -1,0 +1,70 @@
+1. Q: What type of joint allows for the greatest range of motion?
+   A. Hinge joint
+   B. Saddle joint
+   C. Ball-and-socket joint
+   D. Pivot joint
+   Correct Answer: Ball-and-socket joint
+
+2. Q: Which joint type is found in the elbow and knee?
+   A. Gliding joint
+   B. Ball-and-socket joint
+   C. Hinge joint
+   D. Pivot joint
+   Correct Answer: Hinge joint
+
+3. Q: Where in the body would you find a pivot joint?
+   A. Shoulder
+   B. Thumb
+   C. Neck (between atlas and axis)
+   D. Hip
+   Correct Answer: Neck (between atlas and axis)
+
+4. Q: Which joint type allows bones to slide past one another?
+   A. Hinge joint
+   B. Gliding joint
+   C. Ball-and-socket joint
+   D. Pivot joint
+   Correct Answer: Gliding joint
+
+5. Q: What type of joint is found at the base of the thumb?
+   A. Ball-and-socket joint
+   B. Saddle joint
+   C. Pivot joint
+   D. Gliding joint
+   Correct Answer: Saddle joint
+
+6. Q: Which joint type allows for rotation around a single axis?
+   A. Pivot joint
+   B. Hinge joint
+   C. Condyloid joint
+   D. Suture
+   Correct Answer: Pivot joint
+
+7. Q: Synovial joints are characterized by:
+   A. Fibrous connections
+   B. Cartilage fusion
+   C. A fluid-filled joint cavity
+   D. Bone fusion
+   Correct Answer: A fluid-filled joint cavity
+
+8. Q: Which joint is an example of a ball-and-socket joint?
+   A. Knee
+   B. Shoulder
+   C. Elbow
+   D. Wrist
+   Correct Answer: Shoulder
+
+9. Q: Which of the following joints is immovable?
+   A. Suture
+   B. Hinge
+   C. Ball-and-socket
+   D. Gliding
+   Correct Answer: Suture
+
+10. Q: Condyloid joints allow movement in:
+   A. One plane only
+   B. Two planes (biaxial motion)
+   C. All directions
+   D. Rotation only
+   Correct Answer: Two planes (biaxial motion)
+

@@ -1,0 +1,70 @@
+1. Q: Which of the following best describes a solution?
+   A. A mixture with visible particles that settle out
+   B. A homogeneous mixture with solutes evenly distributed
+   C. A fluid containing suspended cells
+   D. A chemical compound with ionic bonds
+   Correct Answer: A homogeneous mixture with solutes evenly distributed
+
+2. Q: What is a colloid?
+   A. A mixture with large particles that settle over time
+   B. A homogeneous solution
+   C. A mixture with medium-sized particles that remain suspended
+   D. A type of ionic compound
+   Correct Answer: A mixture with medium-sized particles that remain suspended
+
+3. Q: Which of the following is a biological example of a colloid?
+   A. Plasma membrane
+   B. Blood glucose solution
+   C. Cytosol (intracellular fluid)
+   D. Oxygen in air
+   Correct Answer: Cytosol (intracellular fluid)
+
+4. Q: How do the particles in a solution compare to those in a colloid?
+   A. Solution particles are larger
+   B. Colloid particles are larger and scatter light
+   C. They are the same size
+   D. Colloid particles settle faster
+   Correct Answer: Colloid particles are larger and scatter light
+
+5. Q: Which test can distinguish a colloid from a solution?
+   A. Benedict's test
+   B. Tyndall effect (light scattering)
+   C. pH test
+   D. Electrolysis
+   Correct Answer: Tyndall effect (light scattering)
+
+6. Q: Which statement is true about solutions?
+   A. Solutions separate easily by filtration
+   B. They always appear cloudy
+   C. They are clear and particles are not visible
+   D. They contain fats or proteins only
+   Correct Answer: They are clear and particles are not visible
+
+7. Q: What kind of mixture is gelatin considered to be?
+   A. Solution
+   B. Colloid
+   C. Suspension
+   D. Compound
+   Correct Answer: Colloid
+
+8. Q: Which has larger particles: a solution, colloid, or suspension?
+   A. Solution
+   B. Colloid
+   C. Suspension
+   D. They are equal
+   Correct Answer: Suspension
+
+9. Q: Why don’t colloids settle like suspensions?
+   A. Their particles are ionic
+   B. They are too light to sink
+   C. They have medium-sized particles that remain suspended
+   D. They are always emulsified
+   Correct Answer: They have medium-sized particles that remain suspended
+
+10. Q: What type of mixture is saline (salt in water)?
+   A. Colloid
+   B. Suspension
+   C. Solution
+   D. Compound
+   Correct Answer: Solution
+
