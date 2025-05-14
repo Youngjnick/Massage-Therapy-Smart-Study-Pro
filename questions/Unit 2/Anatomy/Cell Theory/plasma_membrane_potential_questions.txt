@@ -1,0 +1,70 @@
+1. Q: What is membrane potential?
+   A. The pressure inside the nucleus
+   B. The voltage difference across the plasma membrane
+   C. The size of the cell membrane
+   D. The thickness of the lipid bilayer
+   Correct Answer: The voltage difference across the plasma membrane
+
+2. Q: What ions are most responsible for establishing resting membrane potential?
+   A. Na+ and Cl-
+   B. Ca2+ and Mg2+
+   C. Na+ and K+
+   D. H+ and OH-
+   Correct Answer: Na+ and K+
+
+3. Q: What is the typical resting membrane potential of a neuron?
+   A. +70 mV
+   B. 0 mV
+   C. -70 mV
+   D. -30 mV
+   Correct Answer: -70 mV
+
+4. Q: Which protein helps maintain resting membrane potential by pumping ions against their gradient?
+   A. Calcium channel
+   B. Glucose transporter
+   C. Na+/K+ ATPase pump
+   D. Aquaporin
+   Correct Answer: Na+/K+ ATPase pump
+
+5. Q: What does the Na+/K+ pump do?
+   A. Moves 2 K+ in and 3 Na+ out using ATP
+   B. Moves 3 K+ in and 2 Na+ out using ATP
+   C. Only moves sodium into the cell
+   D. Transports glucose
+   Correct Answer: Moves 2 K+ in and 3 Na+ out using ATP
+
+6. Q: Which of the following is true of a polarized membrane?
+   A. There is no difference in charge across the membrane
+   B. The outside is negative relative to the inside
+   C. The inside is negative relative to the outside
+   D. It is not influenced by ions
+   Correct Answer: The inside is negative relative to the outside
+
+7. Q: What happens during depolarization?
+   A. K+ rushes out of the cell
+   B. Na+ channels open and Na+ rushes in
+   C. Ca2+ is released
+   D. The membrane becomes more negative
+   Correct Answer: Na+ channels open and Na+ rushes in
+
+8. Q: During repolarization, the membrane potential is:
+   A. Returning to its resting negative value
+   B. Becoming more positive
+   C. Maintained at 0 mV
+   D. Dropping to -90 mV permanently
+   Correct Answer: Returning to its resting negative value
+
+9. Q: Hyperpolarization occurs when:
+   A. The membrane becomes more positive
+   B. The membrane returns to baseline
+   C. The inside of the cell becomes more negative than resting potential
+   D. The membrane breaks down
+   Correct Answer: The inside of the cell becomes more negative than resting potential
+
+10. Q: Which ion contributes most to the resting membrane potential?
+   A. Na+
+   B. K+
+   C. Ca2+
+   D. Cl-
+   Correct Answer: K+
+

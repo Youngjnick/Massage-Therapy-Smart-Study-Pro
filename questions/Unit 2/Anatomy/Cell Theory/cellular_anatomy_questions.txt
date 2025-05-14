@@ -1,0 +1,70 @@
+1. Q: What is the function of the cell membrane?
+   A. Stores genetic information
+   B. Produces energy
+   C. Controls movement of substances in and out of the cell
+   D. Synthesizes proteins
+   Correct Answer: Controls movement of substances in and out of the cell
+
+2. Q: Which organelle is known as the 'powerhouse' of the cell?
+   A. Nucleus
+   B. Ribosome
+   C. Mitochondrion
+   D. Golgi apparatus
+   Correct Answer: Mitochondrion
+
+3. Q: Which structure contains the cell’s genetic material?
+   A. Endoplasmic reticulum
+   B. Golgi body
+   C. Nucleus
+   D. Lysosome
+   Correct Answer: Nucleus
+
+4. Q: What is the primary function of ribosomes?
+   A. Break down waste
+   B. Transport lipids
+   C. Produce proteins
+   D. Store water
+   Correct Answer: Produce proteins
+
+5. Q: What is the role of lysosomes in a cell?
+   A. Synthesizing proteins
+   B. Breaking down cellular waste and debris
+   C. Transporting RNA
+   D. Generating energy
+   Correct Answer: Breaking down cellular waste and debris
+
+6. Q: What does the endoplasmic reticulum (ER) do?
+   A. Stores calcium and lipids
+   B. Produces glucose
+   C. Processes and packages proteins and lipids
+   D. Synthesizes DNA
+   Correct Answer: Processes and packages proteins and lipids
+
+7. Q: Which type of ER has ribosomes attached and assists in protein synthesis?
+   A. Smooth ER
+   B. Rough ER
+   C. Golgi body
+   D. Nucleolus
+   Correct Answer: Rough ER
+
+8. Q: What is the function of the Golgi apparatus?
+   A. Powering the cell
+   B. Producing enzymes
+   C. Modifying, sorting, and packaging proteins
+   D. Destroying toxins
+   Correct Answer: Modifying, sorting, and packaging proteins
+
+9. Q: What is cytoplasm?
+   A. A type of DNA
+   B. A jelly-like substance that holds organelles
+   C. A protein transporter
+   D. A structure in the cell wall
+   Correct Answer: A jelly-like substance that holds organelles
+
+10. Q: What is the function of the nucleolus?
+   A. Produces ATP
+   B. Produces ribosomes
+   C. Breaks down sugars
+   D. Directs cell division
+   Correct Answer: Produces ribosomes
+
