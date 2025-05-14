@@ -1073,64 +1073,6 @@ function getBookmarkedQuestions(allQuestions) {
   return allQuestions.filter(q => bookmarks.includes(q.id));
 }
 
-/**
- * Loads all JSON question modules and dynamically adds topics.
- */
-async function loadAllQuestionModules() {
-  const manifest = await fetch('questions/manifest.json').then(r => r.json());
-  let allQuestions = [];
-  for (const file of manifest) {
-    try {
-      const res = await fetch(`questions/${file}`);
-      if (res.ok) {
-        const data = await res.json();
-        allQuestions = allQuestions.concat(data);
-      }
-    } catch (e) {
-      console.error('Failed to load', file, e);
-    }
-  }
-  questions = allQuestions;
-  localStorage.setItem('questions', JSON.stringify(questions));
-  updateTopicDropdown(questions);
-  document.querySelector('.start-btn').disabled = false;
-  document.getElementById('loading').style.display = 'none';
-  preloadImages(questions);
-  bookmarkedQuestions = getBookmarkedQuestions(questions);
-}
-
-async function loadAllQuestions() {
-  const manifest = await fetch('questions/manifest.json').then(r => r.json());
-  const allQuestions = [];
-  for (const file of manifest) {
-    const questions = await fetch(`questions/${file}`).then(r => r.json());
-    allQuestions.push(...questions);
-  }
-  return allQuestions;
-}
-async function loadManifest() {
-  const response = await fetch('manifest.json');
-  return await response.json();
-}
-
-async function loadAllJsonFiles() {
-  const paths = await loadManifest();
-  const results = await Promise.all(
-    paths.map(async (path) => {
-      try {
-        const response = await fetch(path);
-        if (!response.ok) throw new Error(`Failed: ${path}`);
-        const data = await response.json();
-        return { path, data };
-      } catch (e) {
-        console.error(e);
-        return null;
-      }
-    })
-  );
-  return results.filter(Boolean);
-}
-
 async function loadManifest() {
   const res = await fetch('questions/manifest.json');
   return await res.json();
@@ -1138,7 +1080,6 @@ async function loadManifest() {
 
 async function loadAllJsonFiles() {
   const paths = await loadManifest();
-
   const data = await Promise.all(
     paths.map(async path => {
       const fullPath = `questions/${path}`;
@@ -1152,6 +1093,5 @@ async function loadAllJsonFiles() {
       }
     })
   );
-
   return data.filter(Boolean);
 }
