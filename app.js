@@ -1,4 +1,3 @@
-console.log("✅ app.js loaded");
 let current = 0;
 let selectedTopic = "";
 let quiz = [];
@@ -79,7 +78,7 @@ function preloadImages(questionsArr) {
 
 // Event listeners for topic and quiz start
 document.addEventListener('DOMContentLoaded', () => {
-  loadQuestions();
+  loadAllQuestionModules();
   const topicSelect = document.querySelector('.control[data-topic]');
   topicSelect.addEventListener('change', () => {
     selectedTopic = topicSelect.value;
@@ -1078,35 +1077,26 @@ function getBookmarkedQuestions(allQuestions) {
  * Loads all JSON question modules and dynamically adds topics.
  */
 async function loadAllQuestionModules() {
-  try {
-    const res = await fetch('questions/manifest.json');
-    const paths = await res.json();
-    console.log("📁 Loaded manifest paths:", paths);
-
-    const allQuestions = await Promise.all(
-      paths.map(async (path) => {
-        const response = await fetch(`questions/${path}`);
-        if (!response.ok) throw new Error(`❌ Failed to load ${path}`);
-        const data = await response.json();
-        console.log(`✅ Loaded ${path}`, data);
-        return data;
-      })
-    );
-
-    questions = allQuestions.flat();
-    console.log("🧠 Final question count:", questions.length);
-
-    questions.forEach(q => q.answered = false);
-    unansweredQuestions = [...questions];
-    localStorage.setItem('questions', JSON.stringify(questions));
-    updateTopicDropdown(questions);
-    document.querySelector('.start-btn').disabled = false;
-    document.getElementById('loading').style.display = 'none';
-    bookmarkedQuestions = getBookmarkedQuestions(questions);
-  } catch (err) {
-    console.error('❌ Error loading question modules:', err);
-    document.getElementById('loading').textContent = 'Failed to load questions.';
+  const manifest = await fetch('questions/manifest.json').then(r => r.json());
+  let allQuestions = [];
+  for (const file of manifest) {
+    try {
+      const res = await fetch(`questions/${file}`);
+      if (res.ok) {
+        const data = await res.json();
+        allQuestions = allQuestions.concat(data);
+      }
+    } catch (e) {
+      console.error('Failed to load', file, e);
+    }
   }
+  questions = allQuestions;
+  localStorage.setItem('questions', JSON.stringify(questions));
+  updateTopicDropdown(questions);
+  document.querySelector('.start-btn').disabled = false;
+  document.getElementById('loading').style.display = 'none';
+  preloadImages(questions);
+  bookmarkedQuestions = getBookmarkedQuestions(questions);
 }
 
 async function loadAllQuestions() {
@@ -1165,7 +1155,9 @@ async function loadAllJsonFiles() {
 
   return data.filter(Boolean);
 }
+
+
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("🌱 DOM Ready. Starting question loader...");
-  loadQuestions(); // or loadAllQuestionModules();
+  console.log("🌱 DOM Ready. Forcing fresh load...");
+  loadAllQuestionModules();
 });
