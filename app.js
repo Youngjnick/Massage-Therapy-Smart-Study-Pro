@@ -29,7 +29,6 @@ function shuffle(array) {
   return array;
 }
 
-// Load questions and topics
 function loadQuestions() {
   const cachedQuestions = localStorage.getItem('questions');
   if (cachedQuestions) {
@@ -1078,15 +1077,11 @@ function getBookmarkedQuestions(allQuestions) {
  * Loads all JSON question modules and dynamically adds topics.
  */
 async function loadAllQuestionModules() {
-  const files = [
-    'questions/test1.json',
-    'questions/test2.json',
-    'questions/test3.json'
-  ];
+  const manifest = await fetch('questions/manifest.json').then(r => r.json());
   let allQuestions = [];
-  for (const file of files) {
+  for (const file of manifest) {
     try {
-      const res = await fetch(file);
+      const res = await fetch(`questions/${file}`);
       if (res.ok) {
         const data = await res.json();
         allQuestions = allQuestions.concat(data);
@@ -1104,7 +1099,12 @@ async function loadAllQuestionModules() {
   bookmarkedQuestions = getBookmarkedQuestions(questions);
 }
 
-// After loading all question modules
-loadAllQuestionModules().then((questions) => {
-  updateTopicDropdown(questions); // Update the topics dynamically
-});
+async function loadAllQuestions() {
+  const manifest = await fetch('questions/manifest.json').then(r => r.json());
+  const allQuestions = [];
+  for (const file of manifest) {
+    const questions = await fetch(`questions/${file}`).then(r => r.json());
+    allQuestions.push(...questions);
+  }
+  return allQuestions;
+}
