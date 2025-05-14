@@ -309,4 +309,1272 @@
     "tags": ["arm", "forearm", "function", "innervation"],
     "stats": { "correct": 0, "incorrect": 0 }
   }
+	{
+	[
+  {
+    "id": "leg_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle originates from the anterior inferior iliac spine and inserts on the tibial tuberosity?",
+    "answers": [
+      "Rectus femoris",
+      "Biceps femoris",
+      "Sartorius",
+      "Gracilis"
+    ],
+    "correct": 0,
+    "tags": [
+      "leg",
+      "origin",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates the quadriceps femoris group?",
+    "answers": [
+      "Sciatic nerve",
+      "Femoral nerve",
+      "Obturator nerve",
+      "Tibial nerve"
+    ],
+    "correct": 1,
+    "tags": [
+      "leg",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the gluteus maximus insert?",
+    "answers": [
+      "Greater trochanter",
+      "Gluteal tuberosity",
+      "Lesser trochanter",
+      "Tibial tuberosity"
+    ],
+    "correct": 1,
+    "tags": [
+      "leg",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_004",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the primary action of the hamstring group?",
+    "answers": [
+      "Knee extension",
+      "Hip flexion",
+      "Knee flexion",
+      "Ankle dorsiflexion"
+    ],
+    "correct": 2,
+    "tags": [
+      "leg",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_005",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle is innervated by the superior gluteal nerve?",
+    "answers": [
+      "Gluteus maximus",
+      "Gluteus medius",
+      "Piriformis",
+      "Tensor fasciae latae"
+    ],
+    "correct": 1,
+    "tags": [
+      "leg",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "The gastrocnemius originates from which structure?",
+    "answers": [
+      "Tibial tuberosity",
+      "Femoral condyles",
+      "Fibular head",
+      "Ischial spine"
+    ],
+    "correct": 1,
+    "tags": [
+      "leg",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_007",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the insertion point of the soleus muscle?",
+    "answers": [
+      "Calcaneus via Achilles tendon",
+      "Navicular bone",
+      "Talus",
+      "Tibia"
+    ],
+    "correct": 0,
+    "tags": [
+      "leg",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the function of the tibialis anterior?",
+    "answers": [
+      "Plantarflexion",
+      "Eversion",
+      "Dorsiflexion",
+      "Knee flexion"
+    ],
+    "correct": 2,
+    "tags": [
+      "leg",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_009",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle originates on the ischial tuberosity and inserts on the medial condyle of the tibia?",
+    "answers": [
+      "Semitendinosus",
+      "Semimembranosus",
+      "Biceps femoris",
+      "Vastus medialis"
+    ],
+    "correct": 1,
+    "tags": [
+      "leg",
+      "origin",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "leg_010",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates most of the posterior leg muscles?",
+    "answers": [
+      "Femoral nerve",
+      "Tibial nerve",
+      "Common fibular nerve",
+      "Obturator nerve"
+    ],
+    "correct": 1,
+    "tags": [
+      "leg",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle closes the eye and is innervated by the facial nerve?",
+    "answers": [
+      "Orbicularis oris",
+      "Orbicularis oculi",
+      "Zygomaticus",
+      "Frontalis"
+    ],
+    "correct": 1,
+    "tags": [
+      "head",
+      "function",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "The masseter muscle inserts on which bone?",
+    "answers": [
+      "Zygomatic arch",
+      "Temporal bone",
+      "Mandible",
+      "Maxilla"
+    ],
+    "correct": 2,
+    "tags": [
+      "head",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates the masseter muscle?",
+    "answers": [
+      "Facial nerve",
+      "Glossopharyngeal nerve",
+      "Trigeminal nerve",
+      "Accessory nerve"
+    ],
+    "correct": 2,
+    "tags": [
+      "head",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_004",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle elevates the mandible and originates from the temporal fossa?",
+    "answers": [
+      "Temporalis",
+      "Masseter",
+      "Buccinator",
+      "Digastric"
+    ],
+    "correct": 0,
+    "tags": [
+      "head",
+      "origin",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_005",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the origin of the orbicularis oris?",
+    "answers": [
+      "Zygomatic bone",
+      "Mandible and maxilla",
+      "Frontal bone",
+      "Nasal bone"
+    ],
+    "correct": 1,
+    "tags": [
+      "head",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the insertion of the frontalis muscle?",
+    "answers": [
+      "Skin of forehead",
+      "Orbicularis oculi",
+      "Temporal fascia",
+      "Eyebrow skin"
+    ],
+    "correct": 3,
+    "tags": [
+      "head",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_007",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which facial muscle is responsible for smiling?",
+    "answers": [
+      "Zygomaticus major",
+      "Levator labii",
+      "Risorius",
+      "Buccinator"
+    ],
+    "correct": 0,
+    "tags": [
+      "head",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "The buccinator muscle assists with which action?",
+    "answers": [
+      "Closing the eyes",
+      "Chewing and blowing",
+      "Raising eyebrows",
+      "Jaw depression"
+    ],
+    "correct": 1,
+    "tags": [
+      "head",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_009",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which cranial nerve controls facial expression?",
+    "answers": [
+      "CN V",
+      "CN VII",
+      "CN IX",
+      "CN XI"
+    ],
+    "correct": 1,
+    "tags": [
+      "head",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "head_010",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle originates from the zygomatic bone and inserts at the corner of the mouth?",
+    "answers": [
+      "Orbicularis oris",
+      "Levator anguli oris",
+      "Zygomaticus major",
+      "Risorius"
+    ],
+    "correct": 2,
+    "tags": [
+      "head",
+      "origin",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle flexes the neck and rotates the head to the opposite side?",
+    "answers": [
+      "Sternocleidomastoid",
+      "Scalene",
+      "Trapezius",
+      "Levator scapulae"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the sternocleidomastoid insert?",
+    "answers": [
+      "Clavicle",
+      "Manubrium",
+      "Mastoid process",
+      "Acromion"
+    ],
+    "correct": 2,
+    "tags": [
+      "neck",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates the sternocleidomastoid?",
+    "answers": [
+      "Accessory nerve (CN XI)",
+      "Vagus nerve",
+      "Phrenic nerve",
+      "Facial nerve"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_004",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscles elevate the first and second ribs during inhalation?",
+    "answers": [
+      "Scalene muscles",
+      "Platysma",
+      "Infrahyoid muscles",
+      "Longus colli"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_005",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the origin of the levator scapulae?",
+    "answers": [
+      "Transverse processes of C1-C4",
+      "Spinous processes of C5-T1",
+      "Occipital bone",
+      "Sternum"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the levator scapulae insert?",
+    "answers": [
+      "Acromion",
+      "Superior angle of scapula",
+      "Clavicle",
+      "Spinous process of C7"
+    ],
+    "correct": 1,
+    "tags": [
+      "neck",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_007",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which neck muscle depresses the mandible and tenses the skin of the neck?",
+    "answers": [
+      "Platysma",
+      "Sternohyoid",
+      "Omohyoid",
+      "Digastric"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the insertion of the scalene muscles?",
+    "answers": [
+      "First and second ribs",
+      "Clavicle",
+      "Mastoid process",
+      "Scapula"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_009",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscles originate on the manubrium and insert on the hyoid bone?",
+    "answers": [
+      "Sternohyoid",
+      "Scalene",
+      "Omohyoid",
+      "Platysma"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "origin",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "neck_010",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What nerve innervates most infrahyoid muscles?",
+    "answers": [
+      "Ansa cervicalis",
+      "Facial nerve",
+      "Vagus nerve",
+      "Accessory nerve"
+    ],
+    "correct": 0,
+    "tags": [
+      "neck",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the origin of the pectoralis major?",
+    "answers": [
+      "Clavicle and sternum",
+      "Ribs 1-6",
+      "Scapula",
+      "Humerus"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the pectoralis major insert?",
+    "answers": [
+      "Clavicle",
+      "Deltoid tuberosity",
+      "Greater tubercle of humerus",
+      "Coracoid process"
+    ],
+    "correct": 2,
+    "tags": [
+      "torso",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates the pectoralis major?",
+    "answers": [
+      "Axillary nerve",
+      "Lateral and medial pectoral nerves",
+      "Radial nerve",
+      "Musculocutaneous nerve"
+    ],
+    "correct": 1,
+    "tags": [
+      "torso",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_004",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle originates on the lower ribs and inserts on the humerus, aiding in arm adduction?",
+    "answers": [
+      "Latissimus dorsi",
+      "Pectoralis minor",
+      "Serratus anterior",
+      "Trapezius"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "origin",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_005",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the function of the serratus anterior?",
+    "answers": [
+      "Abducts the arm",
+      "Retracts the scapula",
+      "Protracts the scapula",
+      "Flexes the elbow"
+    ],
+    "correct": 2,
+    "tags": [
+      "torso",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which abdominal muscle runs vertically and inserts at the xiphoid process?",
+    "answers": [
+      "Rectus abdominis",
+      "Transversus abdominis",
+      "External oblique",
+      "Internal oblique"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_007",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the innervation of the diaphragm?",
+    "answers": [
+      "Phrenic nerve",
+      "Vagus nerve",
+      "Intercostal nerves",
+      "Spinal accessory nerve"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle group stabilizes and extends the spine?",
+    "answers": [
+      "Erector spinae",
+      "Rhomboids",
+      "Latissimus dorsi",
+      "Rectus abdominis"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_009",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the origin of the trapezius?",
+    "answers": [
+      "Occipital bone and spinous processes",
+      "Clavicle",
+      "Humerus",
+      "Scapula"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "torso_010",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the trapezius insert?",
+    "answers": [
+      "Spine of scapula and clavicle",
+      "Deltoid tuberosity",
+      "Ribs 1-6",
+      "Greater tubercle"
+    ],
+    "correct": 0,
+    "tags": [
+      "torso",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates the thenar muscles?",
+    "answers": [
+      "Ulnar nerve",
+      "Median nerve",
+      "Radial nerve",
+      "Musculocutaneous nerve"
+    ],
+    "correct": 1,
+    "tags": [
+      "hand",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the function of the palmar interossei?",
+    "answers": [
+      "Abduct fingers",
+      "Flex the wrist",
+      "Adduct fingers",
+      "Extend the thumb"
+    ],
+    "correct": 2,
+    "tags": [
+      "hand",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where do the lumbricals insert?",
+    "answers": [
+      "Proximal phalanges",
+      "Extensor expansions",
+      "Metacarpals",
+      "Flexor retinaculum"
+    ],
+    "correct": 1,
+    "tags": [
+      "hand",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_004",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which hand muscle originates from the pisiform bone?",
+    "answers": [
+      "Abductor digiti minimi",
+      "Flexor pollicis brevis",
+      "Adductor pollicis",
+      "Opponens pollicis"
+    ],
+    "correct": 0,
+    "tags": [
+      "hand",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_005",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle opposes the thumb?",
+    "answers": [
+      "Opponens pollicis",
+      "Adductor pollicis",
+      "Extensor pollicis longus",
+      "Flexor digitorum profundus"
+    ],
+    "correct": 0,
+    "tags": [
+      "hand",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the insertion point of flexor digitorum superficialis?",
+    "answers": [
+      "Distal phalanges",
+      "Middle phalanges",
+      "Metacarpals",
+      "Carpals"
+    ],
+    "correct": 1,
+    "tags": [
+      "hand",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_007",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates most of the intrinsic hand muscles?",
+    "answers": [
+      "Median nerve",
+      "Ulnar nerve",
+      "Radial nerve",
+      "Axillary nerve"
+    ],
+    "correct": 1,
+    "tags": [
+      "hand",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle adducts the thumb?",
+    "answers": [
+      "Abductor pollicis brevis",
+      "Adductor pollicis",
+      "Flexor pollicis longus",
+      "Opponens pollicis"
+    ],
+    "correct": 1,
+    "tags": [
+      "hand",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_009",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the flexor retinaculum attach?",
+    "answers": [
+      "Scaphoid and trapezium",
+      "Pisiform and hamate",
+      "Both A and B",
+      "Metacarpals"
+    ],
+    "correct": 2,
+    "tags": [
+      "hand",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "hand_010",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which group of muscles makes up the hypothenar eminence?",
+    "answers": [
+      "Thenar muscles",
+      "Lumbricals",
+      "Hypothenar muscles",
+      "Interossei"
+    ],
+    "correct": 2,
+    "tags": [
+      "hand",
+      "group"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_001",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which nerve innervates most intrinsic foot muscles?",
+    "answers": [
+      "Deep fibular nerve",
+      "Superficial fibular nerve",
+      "Tibial nerve",
+      "Femoral nerve"
+    ],
+    "correct": 2,
+    "tags": [
+      "foot",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_002",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the origin of flexor digitorum brevis?",
+    "answers": [
+      "Calcaneus",
+      "Navicular",
+      "Talus",
+      "Cuboid"
+    ],
+    "correct": 0,
+    "tags": [
+      "foot",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_003",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the flexor hallucis longus insert?",
+    "answers": [
+      "Big toe distal phalanx",
+      "2nd metatarsal",
+      "Calcaneus",
+      "Navicular tuberosity"
+    ],
+    "correct": 0,
+    "tags": [
+      "foot",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_004",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the function of the abductor hallucis?",
+    "answers": [
+      "Adduct big toe",
+      "Abduct big toe",
+      "Flex ankle",
+      "Extend foot"
+    ],
+    "correct": 1,
+    "tags": [
+      "foot",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_005",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle originates from the cuboid and lateral cuneiform bones?",
+    "answers": [
+      "Flexor hallucis brevis",
+      "Tibialis posterior",
+      "Abductor digiti minimi",
+      "Extensor hallucis longus"
+    ],
+    "correct": 0,
+    "tags": [
+      "foot",
+      "origin"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_006",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What is the insertion of the extensor digitorum longus?",
+    "answers": [
+      "Distal phalanges of toes 2-5",
+      "Metatarsals",
+      "Calcaneus",
+      "Navicular"
+    ],
+    "correct": 0,
+    "tags": [
+      "foot",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_007",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle supports the medial longitudinal arch?",
+    "answers": [
+      "Peroneus longus",
+      "Flexor hallucis longus",
+      "Tibialis anterior",
+      "Abductor hallucis"
+    ],
+    "correct": 3,
+    "tags": [
+      "foot",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_008",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "What nerve innervates the extensor digitorum brevis?",
+    "answers": [
+      "Tibial nerve",
+      "Deep fibular nerve",
+      "Saphenous nerve",
+      "Lateral plantar nerve"
+    ],
+    "correct": 1,
+    "tags": [
+      "foot",
+      "innervation"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_009",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Where does the quadratus plantae insert?",
+    "answers": [
+      "Flexor digitorum longus tendon",
+      "Flexor hallucis longus tendon",
+      "Navicular",
+      "Calcaneus"
+    ],
+    "correct": 0,
+    "tags": [
+      "foot",
+      "insertion"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
+  },
+  {
+    "id": "foot_010",
+    "topic": "Anatomy",
+    "difficulty": "medium",
+    "question": "Which muscle abducts the fifth toe?",
+    "answers": [
+      "Flexor digiti minimi brevis",
+      "Abductor digiti minimi",
+      "Plantar interossei",
+      "Dorsal interossei"
+    ],
+    "correct": 1,
+    "tags": [
+      "foot",
+      "function"
+    ],
+    "stats": {
+      "correct": 0,
+      "incorrect": 0
+    }
 ]
