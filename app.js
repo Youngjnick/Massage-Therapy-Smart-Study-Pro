@@ -79,17 +79,36 @@ async function loadQuestions() {
   try {
     if (cachedQuestions) {
       questions = JSON.parse(cachedQuestions);
-      const bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
-      questions.forEach(q => { q.bookmarked = bookmarks.includes(q.id); });
-      unansweredQuestions = [...questions];
-      loadUserData();
-      const startBtn = document.querySelector(SELECTORS.startBtn);
-      if (startBtn) startBtn.disabled = false;
-      const loading = document.getElementById("loading");
-      if (loading) loading.style.display = "none";
-      preloadImages(questions);
-      bookmarkedQuestions = getBookmarkedQuestions(questions);
+    } else {
+      // Fetch all questions from manifest
+      questions = [];
+      const manifestPaths = await getManifestPaths();
+      for (const path of manifestPaths) {
+        try {
+          const fileRes = await fetch(path);
+          const data = await fileRes.json();
+          if (Array.isArray(data)) {
+            questions.push(...data);
+          } else if (data && typeof data === "object") {
+            questions.push(data);
+          }
+        } catch (err) {
+          console.error("Error loading questions from file:", path, err);
+        }
+      }
+      localStorage.setItem("questions", JSON.stringify(questions));
     }
+    // Bookmarks and unanswered
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
+    questions.forEach(q => { q.bookmarked = bookmarks.includes(q.id); });
+    unansweredQuestions = [...questions];
+    loadUserData();
+    const startBtn = document.querySelector(SELECTORS.startBtn);
+    if (startBtn) startBtn.disabled = false;
+    const loading = document.getElementById("loading");
+    if (loading) loading.style.display = "none";
+    preloadImages(questions);
+    bookmarkedQuestions = getBookmarkedQuestions(questions);
   } catch (err) {
     localStorage.removeItem("questions");
     showNotification("Error", "Failed to load questions.", "badges/summary.png");
@@ -156,45 +175,71 @@ function setupUI() {
 
 // --- TOPIC DROPDOWN LOGIC ---
 /**
- * Populate the topic dropdown with unique, human-readable topic names.
- * @param {Array} manifestList - Array of file paths or question objects
+ * Populate the topic dropdown with static and dynamic topics.
+ * Always clears previous options to prevent doubling.
+ * @param {Array} [questionsArr]
  */
-function populateTopicDropdown(manifestList) {
-  const select = document.querySelector('select.control[data-topic]');
-  if (!select) return;
+async function populateTopicDropdown(questionsArr) {
+  const dropdown = document.querySelector(SELECTORS.topicSelect);
+  if (!dropdown) return;
 
-  // Use a Set to ensure uniqueness
+  dropdown.innerHTML = "";
+
+  const staticOptions = [
+    { value: "", text: "-- Select Topic --", disabled: true, selected: true },
+    { value: "unanswered", text: "Unanswered Questions" },
+    { value: "missed", text: "Missed Questions" },
+    { value: "bookmarked", text: "Bookmarked Questions" }
+  ];
+  staticOptions.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt.value;
+    option.textContent = opt.text;
+    if (opt.disabled) option.disabled = true;
+    if (opt.selected) option.selected = true;
+    dropdown.appendChild(option);
+  });
+
   const topicSet = new Set();
+  if (questionsArr && questionsArr.length) {
+    questionsArr.forEach(q => {
+      if (q.topic) topicSet.add(q.topic);
+    });
+  }
 
-  manifestList.forEach(item => {
-    // If item is a file path, extract the topic name from the filename
-    let topic = item;
-    if (typeof item === 'string') {
-      // Remove directory and extension, replace dashes/underscores with spaces
-      topic = item.split('/').pop().replace(/\.json$/i, '').replace(/[-_]/g, ' ');
-    } else if (item.topic) {
-      topic = item.topic;
+  try {
+    const manifestPaths = await getManifestPaths();
+    for (const path of manifestPaths) {
+      try {
+        const fileRes = await fetch(path);
+        const data = await fileRes.json();
+        if (Array.isArray(data)) {
+          data.forEach(q => {
+            if (q.topic) topicSet.add(q.topic);
+          });
+        } else if (data.topic) {
+          topicSet.add(data.topic);
+        }
+      } catch (err) {
+        console.error("Error loading manifest file:", err);
+      }
     }
-    topic = topic.trim();
-    if (topic && !topic.match(/\.json$/i)) {
-      topicSet.add(topic);
-    }
-  });
+  } catch (err) {
+    console.error("Error loading manifest paths:", err);
+  }
 
-  // Clear existing options
-  select.innerHTML = '<option value="">--Select Topic--</option>';
+  console.log("Topics found:", Array.from(topicSet));
 
-  // Add unique topics
-  Array.from(topicSet).sort().forEach(topic => {
-    const option = document.createElement('option');
-    option.value = topic;
-    option.textContent = topic;
-    select.appendChild(option);
-  });
+  Array.from(topicSet)
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b))
+    .forEach(topic => {
+      const option = document.createElement("option");
+      option.value = topic;
+      option.textContent = formatTitle(topic);
+      dropdown.appendChild(option);
+    });
 }
-
-// Example usage after loading manifestquestions.json:
-// fetch('manifestquestions.json').then(res => res.json()).then(populateTopicDropdown);
 
 // --- QUIZ LOGIC ---
 /**
