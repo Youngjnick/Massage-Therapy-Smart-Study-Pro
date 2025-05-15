@@ -5,9 +5,27 @@ const QUESTIONS_DIR = path.join(__dirname, 'questions');
 
 function humanizeTopic(topic) {
   if (!topic) return topic;
+  // Always capitalize SOAP
   if (topic.trim().toUpperCase() === 'SOAP') return 'SOAP';
-  // Replace underscores/hyphens with spaces, capitalize each word
   return topic
+    .replace(/[_\-]+/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function humanizeId(id) {
+  if (!id) return id;
+  // Special case for SOAP
+  if (id.toUpperCase().includes('SOAP')) {
+    return id.replace(/soap/gi, 'SOAP')
+      .replace(/[_\-]+/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase())
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  // General case
+  return id
     .replace(/[_\-]+/g, ' ')
     .replace(/\b\w/g, c => c.toUpperCase())
     .replace(/\s+/g, ' ')
@@ -25,7 +43,7 @@ function processFile(filePath) {
     return;
   }
 
-  // If file has a root "topic" property, fix it
+  // If file has a root "topic" or "id" property, fix it
   if (json.topic) {
     const newTopic = humanizeTopic(json.topic);
     if (json.topic !== newTopic) {
@@ -33,10 +51,32 @@ function processFile(filePath) {
       changed = true;
     }
   }
+  if (json.id) {
+    const newId = humanizeId(json.id);
+    if (json.id !== newId) {
+      json.id = newId;
+      changed = true;
+    }
+  }
+  if (Array.isArray(json.tags)) {
+    const newTags = json.tags.map(tag => humanizeTopic(tag));
+    if (JSON.stringify(json.tags) !== JSON.stringify(newTags)) {
+      json.tags = newTags;
+      changed = true;
+    }
+  }
 
-  // If file has a "questions" array, fix each question's topic and tags
+  // If file has a "questions" array, fix each question's id, topic, and tags
   if (Array.isArray(json.questions)) {
     json.questions.forEach(q => {
+      // id
+      if (q.id) {
+        const newId = humanizeId(q.id);
+        if (q.id !== newId) {
+          q.id = newId;
+          changed = true;
+        }
+      }
       // topic
       if (q.topic) {
         const newTopic = humanizeTopic(q.topic);
@@ -59,6 +99,14 @@ function processFile(filePath) {
   // If file is an array of questions
   if (Array.isArray(json)) {
     json.forEach(q => {
+      // id
+      if (q.id) {
+        const newId = humanizeId(q.id);
+        if (q.id !== newId) {
+          q.id = newId;
+          changed = true;
+        }
+      }
       // topic
       if (q.topic) {
         const newTopic = humanizeTopic(q.topic);
@@ -80,9 +128,7 @@ function processFile(filePath) {
 
   if (changed) {
     fs.writeFileSync(filePath, JSON.stringify(json, null, 2), 'utf8');
-    console.log(`Updated topics/tags in: ${filePath}`);
-  } else {
-    console.log(`No changes needed: ${filePath}`);
+    console.log(`Updated id/topic/tags in: ${filePath}`);
   }
 }
 
