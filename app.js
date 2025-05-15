@@ -1,3 +1,9 @@
+// ===============================
+// Massage Therapy Smart Study PRO
+// Main App Logic
+// ===============================
+
+// --- GLOBAL STATE & BADGES ---
 /** @type {number} */
 let current = 0;
 /** @type {string} */
@@ -37,6 +43,12 @@ const badges = [
 let earnedBadges = JSON.parse(localStorage.getItem("earnedBadges")) || [];
 earnedBadges = earnedBadges.filter(badgeId => badges.some(b => b.id === badgeId));
 
+// --- UTILITY FUNCTIONS ---
+/**
+ * Shuffle an array in place.
+ * @param {Array} array
+ * @returns {Array}
+ */
 function shuffle(array) {
   let m = array.length, t, i;
   while (m) {
@@ -48,6 +60,11 @@ function shuffle(array) {
   return array;
 }
 
+// --- QUESTION LOADING & INITIALIZATION ---
+/**
+ * Load questions from localStorage or fetch from modules if not cached.
+ * Also sets up bookmarks, unanswered, and updates UI.
+ */
 function loadQuestions() {
   const cachedQuestions = localStorage.getItem("questions");
   try {
@@ -74,6 +91,10 @@ function loadQuestions() {
   }
 }
 
+/**
+ * Update the topic dropdown with all available topics.
+ * @param {Array<Object>} questionsArr
+ */
 function updateTopicDropdown(questionsArr) {
   const topics = [...new Set(questionsArr.map((q) => q.topic))]
     .filter(Boolean)
@@ -86,14 +107,18 @@ function updateTopicDropdown(questionsArr) {
     <option value="missed">Missed Questions</option>
     <option value="bookmarked">Bookmarked Questions</option>
   `;
-topics.forEach((topic) => {
+  topics.forEach((topic) => {
     const option = document.createElement("option");
     option.value = topic;
-    option.textContent = topic;
+    option.textContent = formatTitle(topic);
     topicSelect.appendChild(option);
-}); // Correctly close the forEach method
+  });
 }
 
+/**
+ * Preload images for all questions to improve UX.
+ * @param {Array<Object>} questionsArr
+ */
 function preloadImages(questionsArr) {
   questionsArr.forEach(q => {
     if (q.image) {
@@ -103,6 +128,7 @@ function preloadImages(questionsArr) {
   });
 }
 
+// --- EVENT LISTENERS & UI SETUP ---
 // Event listeners for topic and quiz start
 document.addEventListener("DOMContentLoaded", () => {
   loadQuestions();
@@ -1281,3 +1307,28 @@ async function populateTopicDropdown() {
 document.addEventListener('DOMContentLoaded', () => {
   populateTopicDropdown();
 });
+
+const smartLearningLink = document.querySelector('.smart-learning-link');
+const analyticsLink = document.querySelector('.analytics-link');
+const settingsLink = document.querySelector('.settings-link');
+
+if (smartLearningLink) {
+  smartLearningLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    openModal("Smart Learning", "...modal content...", true);
+  });
+}
+
+if (analyticsLink) {
+  analyticsLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    openModal("View Analytics", "...modal content...");
+  });
+}
+
+if (settingsLink) {
+  settingsLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    openModal("Settings", "...modal content...");
+  });
+}
