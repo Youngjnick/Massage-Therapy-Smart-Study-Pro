@@ -31,18 +31,26 @@ function shuffle(array) {
 
 function loadQuestions() {
   const cachedQuestions = localStorage.getItem('questions');
-  if (cachedQuestions) {
-    questions = JSON.parse(cachedQuestions);
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
-    questions.forEach(q => { q.bookmarked = bookmarks.includes(q.id); });
-    unansweredQuestions = [...questions];
-    loadUserData();
-    updateTopicDropdown(questions);
-    document.querySelector('.start-btn').disabled = false;
-    document.getElementById('loading').style.display = 'none';
-    preloadImages(questions);
-    bookmarkedQuestions = getBookmarkedQuestions(questions);
-  } else {
+  try {
+    if (cachedQuestions) {
+      questions = JSON.parse(cachedQuestions);
+      const bookmarks = JSON.parse(localStorage.getItem('bookmarkedQuestions')) || [];
+      questions.forEach(q => { q.bookmarked = bookmarks.includes(q.id); });
+      unansweredQuestions = [...questions];
+      loadUserData();
+      updateTopicDropdown(questions);
+      document.querySelector('.start-btn').disabled = false;
+      document.getElementById('loading').style.display = 'none';
+      preloadImages(questions);
+      bookmarkedQuestions = getBookmarkedQuestions(questions);
+      console.log("✅ Loaded questions from localStorage:", questions.length);
+    } else {
+      console.log("📭 No cache found — loading modules");
+      loadAllQuestionModules();
+    }
+  } catch (err) {
+    console.error("❌ Error parsing cached questions. Clearing cache and reloading...", err);
+    localStorage.removeItem('questions');
     loadAllQuestionModules();
   }
 }
