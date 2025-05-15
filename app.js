@@ -133,7 +133,8 @@ function preloadImages(questionsArr) {
 document.addEventListener("DOMContentLoaded", async () => {
   await loadQuestions();
   setupUI();
-  populateTopicDropdown(questions);
+  const topics = questions.map(q => q.topic);
+  populateTopicDropdown(topics);
   showNotification(
     "Welcome!",
     "Challenge your skills with Massage Therapy Smart Study PRO!",
@@ -173,17 +174,11 @@ function setupUI() {
   );
 }
 
-// --- TOPIC DROPDOWN LOGIC ---
-/**
- * Populate the topic dropdown with static and dynamic topics.
- * Always clears previous options to prevent doubling.
- * @param {Array} [questionsArr]
- */
-async function populateTopicDropdown(questionsArr) {
-  const dropdown = document.querySelector(SELECTORS.topicSelect);
+function populateTopicDropdown(topics) {
+  const dropdown = document.querySelector("[data-topic]");
   if (!dropdown) return;
-
-  dropdown.innerHTML = "";
+  dropdown.setAttribute("aria-label", "Select quiz topic");
+  dropdown.innerHTML = ""; // Clear old options
 
   const staticOptions = [
     { value: "", text: "-- Select Topic --", disabled: true, selected: true },
@@ -191,6 +186,7 @@ async function populateTopicDropdown(questionsArr) {
     { value: "missed", text: "Missed Questions" },
     { value: "bookmarked", text: "Bookmarked Questions" }
   ];
+
   staticOptions.forEach(opt => {
     const option = document.createElement("option");
     option.value = opt.value;
@@ -200,45 +196,13 @@ async function populateTopicDropdown(questionsArr) {
     dropdown.appendChild(option);
   });
 
-  const topicSet = new Set();
-  if (questionsArr && questionsArr.length) {
-    questionsArr.forEach(q => {
-      if (q.topic) topicSet.add(q.topic);
-    });
-  }
-
-  try {
-    const manifestPaths = await getManifestPaths();
-    for (const path of manifestPaths) {
-      try {
-        const fileRes = await fetch(path);
-        const data = await fileRes.json();
-        if (Array.isArray(data)) {
-          data.forEach(q => {
-            if (q.topic) topicSet.add(q.topic);
-          });
-        } else if (data.topic) {
-          topicSet.add(data.topic);
-        }
-      } catch (err) {
-        console.error("Error loading manifest file:", err);
-      }
-    }
-  } catch (err) {
-    console.error("Error loading manifest paths:", err);
-  }
-
-  console.log("Topics found:", Array.from(topicSet));
-
-  Array.from(topicSet)
-    .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b))
-    .forEach(topic => {
-      const option = document.createElement("option");
-      option.value = topic;
-      option.textContent = formatTitle(topic);
-      dropdown.appendChild(option);
-    });
+  const uniqueTopics = [...new Set(topics)].filter(Boolean).sort((a, b) => a.localeCompare(b));
+  uniqueTopics.forEach(topic => {
+    const option = document.createElement("option");
+    option.value = topic;
+    option.textContent = formatTitle(topic); // Use your humanizing function
+    dropdown.appendChild(option);
+  });
 }
 
 // --- QUIZ LOGIC ---
