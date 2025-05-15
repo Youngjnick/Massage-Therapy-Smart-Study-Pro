@@ -1239,3 +1239,36 @@ manifestPaths.forEach(path => {
       dropdown.appendChild(option);
     });
 });
+
+async function populateDropdownFromManifest(dropdown) {
+  try {
+    const res = await fetch("manifestquestions.json");
+    const manifestPaths = await res.json();
+
+    for (const path of manifestPaths) {
+      try {
+        const fileRes = await fetch(path);
+        const data = await fileRes.json();
+        const option = document.createElement('option');
+        option.value = path;
+        option.textContent = data.title || formatTitle(path.split('/').pop());
+        dropdown.appendChild(option);
+      } catch {
+        const option = document.createElement('option');
+        option.value = path;
+        option.textContent = formatTitle(path.split('/').pop());
+        dropdown.appendChild(option);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load manifestquestions.json", err);
+  }
+}
+
+// Usage example (after DOMContentLoaded):
+document.addEventListener("DOMContentLoaded", () => {
+  const dropdown = document.querySelector(".control[data-topic]");
+  if (dropdown) {
+    populateDropdownFromManifest(dropdown);
+  }
+});
