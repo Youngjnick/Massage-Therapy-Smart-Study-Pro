@@ -4,26 +4,17 @@
 // ===============================
 
 // --- GLOBAL STATE & BADGES ---
-/** @type {number} */
 let current = 0;
-/** @type {string} */
 let selectedTopic = "";
-/** @type {Array<Object>} */
 let quiz = [];
-/** @type {number} */
 let correct = 0;
-/** @type {number} */
 let streak = 0;
-/** @type {Array<string>} */
 let missedQuestions = [];
-/** @type {Array<Object>} */
 let unansweredQuestions = [];
-/** @type {Array<Object>} */
 let bookmarkedQuestions = [];
-/** @type {Array<Object>} */
 let questions = [];
-/** @type {Chart|undefined} */
 let historyChart;
+let accuracyChart;
 
 /**
  * @typedef {Object} Badge
@@ -44,11 +35,6 @@ let earnedBadges = JSON.parse(localStorage.getItem("earnedBadges")) || [];
 earnedBadges = earnedBadges.filter(badgeId => badges.some(b => b.id === badgeId));
 
 // --- UTILITY FUNCTIONS ---
-/**
- * Shuffle an array in place.
- * @param {Array} array
- * @returns {Array}
- */
 function shuffle(array) {
   let m = array.length, t, i;
   while (m) {
@@ -60,11 +46,11 @@ function shuffle(array) {
   return array;
 }
 
+function formatTitle(filename) {
+  return filename.replace(/_/g, ' ').replace(/\.json$/i, '').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 // --- QUESTION LOADING & INITIALIZATION ---
-/**
- * Load questions from localStorage or fetch from modules if not cached.
- * Also sets up bookmarks, unanswered, and updates UI.
- */
 function loadQuestions() {
   const cachedQuestions = localStorage.getItem("questions");
   try {
@@ -79,22 +65,15 @@ function loadQuestions() {
       document.getElementById("loading").style.display = "none";
       preloadImages(questions);
       bookmarkedQuestions = getBookmarkedQuestions(questions);
-      console.log("✅ Loaded questions from localStorage:", questions.length);
     } else {
-      console.log("📭 No cache found — loading modules");
       loadAllQuestionModules();
     }
   } catch (err) {
-    console.error("❌ Error parsing cached questions. Clearing cache and reloading...", err);
     localStorage.removeItem("questions");
     loadAllQuestionModules();
   }
 }
 
-/**
- * Update the topic dropdown with all available topics.
- * @param {Array<Object>} questionsArr
- */
 function updateTopicDropdown(questionsArr) {
   const topics = [...new Set(questionsArr.map((q) => q.topic))]
     .filter(Boolean)
@@ -115,10 +94,6 @@ function updateTopicDropdown(questionsArr) {
   });
 }
 
-/**
- * Preload images for all questions to improve UX.
- * @param {Array<Object>} questionsArr
- */
 function preloadImages(questionsArr) {
   questionsArr.forEach(q => {
     if (q.image) {
@@ -129,10 +104,19 @@ function preloadImages(questionsArr) {
 }
 
 // --- EVENT LISTENERS & UI SETUP ---
-// Event listeners for topic and quiz start
 document.addEventListener("DOMContentLoaded", () => {
   loadQuestions();
+  setupUI();
+  populateTopicDropdown();
+  showNotification(
+    "Welcome!",
+    "Challenge your skills with Massage Therapy Smart Study PRO!",
+    "badges/welcome.png"
+  );
+  renderChartsOnLoad();
+});
 
+function setupUI() {
   const topicSelect = document.querySelector(".control[data-topic]");
   const lengthSelect = document.querySelector(".control[data-quiz-length]");
   const startBtn = document.querySelector(".start-btn");
@@ -146,115 +130,55 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   lengthSelect.addEventListener("change", updateStartBtn);
 
-  startBtn.addEventListener("click", function() {
-    // ...existing quiz start logic...
-  });
+  startBtn.addEventListener("click", startQuiz);
 
-  // Smart Learning Modal
-  document.querySelector('.smart-learning a').addEventListener("click", (e) => {
-    e.preventDefault();
-    openModal(
-      "Smart Learning",
-      `
-        <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
-        <div class="badge-grid">
-          ${badges.map(badge => `
-            <div class="badge-item ${earnedBadges.includes(badge.id) ? "" : "unearned"}">
-              <img src="badges/${badge.id}.png" alt="${badge.name}" />
-              <p>${badge.name}</p>
-            </div>
-          `).join("")}
-        </div>
-      `,
-      true
-    );
-  });
+  // Modal links
+  document.querySelectorAll(".smart-learning a, .smart-learning-link").forEach(link =>
+    link.addEventListener("click", showSmartLearningModal)
+  );
+  document.querySelectorAll(".view-analytics a, .analytics-link").forEach(link =>
+    link.addEventListener("click", showAnalyticsModal)
+  );
+  document.querySelectorAll(".settings a, .settings-link").forEach(link =>
+    link.addEventListener("click", showSettingsModal)
+  );
+}
 
-  // ...other startup code...
-});
+// --- QUIZ LOGIC ---
+async function startQuiz() {
+  const topicSelect = document.querySelector(".control[data-topic]");
+  const lengthSelect = document.querySelector(".control[data-quiz-length]");
+  const topic = topicSelect.value;
+  const length = lengthSelect.value === "all" ? 9999 : parseInt(lengthSelect.value, 10);
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Quiz controls
-  const topicSelect = document.querySelector('.control[data-topic]');
-  const lengthSelect = document.querySelector('.control[data-quiz-length]');
-  const startBtn = document.querySelector('.start-btn');
-
-  function updateStartBtn() {
-    startBtn.disabled = !(topicSelect.value && lengthSelect.value);
+  if (topic && topic.match(/\.json$/i)) {
+    try {
+      const res = await fetch(topic);
+      const data = await res.json();
+      quiz = shuffle([...data]).slice(0, length);
+      current = 0; correct = 0; streak = 0;
+      selectedTopic = formatTitle(topic.split('/').pop());
+      document.querySelector(".quiz-card").classList.remove("hidden");
+      renderQuestion();
+      return;
+    } catch {
+      showNotification("Error", "Failed to load questions from file.", "badges/summary.png");
+      return;
+    }
   }
 
-  topicSelect.addEventListener('change', updateStartBtn);
-  lengthSelect.addEventListener('change', updateStartBtn);
+  let quizPool = [];
+  if (topic === "unanswered") quizPool = unansweredQuestions;
+  else if (topic === "missed") quizPool = missedQuestions.map(id => questions.find(q => q.id === id)).filter(Boolean);
+  else if (topic === "bookmarked") quizPool = bookmarkedQuestions;
+  else quizPool = questions.filter(q => q.topic === topic);
 
-  startBtn.addEventListener('click', async function() {
-    const topic = topicSelect.value;
-    const length = lengthSelect.value === "all" ? 9999 : parseInt(lengthSelect.value, 10);
+  quiz = shuffle([...quizPool]).slice(0, length);
+  current = 0; correct = 0; streak = 0;
+  document.querySelector(".quiz-card").classList.remove("hidden");
+  renderQuestion();
+}
 
-    // If the topic is a file path (ends with .json or .JSON), load questions from that file
-    if (topic && topic.match(/\.json$/i)) {
-      try {
-        const res = await fetch(topic);
-        const data = await res.json();
-        // If your JSON is an array of questions:
-        quiz = shuffle([...data]).slice(0, length);
-        // If your JSON has a property like { questions: [...] }, use: quiz = shuffle([...data.questions]).slice(0, length);
-        current = 0;
-        correct = 0;
-        streak = 0;
-        selectedTopic = formatTitle(topic.split('/').pop());
-        document.querySelector(".quiz-card").classList.remove("hidden");
-        renderQuestion();
-        return;
-      } catch (err) {
-        showNotification("Error", "Failed to load questions from file.", "badges/summary.png");
-        return;
-      }
-    }
-
-    // Otherwise, use your old logic for "unanswered", "missed", "bookmarked", etc.
-    let quizPool = [];
-    if (topic === "unanswered") {
-      quizPool = unansweredQuestions;
-    } else if (topic === "missed") {
-      quizPool = missedQuestions.map(id => questions.find(q => q.id === id)).filter(Boolean);
-    } else if (topic === "bookmarked") {
-      quizPool = bookmarkedQuestions;
-    } else {
-      quizPool = questions.filter(q => q.topic === topic);
-    }
-
-    quiz = shuffle([...quizPool]).slice(0, length);
-    current = 0;
-    correct = 0;
-    streak = 0;
-    document.querySelector(".quiz-card").classList.remove("hidden");
-    renderQuestion();
-  });
-
-  // Smart Learning Modal
-  document.querySelector('.smart-learning a').addEventListener("click", (e) => {
-    e.preventDefault();
-    openModal(
-      "Smart Learning",
-      `
-        <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
-        <div class="badge-grid">
-          ${badges.map(badge => `
-            <div class="badge-item ${earnedBadges.includes(badge.id) ? "" : "unearned"}">
-              <img src="badges/${badge.id}.png" alt="${badge.name}" />
-              <p>${badge.name}</p>
-            </div>
-          `).join("")}
-        </div>
-      `,
-      true
-    );
-  });
-
-  // ...add any other startup code here...
-});
-
-// Main renderQuestion function
 function renderQuestion() {
   if (!quiz || quiz.length === 0) {
     document.querySelector(".quiz-card").innerHTML = "<p>No missed questions to review!</p>";
@@ -274,18 +198,31 @@ function renderQuestion() {
   shuffle(answerObjs);
 
   // Header row with topic, streak, and bookmark
+  renderQuizHeader(q);
+
+  document.querySelector(".quiz-header strong").textContent = selectedTopic;
+  document.querySelector(".question-text").textContent = q.question;
+  renderAnswers(answerObjs);
+  document.querySelector(".feedback").textContent = "";
+
+  // Remove old action button containers if present
+  document.querySelector(".quiz-card").querySelectorAll(".question-actions").forEach(el => el.remove());
+
+  // Render actions (suggest, report, flag, rate)
+  renderQuestionActions(q);
+}
+
+function renderQuizHeader(q) {
   const quizHeader = document.querySelector(".quiz-header");
-  const oldHeaderRow = quizHeader.querySelector(".quiz-header-row");
-  if (oldHeaderRow) oldHeaderRow.remove();
+  quizHeader.querySelector(".quiz-header-row")?.remove();
 
   const headerRow = document.createElement("div");
   headerRow.className = "quiz-header-row";
-
-  const topicStreak = document.createElement("div");
-  topicStreak.className = "topic-streak";
-  topicStreak.innerHTML = `
-    <span>TOPIC: <strong>${selectedTopic}</strong></span>
-    <span style="margin-left: 16px;">Streak: <span id="quizStreak">${streak}</span></span>
+  headerRow.innerHTML = `
+    <div class="topic-streak">
+      <span>TOPIC: <strong>${selectedTopic}</strong></span>
+      <span style="margin-left: 16px;">Streak: <span id="quizStreak">${streak}</span></span>
+    </div>
   `;
 
   const bookmarkBtn = document.createElement("button");
@@ -295,17 +232,15 @@ function renderQuestion() {
   bookmarkBtn.addEventListener("click", () => {
     q.bookmarked = !q.bookmarked;
     bookmarkBtn.textContent = q.bookmarked ? "Unbookmark" : "Bookmark";
-    toggleBookmark(q.id); // <-- Save to localStorage
-    // Update the in-memory bookmarkedQuestions array
+    toggleBookmark(q.id);
     bookmarkedQuestions = getBookmarkedQuestions(questions);
   });
 
-  headerRow.appendChild(topicStreak);
   headerRow.appendChild(bookmarkBtn);
   quizHeader.appendChild(headerRow);
+}
 
-  document.querySelector(".quiz-header strong").textContent = selectedTopic;
-  document.querySelector(".question-text").textContent = q.question;
+function renderAnswers(answerObjs) {
   const answersDiv = document.getElementById("answers");
   answersDiv.innerHTML = "";
   answerObjs.forEach((ansObj, i) => {
@@ -316,32 +251,35 @@ function renderQuestion() {
     btn.tabIndex = 0;
     btn.addEventListener("click", () => handleAnswerClick(ansObj.isCorrect, btn));
     btn.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        handleAnswerClick(ansObj.isCorrect, btn);
-      }
+      if (e.key === "Enter" || e.key === " ") handleAnswerClick(ansObj.isCorrect, btn);
     });
     answersDiv.appendChild(btn);
   });
-  document.querySelector(".feedback").textContent = "";
+}
 
-  // Remove old action button containers if present
+function renderQuestionActions(q) {
   const quizCard = document.querySelector(".quiz-card");
-  quizCard.querySelectorAll(".question-actions").forEach(el => el.remove());
-
-  // Action buttons (suggest, report, flag)
   const actionsDiv = document.createElement("div");
   actionsDiv.className = "question-actions";
   actionsDiv.setAttribute("role", "group");
   actionsDiv.setAttribute("aria-label", "Question actions");
 
-  // Suggest Button
-  const suggestBtn = document.createElement("button");
-  suggestBtn.textContent = "Suggest a Question";
-  suggestBtn.className = "suggest-btn";
-  suggestBtn.addEventListener("click", () => {
-    openModal(
-      "Suggest a Question",
-      `<form id="suggestForm">
+  // Suggest, Report, Flag, Rate
+  actionsDiv.appendChild(createSuggestBtn());
+  actionsDiv.appendChild(createReportBtn());
+  actionsDiv.appendChild(createFlagBtn());
+  actionsDiv.appendChild(createRateDiv(q.id));
+
+  quizCard.appendChild(actionsDiv);
+}
+
+function createSuggestBtn() {
+  const btn = document.createElement("button");
+  btn.textContent = "Suggest a Question";
+  btn.className = "suggest-btn";
+  btn.addEventListener("click", () => {
+    openModal("Suggest a Question", `
+      <form id="suggestForm">
         <label>Question:<br><input type="text" id="suggestQ" required></label><br>
         <label>Answer A:<br><input type="text" id="suggestA" required></label><br>
         <label>Answer B:<br><input type="text" id="suggestB" required></label><br>
@@ -350,8 +288,8 @@ function renderQuestion() {
         <label>Correct Answer (A/B/C/D):<br><input type="text" id="suggestCorrect" required maxlength="1"></label><br>
         <label>Topic:<br><input type="text" id="suggestTopic" required></label><br>
         <button type="submit">Submit</button>
-      </form>`
-    );
+      </form>
+    `);
     document.getElementById("suggestForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const suggestion = {
@@ -371,20 +309,21 @@ function renderQuestion() {
       document.querySelector(".modal-overlay").remove();
     });
   });
+  return btn;
+}
 
-  // Report Button
-  const reportBtn = document.createElement("button");
-  reportBtn.textContent = "Report Question";
-  reportBtn.className = "report-btn";
-  reportBtn.addEventListener("click", () => {
-    openModal(
-      "Report Question",
-      `<form id="reportForm">
+function createReportBtn() {
+  const btn = document.createElement("button");
+  btn.textContent = "Report Question";
+  btn.className = "report-btn";
+  btn.addEventListener("click", () => {
+    openModal("Report Question", `
+      <form id="reportForm">
         <p>Why are you reporting this question?</p>
         <textarea id="reportReason" required style="width:100%;height:60px;"></textarea><br>
         <button type="submit">Submit Report</button>
-      </form>`
-    );
+      </form>
+    `);
     document.getElementById("reportForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const report = {
@@ -398,85 +337,54 @@ function renderQuestion() {
       document.querySelector(".modal-overlay").remove();
     });
   });
+  return btn;
+}
 
-  // Flag as Unclear Button
-  const flagBtn = document.createElement("button");
-  flagBtn.textContent = "Flag as Unclear";
-  flagBtn.className = "flag-unclear-btn";
-  flagBtn.addEventListener("click", async () => {
+function createFlagBtn() {
+  const btn = document.createElement("button");
+  btn.textContent = "Flag as Unclear";
+  btn.className = "flag-unclear-btn";
+  btn.addEventListener("click", async () => {
     const qid = quiz[current].id;
     let unclearFlags = JSON.parse(localStorage.getItem("unclearFlags") || "{}");
     unclearFlags[qid] = (unclearFlags[qid] || 0) + 1;
     localStorage.setItem("unclearFlags", JSON.stringify(unclearFlags));
     showNotification("Thank you!", "This question has been flagged as unclear.", "badges/summary.png");
   });
+  return btn;
+}
 
-  actionsDiv.appendChild(suggestBtn);
-  actionsDiv.appendChild(reportBtn);
-  actionsDiv.appendChild(flagBtn);
-
-  // Add the rating stars
+function createRateDiv(qid) {
   const rateDiv = document.createElement("div");
   rateDiv.className = "rate-question";
   rateDiv.innerHTML = `
     <span>Rate: </span>
-    ${[1, 2, 3, 4, 5]
-      .map(
-        (n) =>
-          `<span class="star" data-star="${n}" style="cursor:pointer;font-size:1.2em;color:#ccc;">&#9734;</span>`
-      )
-      .join("")}
+    ${[1, 2, 3, 4, 5].map(n =>
+      `<span class="star" data-star="${n}" style="cursor:pointer;font-size:1.2em;color:#ccc;">&#9734;</span>`
+    ).join("")}
   `;
-  actionsDiv.appendChild(rateDiv);
-
-  // Add interactivity to the stars
   const stars = rateDiv.querySelectorAll(".star");
-  const qid = quiz[current].id; // Get the current question ID
   const ratings = JSON.parse(localStorage.getItem("questionRatings") || "{}");
-  const savedRating = ratings[qid] || 0; // Get the saved rating for the current question
-
-  // Show stars by default based on the saved rating
+  const savedRating = ratings[qid] || 0;
   stars.forEach((star, index) => {
-    star.style.color = index < savedRating ? "gold" : "#ccc"; // Fill stars up to the saved rating
-
+    star.style.color = index < savedRating ? "gold" : "#ccc";
     star.addEventListener("click", () => {
-      // Fill all stars up to the clicked one with gold
-      stars.forEach((s, i) => {
-        s.style.color = i <= index ? "gold" : "#ccc";
-      });
-
-      // Save the rating to localStorage or send it to the server
+      stars.forEach((s, i) => s.style.color = i <= index ? "gold" : "#ccc");
       const rating = index + 1;
       ratings[qid] = rating;
       localStorage.setItem("questionRatings", JSON.stringify(ratings));
-
       showNotification("Thank you!", `You rated this question ${rating} stars.`, "badges/summary.png");
     });
-
-    // Highlight stars on hover
     star.addEventListener("mouseover", () => {
-      stars.forEach((s, i) => {
-        s.style.color = i <= index ? "gold" : "#ccc";
-      });
+      stars.forEach((s, i) => s.style.color = i <= index ? "gold" : "#ccc");
     });
-
-    // Reset stars to the saved rating or default on mouseout
     star.addEventListener("mouseout", () => {
-      stars.forEach((s, i) => {
-        s.style.color = i < savedRating ? "gold" : "#ccc";
-      });
+      stars.forEach((s, i) => s.style.color = i < savedRating ? "gold" : "#ccc");
     });
   });
-
-  quizCard.appendChild(actionsDiv);
-
-  // Enable/disable buttons as needed
-  bookmarkBtn.disabled = !q;
-  flagBtn.disabled = !q;
-  reportBtn.disabled = !q;
+  return rateDiv;
 }
 
-// Handle Answer Click
 function handleAnswerClick(isCorrect, btn) {
   if (!quiz[current]) return;
   btn.classList.add(isCorrect ? "correct" : "incorrect");
@@ -490,37 +398,27 @@ function handleAnswerClick(isCorrect, btn) {
     const correctAnswer = quiz[current].answers[quiz[current].correct];
     feedback.textContent = `Incorrect! The correct answer is: ${correctAnswer}`;
     feedback.style.color = "red";
-
-    // Add to missedQuestions if not already present
     if (!missedQuestions.includes(qid)) {
       missedQuestions.push(qid);
       saveUserData();
     }
     quiz[current].stats = quiz[current].stats || { correct: 0, incorrect: 0 };
     quiz[current].stats.incorrect++;
-
-    const now = Date.now();
     localStorage.setItem("review_" + qid, JSON.stringify({
-      lastMissed: now,
-      interval: 24 * 60 * 60 * 1000 // 1 day, increase on each miss
+      lastMissed: Date.now(),
+      interval: 24 * 60 * 60 * 1000
     }));
   } else {
     feedback.textContent = "Correct!";
     feedback.style.color = "green";
-
-    // Remove from missedQuestions if answered correctly
     missedQuestions = missedQuestions.filter(id => id !== qid);
     saveUserData();
     quiz[current].stats = quiz[current].stats || { correct: 0, incorrect: 0 };
     quiz[current].stats.correct++;
   }
-
   const explanation = quiz[current].explanation || "";
   feedback.innerHTML += explanation ? `<br><em>${explanation}</em>` : "";
-
   if (isCorrect) correct++;
-
-  // Remove from unansweredQuestions as before
   unansweredQuestions = unansweredQuestions.filter(q => q.id !== qid);
 
   setTimeout(() => {
@@ -530,100 +428,72 @@ function handleAnswerClick(isCorrect, btn) {
       return;
     }
     renderQuestion();
-
-    // Dynamically update the chart
-    const unanswered = quiz.length - current;
-    renderAccuracyChart(correct, current - correct, unanswered);
+    renderAccuracyChart(correct, current - correct, quiz.length - current);
   }, 1500);
 }
 
-// Update Streak
 function updateStreak(isCorrect) {
-  if (isCorrect) {
-    streak++;
-  } else {
-    streak = 0;
-  }
+  streak = isCorrect ? streak + 1 : 0;
   document.getElementById("quizStreak").textContent = streak;
-  checkBadges(); // Check badges after updating streak
+  checkBadges();
 }
 
-// Update Progress
 function updateProgress(current, total) {
   const progress = Math.round((current / total) * 100);
   document.querySelector(".progress-fill").style.width = `${progress}%`;
   document.querySelector(".progress-section span:last-child").textContent = `${progress}%`;
 }
 
-// Show Summary
 function showSummary() {
-  // Calculate accuracy
   const accuracy = quiz.length > 0 ? Math.round((correct / quiz.length) * 100) : 0;
-
-  // Show quiz summary as a notification
-  showNotification(
-    "Quiz Summary",
-    `You answered ${correct} out of ${quiz.length} questions correctly (${accuracy}% accuracy).`,
-    "badges/summary.png" // Replace with a relevant image path
-  );
-
-  // Check badges after completing the quiz
+  showNotification("Quiz Summary", `You answered ${correct} out of ${quiz.length} questions correctly (${accuracy}% accuracy).`, "badges/summary.png");
   checkBadges();
-
-  // Show "Review Missed" if there are missed questions
-  if (missedQuestions.length > 0) {
-    const reviewBtn = document.createElement("button");
-    reviewBtn.textContent = "Review Missed Questions";
-    reviewBtn.className = "modal-btn";
-    reviewBtn.onclick = () => {
-      console.log("Missed:", missedQuestions);
-      quiz = questions.filter(q => missedQuestions.includes(q.id));
-      console.log("Quiz for review:", quiz);
-      current = 0;
-      correct = 0;
-      streak = 0;
-      document.querySelector(".quiz-card").classList.remove("hidden");
-      renderQuestion();
-      document.querySelector(".notification-container")?.remove();
-    };
-    setTimeout(() => {
-      document.body.appendChild(reviewBtn);
-      setTimeout(() => reviewBtn.remove(), 5000); // Remove after 5s
-    }, 500); // Show after summary
-  }
-
-  // Show "Smart Review" if there are smart review questions
-  if (getSmartReviewQuestions().length > 0) {
-    const smartReviewBtn = document.createElement("button");
-    smartReviewBtn.textContent = "Smart Review Questions";
-    smartReviewBtn.className = "modal-btn";
-    smartReviewBtn.onclick = () => {
-      quiz = getSmartReviewQuestions();
-      current = 0; correct = 0; streak = 0;
-      document.querySelector(".quiz-card").classList.remove("hidden");
-      renderQuestion();
-      document.querySelector(".notification-container")?.remove();
-    };
-    setTimeout(() => {
-      document.body.appendChild(smartReviewBtn);
-      setTimeout(() => smartReviewBtn.remove(), 5000); // Remove after 5s
-    }, 500); // Show after summary
-  }
-
-  saveQuizResult(); // Save to history
+  if (missedQuestions.length > 0) showReviewMissedBtn();
+  if (getSmartReviewQuestions().length > 0) showSmartReviewBtn();
+  saveQuizResult();
 }
 
-// Open Modal Function
+function showReviewMissedBtn() {
+  const reviewBtn = document.createElement("button");
+  reviewBtn.textContent = "Review Missed Questions";
+  reviewBtn.className = "modal-btn";
+  reviewBtn.onclick = () => {
+    quiz = questions.filter(q => missedQuestions.includes(q.id));
+    current = 0; correct = 0; streak = 0;
+    document.querySelector(".quiz-card").classList.remove("hidden");
+    renderQuestion();
+    document.querySelector(".notification-container")?.remove();
+  };
+  setTimeout(() => {
+    document.body.appendChild(reviewBtn);
+    setTimeout(() => reviewBtn.remove(), 5000);
+  }, 500);
+}
+
+function showSmartReviewBtn() {
+  const smartReviewBtn = document.createElement("button");
+  smartReviewBtn.textContent = "Smart Review Questions";
+  smartReviewBtn.className = "modal-btn";
+  smartReviewBtn.onclick = () => {
+    quiz = getSmartReviewQuestions();
+    current = 0; correct = 0; streak = 0;
+    document.querySelector(".quiz-card").classList.remove("hidden");
+    renderQuestion();
+    document.querySelector(".notification-container")?.remove();
+  };
+  setTimeout(() => {
+    document.body.appendChild(smartReviewBtn);
+    setTimeout(() => smartReviewBtn.remove(), 5000);
+  }, 500);
+}
+
+// --- MODALS ---
 function openModal(title, content, toggle = false) {
   const existingModal = document.querySelector(".modal-overlay");
-
-  // If toggle is true and the modal exists, close it
   if (toggle && existingModal) {
     existingModal.remove();
     return;
   }
-
-  // Create and display the modal
   const modal = document.createElement("div");
   modal.className = "modal-overlay";
   modal.setAttribute("role", "dialog");
@@ -635,83 +505,45 @@ function openModal(title, content, toggle = false) {
         <h2>${title}</h2>
         <button class="close-modal">&times;</button>
       </div>
-      <div class="modal-body">
-        ${content}
-      </div>
+      <div class="modal-body">${content}</div>
     </div>
   `;
   document.body.appendChild(modal);
-
-  // Close modal when clicking the close button or outside the modal
   modal.querySelector(".close-modal").addEventListener("click", () => modal.remove());
   modal.addEventListener("click", () => modal.remove());
   modal.querySelector(".modal").addEventListener("click", (e) => e.stopPropagation());
   modal.querySelector(".close-modal").setAttribute("aria-label", "Close modal");
-
   document.addEventListener("keydown", function escListener(e) {
     if (e.key === "Escape") {
       modal.remove();
       document.removeEventListener("keydown", escListener);
     }
   });
-
-  setTimeout(() => {
-    document.querySelector('.modal').scrollTop = 0;
-  }, 0);
+  setTimeout(() => document.querySelector('.modal').scrollTop = 0, 0);
 }
 
-// Smart Learning Modal
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelector(".smart-learning a").addEventListener("click", (e) => {
-    e.preventDefault();
-
-    openModal(
-      "Smart Learning",
-      `
-        <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
-        <div class="badge-grid">
-          ${badges.map(badge => `
-            <div class="badge-item ${earnedBadges.includes(badge.id) ? "" : "unearned"}">
-              <img src="badges/${badge.id}.png" alt="${badge.name}" />
-              <p>${badge.name}</p>
-            </div>
-          `).join("")}
-        </div>
-      `,
-      true // Pass true if you want toggling behavior
-    );
-  });
-
-  // Show progress chart by default
-  const stats = {
-    correct: correct,
-    incorrect: quiz.length - correct,
-    unanswered: quiz.length > 0 ? quiz.length - current : 0
-  };
-  renderAccuracyChart(stats.correct, stats.incorrect, stats.unanswered);
-  renderHistoryChart(); // Always show history chart on load
-});
-
-// Update View Analytics Modal
-document.querySelector(".view-analytics a").addEventListener("click", (e) => {
+function showSmartLearningModal(e) {
   e.preventDefault();
+  openModal("Smart Learning", `
+    <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
+    <div class="badge-grid">
+      ${badges.map(badge => `
+        <div class="badge-item ${earnedBadges.includes(badge.id) ? "" : "unearned"}">
+          <img src="badges/${badge.id}.png" alt="${badge.name}" />
+          <p>${badge.name}</p>
+        </div>
+      `).join("")}
+    </div>
+  `, true);
+}
 
-  // Dynamically calculate stats
+function showAnalyticsModal(e) {
+  e.preventDefault();
   const totalQuestions = quiz.length;
   const unansweredQuestionsCount = totalQuestions - current;
   const incorrectAnswers = current - correct;
   const accuracy = totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
-
-  const stats = {
-    totalQuestions,
-    correctAnswers: correct,
-    incorrectAnswers,
-    unansweredQuestions: unansweredQuestionsCount,
-    accuracy,
-    streak,
-  };
-
-  // Mastery heatmap HTML
+  const stats = { totalQuestions, correctAnswers: correct, incorrectAnswers, unansweredQuestions: unansweredQuestionsCount, accuracy, streak };
   const topicStats = getTopicMastery();
   const masteryHtml = Object.entries(topicStats).map(([topic, stat]) => {
     const acc = stat.total ? stat.correct / stat.total : 0;
@@ -719,175 +551,118 @@ document.querySelector(".view-analytics a").addEventListener("click", (e) => {
       <strong>${topic}:</strong> ${(acc*100).toFixed(0)}% mastery
     </li>`;
   }).join("");
-
-  // Open the modal
-  openModal(
-    "View Analytics",
-    `
-      <p>Track your progress, accuracy, and streaks over time to measure your improvement.</p>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-        <canvas id="accuracyChart" width="200" height="200"></canvas>
-        <ul style="list-style: none; padding: 0; text-align: left;">
-          <li><strong>Total Questions Attempted:</strong> ${stats.totalQuestions}</li>
-          <li><strong>Correct Answers:</strong> ${stats.correctAnswers}</li>
-          <li><strong>Incorrect Answers:</strong> ${stats.incorrectAnswers}</li>
-          <li><strong>Unanswered Questions:</strong> ${stats.unansweredQuestions}</li>
-          <li><strong>Accuracy:</strong> ${stats.accuracy}%</li>
-          <li><strong>Current Streak:</strong> ${stats.streak}</li>
-        </ul>
-        <h4 style="margin-top:16px;">Mastery by Topic</h4>
-        <ul style="margin-top:0">${masteryHtml}</ul>
-        <h4 style="margin-top:16px;">Quiz History</h4>
-        <canvas id="historyChart" width="300" height="120"></canvas>
-      </div>
-    `
-  );
-
-  // Only call this ONCE, after the modal is open and the canvas exists:
+  openModal("View Analytics", `
+    <p>Track your progress, accuracy, and streaks over time to measure your improvement.</p>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+      <canvas id="accuracyChart" width="200" height="200"></canvas>
+      <ul style="list-style: none; padding: 0; text-align: left;">
+        <li><strong>Total Questions Attempted:</strong> ${stats.totalQuestions}</li>
+        <li><strong>Correct Answers:</strong> ${stats.correctAnswers}</li>
+        <li><strong>Incorrect Answers:</strong> ${stats.incorrectAnswers}</li>
+        <li><strong>Unanswered Questions:</strong> ${stats.unansweredQuestions}</li>
+        <li><strong>Accuracy:</strong> ${stats.accuracy}%</li>
+        <li><strong>Current Streak:</strong> ${stats.streak}</li>
+      </ul>
+      <h4 style="margin-top:16px;">Mastery by Topic</h4>
+      <ul style="margin-top:0">${masteryHtml}</ul>
+      <h4 style="margin-top:16px;">Quiz History</h4>
+      <canvas id="historyChart" width="300" height="120"></canvas>
+    </div>
+  `);
   setTimeout(() => {
     renderAccuracyChart(stats.correctAnswers, stats.incorrectAnswers, stats.unansweredQuestions);
     renderHistoryChart();
   }, 0);
-});
+}
 
-// Update Settings Modal
-document.querySelector(".settings a").addEventListener("click", (e) => {
+function showSettingsModal(e) {
   e.preventDefault();
-  openModal(
-    "Settings",
-    `
-      <p>Customize your quiz experience. Adjust difficulty, topics, and more.</p>
-      <form id="settingsForm">
-        <label>
-          Difficulty:
-          <select id="difficultySelect">
-            <option value="easy">Easy</option>
-            <option value="moderate">Moderate</option>
-            <option value="hard">Hard</option>
-          </select>
-        </label>
-        <br />
-        <label>
-          Enable Timer:
-          <input type="checkbox" id="timerToggle" />
-        </label>
-        <br />
-        <label>
-          <input type="checkbox" id="adaptiveModeToggle" /> Enable Adaptive Mode
-        </label>
-        <br />
-        <button type="submit">Save Settings</button>
-      </form>
-      <hr />
-      <button id="exportProgressBtn" type="button">Export Progress</button>
-      <input type="file" id="importProgressInput" style="display:none" accept=".json" />
-      <button id="importProgressBtn" type="button">Import Progress</button>
-      <button id="resetAllButton" style="background-color: red; color: white; padding: 10px; border: none; cursor: pointer;">
-        Reset All
-      </button>
-    `
-  );
-
-  // Add functionality to the form
+  openModal("Settings", `
+    <p>Customize your quiz experience. Adjust difficulty, topics, and more.</p>
+    <form id="settingsForm">
+      <label>
+        Difficulty:
+        <select id="difficultySelect">
+          <option value="easy">Easy</option>
+          <option value="moderate">Moderate</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <br />
+      <label>
+        Enable Timer:
+        <input type="checkbox" id="timerToggle" />
+      </label>
+      <br />
+      <label>
+        <input type="checkbox" id="adaptiveModeToggle" /> Enable Adaptive Mode
+      </label>
+      <br />
+      <button type="submit">Save Settings</button>
+    </form>
+    <hr />
+    <button id="exportProgressBtn" type="button">Export Progress</button>
+    <input type="file" id="importProgressInput" style="display:none" accept=".json" />
+    <button id="importProgressBtn" type="button">Import Progress</button>
+    <button id="resetAllButton" style="background-color: red; color: white; padding: 10px; border: none; cursor: pointer;">
+      Reset All
+    </button>
+  `);
   const form = document.getElementById("settingsForm");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const adaptiveMode = document.getElementById("adaptiveModeToggle").checked;
-    const randomMode = document.getElementById("randomModeToggle").checked;
-    localStorage.setItem("adaptiveMode", adaptiveMode);
-    localStorage.setItem("randomMode", randomMode);
+    localStorage.setItem("adaptiveMode", document.getElementById("adaptiveModeToggle").checked);
     // ...other settings...
   });
-
-  // Add functionality to the Reset All button
-  document.getElementById("resetAllButton").addEventListener("click", () => {
-    resetAll();
-  });
-
-  // When opening the settings modal
+  document.getElementById("resetAllButton").addEventListener("click", resetAll);
   document.getElementById("difficultySelect").value = localStorage.getItem("difficulty") || "easy";
   document.getElementById("timerToggle").checked = JSON.parse(localStorage.getItem("timerEnabled") || "false");
   document.getElementById("adaptiveModeToggle").checked = JSON.parse(localStorage.getItem("adaptiveMode") || "true");
-});
-
-if (localStorage.getItem("adaptiveMode") === null) {
-  localStorage.setItem("adaptiveMode", "true");
 }
 
-function checkBadges() {
-  badges.forEach(badge => {
-    if (!earnedBadges.includes(badge.id) && badge.condition()) {
-      earnedBadges.push(badge.id);
-      localStorage.setItem("earnedBadges", JSON.stringify(earnedBadges));
-      showBadgeModal(badge); // Show a modal when a badge is earned
-      console.log(`Badge earned: ${badge.name}`);
-    }
-  });
+// --- CHARTS ---
+function renderChartsOnLoad() {
+  const stats = {
+    correct: correct,
+    incorrect: quiz.length - correct,
+    unanswered: quiz.length > 0 ? quiz.length - current : 0
+  };
+  renderAccuracyChart(stats.correct, stats.incorrect, stats.unanswered);
+  renderHistoryChart();
 }
-
-function showBadgeModal(badge) {
-  openModal(
-    "New Achievement Unlocked!",
-    `
-      <h3>${badge.name}</h3>
-      <p>${badge.description}</p>
-      <img src="badges/${badge.id}.png" alt="${badge.name}" style="width: 100px; height: 100px;" />
-    `
-  );
-}
-
-let accuracyChart; // Declare a global variable to hold the chart instance
 
 function renderAccuracyChart(correct, incorrect, unanswered) {
   const ctxElem = document.getElementById("accuracyChart");
-  if (!ctxElem) return; // Exit if the canvas doesn't exist
-
+  if (!ctxElem) return;
   const ctx = ctxElem.getContext("2d");
-
-  // If the chart already exists, destroy it before creating a new one
-  if (accuracyChart) {
-    accuracyChart.destroy();
-  }
-
-  // Create a new chart instance
+  if (accuracyChart) accuracyChart.destroy();
   accuracyChart = new Chart(ctx, {
     type: "doughnut",
     data: {
       labels: ["Correct", "Incorrect", "Unanswered"],
       datasets: [{
         data: [correct, incorrect, unanswered],
-        backgroundColor: ["#6BCB77", "#FF6B6B", "#FFD93D"], // Green, Red, Yellow
-        hoverBackgroundColor: ["#8FDCA8", "#FF8787", "#FFE066"], // Lighter shades for hover
+        backgroundColor: ["#6BCB77", "#FF6B6B", "#FFD93D"],
+        hoverBackgroundColor: ["#8FDCA8", "#FF8787", "#FFE066"],
         borderWidth: 1,
-        borderColor: "#ffffff", // White border for a clean look
+        borderColor: "#ffffff",
       }],
     },
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: {
-            font: {
-              size: 14,
-            },
-          },
-        },
+        legend: { position: "bottom", labels: { font: { size: 14 } } },
       },
-      cutout: "85%", // Narrower ring for a sleek look
+      cutout: "85%",
     },
   });
 }
 
 function renderHistoryChart() {
   const results = JSON.parse(localStorage.getItem("quizResults")) || [];
-  const ctx = document.getElementById("historyChart").getContext("2d");
-
-  // Destroy previous chart if it exists
-  if (historyChart) {
-    historyChart.destroy();
-  }
-
+  const ctx = document.getElementById("historyChart")?.getContext("2d");
+  if (!ctx) return;
+  if (historyChart) historyChart.destroy();
   historyChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -919,6 +694,7 @@ function renderHistoryChart() {
   });
 }
 
+// --- NOTIFICATIONS ---
 function showNotification(title, message, imageUrl) {
   let container = document.getElementById("notification-container");
   if (!container) {
@@ -929,42 +705,38 @@ function showNotification(title, message, imageUrl) {
     container.setAttribute("aria-live", "assertive");
     document.body.appendChild(container);
   }
-
-  // Create the notification element
   const notification = document.createElement("div");
   notification.className = "notification";
-  notification.innerHTML = `
-    <h3>${title}</h3>
-    <p>${message}</p>
-    <img src="${imageUrl}" alt="${title}" />
-  `;
-
-  // Append the notification to the container
+  notification.innerHTML = `<h3>${title}</h3><p>${message}</p><img src="${imageUrl}" alt="${title}" />`;
   container.appendChild(notification);
-
-  // Automatically remove the notification after 3.5 seconds
   setTimeout(() => {
     notification.remove();
-    if (container.children.length === 0) {
-      container.remove(); // Remove the container if no notifications are left
-    }
+    if (container.children.length === 0) container.remove();
   }, 3500);
 }
 
-// Example usage
-showNotification(
-  "Welcome!",
-  "Challenge your skills with Massage Therapy Smart Study PRO!",
-  "badges/welcome.png" // Replace with the path to a welcome image
-);
+// --- BADGES ---
+function checkBadges() {
+  badges.forEach(badge => {
+    if (!earnedBadges.includes(badge.id) && badge.condition()) {
+      earnedBadges.push(badge.id);
+      localStorage.setItem("earnedBadges", JSON.stringify(earnedBadges));
+      showBadgeModal(badge);
+    }
+  });
+}
 
+function showBadgeModal(badge) {
+  openModal("New Achievement Unlocked!", `
+    <h3>${badge.name}</h3>
+    <p>${badge.description}</p>
+    <img src="badges/${badge.id}.png" alt="${badge.name}" style="width: 100px; height: 100px;" />
+  `);
+}
+
+// --- STORAGE & DATA ---
 function saveStats() {
-  const stats = {
-    correct,
-    streak,
-    current,
-    quizLength: quiz.length,
-  };
+  const stats = { correct, streak, current, quizLength: quiz.length };
   localStorage.setItem("userStats", JSON.stringify(stats));
 }
 
@@ -980,16 +752,21 @@ function loadStats() {
 
 function saveUserData() {
   localStorage.setItem("missedQuestions", JSON.stringify(missedQuestions));
-  // ...other saves
 }
 
 function loadUserData() {
   missedQuestions = JSON.parse(localStorage.getItem("missedQuestions")) || [];
-  // ...other loads
 }
 
+function saveQuizResult() {
+  const results = JSON.parse(localStorage.getItem("quizResults")) || [];
+  results.push({ streak, total: quiz.length, score: correct, date: new Date().toISOString() });
+  localStorage.setItem("quizResults", JSON.stringify(results));
+  renderHistoryChart();
+}
+
+// --- ANALYTICS ---
 function getTopicMastery() {
-  // Aggregate stats by topic
   const topicStats = {};
   questions.forEach(q => {
     if (!q.topic) return;
@@ -1002,285 +779,43 @@ function getTopicMastery() {
 }
 
 function masteryColor(accuracy) {
-  if (accuracy >= 0.85) return "#6BCB77"; // green
-  if (accuracy >= 0.6) return "#FFD93D"; // yellow
-  return "#FF6B6B"; // red
+  if (accuracy >= 0.85) return "#6BCB77";
+  if (accuracy >= 0.6) return "#FFD93D";
+  return "#FF6B6B";
 }
-
-function saveQuizResult() {
-  const results = JSON.parse(localStorage.getItem("quizResults")) || [];
-  results.push({
-    streak,
-    total: quiz.length,
-    score: correct,
-    date: new Date().toISOString(),
-  });
-  localStorage.setItem("quizResults", JSON.stringify(results));
-  renderHistoryChart(); // Update chart after saving results
-}
-
-function getNextQuestion() {
-  // Example: If last 3 correct, increase difficulty
-  const lastResults = quiz.slice(Math.max(0, current - 3), current).map(q => q.stats?.correct > 0);
-  let nextDifficulty = "easy";
-  if (lastResults.every(Boolean)) nextDifficulty = "moderate";
-  if (lastResults.length === 3 && lastResults.every(Boolean) && quiz[current-1]?.difficulty === "moderate") nextDifficulty = "hard";
-  // Pick a question of nextDifficulty not yet answered
-  return questions.find(q => q.difficulty === nextDifficulty && !quiz.includes(q));
-}
-
-function getDueForReview() {
-  const now = Date.now();
-  return questions.filter(q => {
-    const review = JSON.parse(localStorage.getItem("review_" + q.id));
-    if (!review) return false;
-    return now - review.lastMissed > review.interval;
-  });
-}
-
-function getWeakTopics() {
-  const mastery = getTopicMastery();
-  return Object.entries(mastery)
-    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / a[1].total))
-    .map(([topic]) => topic);
-}
-
-function getAdaptiveQuizLength() {
-  if (streak >= 10) return 20; // longer quiz for high streak
-  if (streak >= 5) return 10;
-  if (streak <= 2) return 5;   // shorter quiz if struggling
-  return 7; // default
-}
-
-function isUnlocked(topic) {
-  const mastery = getTopicMastery();
-  if (topic === "Advanced") {
-    return (mastery["Basics"]?.correct / mastery["Basics"]?.total) > 0.8;
-  }
-  return true;
-}
-
-function getDailyChallenge() {
-  const today = new Date().toISOString().slice(0, 10);
-  const challengeKey = "challenge_" + today;
-  let challenge = JSON.parse(localStorage.getItem(challengeKey));
-  if (!challenge) {
-    // Pick 5 random weak-topic questions
-    const weakTopics = getWeakTopics().slice(0, 2);
-    const pool = questions.filter(q => weakTopics.includes(q.topic));
-    challenge = shuffle(pool).slice(0, 5);
-    localStorage.setItem(challengeKey, JSON.stringify(challenge));
-  }
-  return challenge;
-}
-
-// To start daily challenge:
-quiz = getDailyChallenge();
 
 function getSmartReviewQuestions() {
   return questions.filter(q => (q.stats?.incorrect || 0) > 1 || ((q.stats?.correct || 0) / ((q.stats?.correct || 0) + (q.stats?.incorrect || 0))) < 0.7);
 }
 
-function getWeeklyStats() {
-  const results = JSON.parse(localStorage.getItem("quizResults")) || [];
-  const now = Date.now();
-  const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
-  return results.filter(r => new Date(r.date).getTime() > weekAgo);
-}
-
-// --- FIREBASE CONFIG ---
-// Replace with your own config from Firebase Console
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  // ...other config...
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// --- END FIREBASE CONFIG ---
-
-async function submitSuggestionToFirestore(suggestion) {
-  try {
-    await db.collection("suggestedQuestions").add(suggestion);
-  } catch (error) {
-    showNotification("Error", "Failed to submit suggestion. Try again later.", "badges/summary.png");
-    console.error("Firestore error:", error);
-  }
-}
-
-async function submitReportToFirestore(report) {
-  try {
-    await db.collection("reportedQuestions").add(report);
-  } catch (error) {
-    showNotification("Error", "Failed to submit report. Try again later.", "badges/summary.png");
-    console.error("Firestore error:", error);
-  }
-}
-
-function getAdaptiveQuiz(questions, quizLength, streak) {
-  let difficulty = "easy";
-  if (streak >= 5) difficulty = "moderate";
-  if (streak >= 10) difficulty = "hard";
-  const filtered = questions.filter(q => q.difficulty === difficulty);
-  return shuffle(filtered).slice(0, quizLength);
-}
-
-function getBalancedQuiz(questions, quizLength) {
-  const byTopic = {};
-  questions.forEach(q => {
-    if (!byTopic[q.topic]) byTopic[q.topic] = [];
-    byTopic[q.topic].push(q);
-  });
-  Object.values(byTopic).forEach(arr => shuffle(arr));
-  const topics = Object.keys(byTopic);
-  const quiz = [];
-  let i = 0;
-  while (quiz.length < quizLength && topics.length) {
-    const topic = topics[i % topics.length];
-    if (byTopic[topic].length) {
-      quiz.push(byTopic[topic].pop());
-    }
-    i++;
-  }
-  return quiz;
-}
-
-function getWeakTopicQuiz(questions, mastery, quizLength) {
-  const weakTopics = Object.entries(mastery)
-    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))
-    .map(([topic]) => topic);
-  const pool = questions.filter(q => weakTopics.includes(q.topic));
-  return shuffle(pool).slice(0, quizLength);
-}
-
-function filterLowQualityQuestions(questions) {
-  const ratings = JSON.parse(localStorage.getItem("questionRatings") || "{}");
-  const unclearFlags = JSON.parse(localStorage.getItem("unclearFlags") || "{}");
-  // Exclude questions with rating <= 2 or flagged as unclear 2+ times
-  return questions.filter(q => {
-    const qid = q.id;
-    return (ratings[qid] === undefined || ratings[qid] > 2) && (unclearFlags[qid] === undefined || unclearFlags[qid] < 2);
-  });
-}
-
-function getStrongestAndWeakestTopics() {
-  const mastery = getTopicMastery();
-  const sorted = Object.entries(mastery)
-    .filter(([_, stat]) => stat.total > 0)
-    .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / a[1].total));
-  return {
-    weakest: sorted[0],
-    strongest: sorted[sorted.length - 1]
-  };
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  // your code that uses document.getElementById(...)
-});
-
-const { weakest, strongest } = getStrongestAndWeakestTopics();
-const dueForReview = getDueForReview().length;
-const avgRating = (() => {
-  const ratings = Object.values(JSON.parse(localStorage.getItem("questionRatings") || "{}"));
-  return ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(2) : "N/A";
-})();
-const flaggedCount = Object.values(JSON.parse(localStorage.getItem("unclearFlags") || "{}")).filter(v => v >= 2).length;
-
-const analyticsHtml = `
-  <ul>
-    <li><strong>Strongest Topic:</strong> ${strongest ? strongest[0] : "N/A"}</li>
-    <li><strong>Weakest Topic:</strong> ${weakest ? weakest[0] : "N/A"}</li>
-    <li><strong>Questions Due for Review:</strong> ${dueForReview}</li>
-    <li><strong>Average Question Rating:</strong> ${avgRating}</li>
-    <li><strong>Flagged Questions:</strong> ${flaggedCount}</li>
-  </ul>
-`;
-
-// Example: Save bookmarked question IDs
+// --- BOOKMARKS ---
 function toggleBookmark(questionId) {
   let bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
-  if (bookmarks.includes(questionId)) {
-    bookmarks = bookmarks.filter(id => id !== questionId);
-  } else {
-    bookmarks.push(questionId);
-  }
+  if (bookmarks.includes(questionId)) bookmarks = bookmarks.filter(id => id !== questionId);
+  else bookmarks.push(questionId);
   localStorage.setItem("bookmarkedQuestions", JSON.stringify(bookmarks));
 }
 
-// Example: Get bookmarked questions
 function getBookmarkedQuestions(allQuestions) {
   const bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
   return allQuestions.filter(q => bookmarks.includes(q.id));
 }
 
-async function loadManifest() {
-  const res = await fetch("manifestquestions.json");
-  return await res.json();
-}
-
-async function loadAllJsonFiles() {
-  const paths = await loadManifest();
-  const data = await Promise.all(
-    paths.map(async path => {
-      try {
-        const res = await fetch(path); // Changed from fetch(`questions/${path}`) fullPath = `questions/${path}`;
-        if (!res.ok) throw new Error(`❌ Failed to load ${path}`);
-        return { path, data: await res.json() };
-      } catch (err) {
-        console.error(err);
-        return null;
-      }
-    })
-  );
-  return data.filter(Boolean);
-}
-
-document.querySelector('.smart-learning .settings-link').addEventListener("click", (e) => {
-  e.preventDefault();
-  openModal(
-    "Smart Learning",
-    `
-      <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
-      <div class="badge-grid">
-        ${badges.map(badge => `
-          <div class="badge-item ${earnedBadges.includes(badge.id) ? "" : "unearned"}">
-            <img src="badges/${badge.id}.png" alt="${badge.name}" />
-            <p>${badge.name}</p>
-          </div>
-        `).join("")}
-      </div>
-    `,
-    true
-  );
-});
-
-function formatTitle(filename) {
-  return filename
-    .replace(/_/g, ' ')
-    .replace(/\.json$/i, '')
-    .replace(/\b\w/g, c => c.toUpperCase());
-}
-
-// Utility: Get manifest paths (use this if you need the list elsewhere)
+// --- MANIFEST & TOPIC DROPDOWN ---
 async function getManifestPaths() {
   const res = await fetch('manifestquestions.json');
   return await res.json();
 }
 
-// Populate topic dropdown from manifestquestions.json
 async function populateTopicDropdown() {
   const dropdown = document.querySelector('.control[data-topic]');
   if (!dropdown) return;
-
   dropdown.innerHTML = `
     <option value="" disabled selected>-- Select Topic --</option>
     <option value="unanswered">Unanswered Questions</option>
     <option value="missed">Missed Questions</option>
     <option value="bookmarked">Bookmarked Questions</option>
   `;
-
   try {
     const manifestPaths = await getManifestPaths();
     for (const path of manifestPaths) {
@@ -1299,36 +834,33 @@ async function populateTopicDropdown() {
       }
     }
   } catch (err) {
-    console.error('Failed to load manifestquestions.json', err);
+    // fail silently
   }
 }
 
-// Call this after DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  populateTopicDropdown();
-});
+// --- FIREBASE CONFIG ---
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-const smartLearningLink = document.querySelector('.smart-learning-link');
-const analyticsLink = document.querySelector('.analytics-link');
-const settingsLink = document.querySelector('.settings-link');
-
-if (smartLearningLink) {
-  smartLearningLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    openModal("Smart Learning", "...modal content...", true);
-  });
+async function submitSuggestionToFirestore(suggestion) {
+  try {
+    await db.collection("suggestedQuestions").add(suggestion);
+  } catch (error) {
+    showNotification("Error", "Failed to submit suggestion. Try again later.", "badges/summary.png");
+  }
 }
 
-if (analyticsLink) {
-  analyticsLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    openModal("View Analytics", "...modal content...");
-  });
+async function submitReportToFirestore(report) {
+  try {
+    await db.collection("reportedQuestions").add(report);
+  } catch (error) {
+    showNotification("Error", "Failed to submit report. Try again later.", "badges/summary.png");
+  }
 }
 
-if (settingsLink) {
-  settingsLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    openModal("Settings", "...modal content...");
-  });
-}
+// --- END OF FILE ---
