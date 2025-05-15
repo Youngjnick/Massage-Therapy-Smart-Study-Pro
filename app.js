@@ -35,6 +35,11 @@ let earnedBadges = JSON.parse(localStorage.getItem("earnedBadges")) || [];
 earnedBadges = earnedBadges.filter(badgeId => badges.some(b => b.id === badgeId));
 
 // --- UTILITY FUNCTIONS ---
+/**
+ * Shuffle an array in place.
+ * @param {Array} array
+ * @returns {Array}
+ */
 function shuffle(array) {
   let m = array.length, t, i;
   while (m) {
@@ -46,54 +51,45 @@ function shuffle(array) {
   return array;
 }
 
+/**
+ * Format a filename or topic string to a human-readable title.
+ * @param {string} filename
+ * @returns {string}
+ */
 function formatTitle(filename) {
   return filename.replace(/_/g, ' ').replace(/\.json$/i, '').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 // --- QUESTION LOADING & INITIALIZATION ---
+/**
+ * Load questions from localStorage or manifest.
+ */
 function loadQuestions() {
   const cachedQuestions = localStorage.getItem("questions");
   try {
     if (cachedQuestions) {
       questions = JSON.parse(cachedQuestions);
       const bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
+      // Mark bookmarked questions
       questions.forEach(q => { q.bookmarked = bookmarks.includes(q.id); });
       unansweredQuestions = [...questions];
       loadUserData();
-      updateTopicDropdown(questions);
+      populateTopicDropdown(questions);
       document.querySelector(".start-btn").disabled = false;
       document.getElementById("loading").style.display = "none";
       preloadImages(questions);
       bookmarkedQuestions = getBookmarkedQuestions(questions);
-    } else {
-      loadAllQuestionModules();
     }
   } catch (err) {
     localStorage.removeItem("questions");
-    loadAllQuestionModules();
+    console.error("Error loading questions:", err);
   }
 }
 
-function updateTopicDropdown(questionsArr) {
-  const topics = [...new Set(questionsArr.map((q) => q.topic))]
-    .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b));
-  const topicSelect = document.querySelector(".control[data-topic]");
-  if (!topicSelect) return;
-  topicSelect.innerHTML = `
-    <option value="" disabled selected>-- Select Topic --</option>
-    <option value="unanswered">Unanswered Questions</option>
-    <option value="missed">Missed Questions</option>
-    <option value="bookmarked">Bookmarked Questions</option>
-  `;
-  topics.forEach((topic) => {
-    const option = document.createElement("option");
-    option.value = topic;
-    option.textContent = formatTitle(topic);
-    topicSelect.appendChild(option);
-  });
-}
-
+/**
+ * Preload images for all questions to improve quiz performance.
+ * @param {Array} questionsArr
+ */
 function preloadImages(questionsArr) {
   questionsArr.forEach(q => {
     if (q.image) {
@@ -116,11 +112,15 @@ document.addEventListener("DOMContentLoaded", () => {
   renderChartsOnLoad();
 });
 
+/**
+ * Setup UI event listeners for dropdowns, buttons, and modals.
+ */
 function setupUI() {
   const topicSelect = document.querySelector(".control[data-topic]");
   const lengthSelect = document.querySelector(".control[data-quiz-length]");
   const startBtn = document.querySelector(".start-btn");
 
+  // Enable/disable start button based on selections
   function updateStartBtn() {
     startBtn.disabled = !(topicSelect.value && lengthSelect.value);
   }
@@ -132,7 +132,7 @@ function setupUI() {
 
   startBtn.addEventListener("click", startQuiz);
 
-  // Modal links
+  // Modal links for Smart Learning, Analytics, and Settings
   document.querySelectorAll(".smart-learning a, .smart-learning-link").forEach(link =>
     link.addEventListener("click", showSmartLearningModal)
   );
@@ -144,13 +144,67 @@ function setupUI() {
   );
 }
 
+// --- TOPIC DROPDOWN LOGIC (CONSOLIDATED) ---
+/**
+ * Populate the topic dropdown with topics from questions and manifest.
+ * @param {Array} [questionsArr]
+ */
+async function populateTopicDropdown(questionsArr) {
+  const dropdown = document.querySelector('.control[data-topic]');
+  if (!dropdown) return;
+  dropdown.innerHTML = `
+    <option value="" disabled selected>-- Select Topic --</option>
+    <option value="unanswered">Unanswered Questions</option>
+    <option value="missed">Missed Questions</option>
+    <option value="bookmarked">Bookmarked Questions</option>
+  `;
+  // Add topics from loaded questions
+  if (questionsArr && questionsArr.length) {
+    const topics = [...new Set(questionsArr.map((q) => q.topic))]
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b));
+    topics.forEach((topic) => {
+      const option = document.createElement("option");
+      option.value = topic;
+      option.textContent = formatTitle(topic);
+      dropdown.appendChild(option);
+    });
+  }
+  // Add topics from manifest (external .json files)
+  try {
+    const manifestPaths = await getManifestPaths();
+    for (const path of manifestPaths) {
+      try {
+        const fileRes = await fetch(path);
+        const data = await fileRes.json();
+        const option = document.createElement('option');
+        option.value = path;
+        option.textContent = data.title || formatTitle(path.split('/').pop());
+        dropdown.appendChild(option);
+      } catch (err) {
+        console.error("Error loading manifest file:", err);
+        const option = document.createElement('option');
+        option.value = path;
+        option.textContent = formatTitle(path.split('/').pop());
+        dropdown.appendChild(option);
+      }
+    }
+  } catch (err) {
+    console.error("Error loading manifest paths:", err);
+  }
+}
+
 // --- QUIZ LOGIC ---
+/**
+ * Start a quiz based on selected topic and length.
+ */
 async function startQuiz() {
   const topicSelect = document.querySelector(".control[data-topic]");
   const lengthSelect = document.querySelector(".control[data-quiz-length]");
   const topic = topicSelect.value;
   const length = lengthSelect.value === "all" ? 9999 : parseInt(lengthSelect.value, 10);
 
+  // If topic is a .json file, fetch and use its questions
   if (topic && topic.match(/\.json$/i)) {
     try {
       const res = await fetch(topic);
@@ -161,12 +215,14 @@ async function startQuiz() {
       document.querySelector(".quiz-card").classList.remove("hidden");
       renderQuestion();
       return;
-    } catch {
+    } catch (err) {
       showNotification("Error", "Failed to load questions from file.", "badges/summary.png");
+      console.error("Error loading quiz file:", err);
       return;
     }
   }
 
+  // Build quiz pool based on topic selection
   let quizPool = [];
   if (topic === "unanswered") quizPool = unansweredQuestions;
   else if (topic === "missed") quizPool = missedQuestions.map(id => questions.find(q => q.id === id)).filter(Boolean);
@@ -179,41 +235,51 @@ async function startQuiz() {
   renderQuestion();
 }
 
+/**
+ * Render the current quiz question and answers.
+ */
 function renderQuestion() {
+  // If quiz is empty, show a message
   if (!quiz || quiz.length === 0) {
     document.querySelector(".quiz-card").innerHTML = "<p>No missed questions to review!</p>";
     return;
   }
   const q = quiz[current];
   if (!q) {
+    // Hide quiz card if no more questions
     document.querySelector(".quiz-card").classList.add("hidden");
     return;
   }
 
-  // Shuffle answers and track correct index
+  // Shuffle answers and track correct index for accessibility/randomization
   const answerObjs = q.answers.map((a, i) => ({
     text: a,
     isCorrect: i === q.correct
   }));
   shuffle(answerObjs);
 
-  // Header row with topic, streak, and bookmark
+  // Render the quiz header (topic, streak, bookmark button)
   renderQuizHeader(q);
 
+  // Set question text and answers
   document.querySelector(".quiz-header strong").textContent = selectedTopic;
   document.querySelector(".question-text").textContent = q.question;
   renderAnswers(answerObjs);
   document.querySelector(".feedback").textContent = "";
 
-  // Remove old action button containers if present
+  // Remove any old action button containers before rendering new ones
   document.querySelector(".quiz-card").querySelectorAll(".question-actions").forEach(el => el.remove());
 
-  // Render actions (suggest, report, flag, rate)
+  // Render action buttons (suggest, report, flag, rate)
   renderQuestionActions(q);
 }
 
+/**
+ * Render the quiz header row with topic, streak, and bookmark button.
+ */
 function renderQuizHeader(q) {
   const quizHeader = document.querySelector(".quiz-header");
+  // Remove any existing header row to avoid duplicates
   quizHeader.querySelector(".quiz-header-row")?.remove();
 
   const headerRow = document.createElement("div");
@@ -225,6 +291,7 @@ function renderQuizHeader(q) {
     </div>
   `;
 
+  // Bookmark button toggles bookmark state for the current question
   const bookmarkBtn = document.createElement("button");
   bookmarkBtn.className = "bookmark-btn";
   bookmarkBtn.textContent = q.bookmarked ? "Unbookmark" : "Bookmark";
@@ -240,6 +307,9 @@ function renderQuizHeader(q) {
   quizHeader.appendChild(headerRow);
 }
 
+/**
+ * Render answer buttons for the current question.
+ */
 function renderAnswers(answerObjs) {
   const answersDiv = document.getElementById("answers");
   answersDiv.innerHTML = "";
@@ -249,6 +319,7 @@ function renderAnswers(answerObjs) {
     btn.textContent = `${String.fromCharCode(65 + i)}. ${ansObj.text}`;
     btn.setAttribute("aria-label", `Answer ${String.fromCharCode(65 + i)}: ${ansObj.text}`);
     btn.tabIndex = 0;
+    // Handle click and keyboard events for accessibility
     btn.addEventListener("click", () => handleAnswerClick(ansObj.isCorrect, btn));
     btn.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") handleAnswerClick(ansObj.isCorrect, btn);
@@ -257,6 +328,9 @@ function renderAnswers(answerObjs) {
   });
 }
 
+/**
+ * Render action buttons (suggest, report, flag, rate) for the current question.
+ */
 function renderQuestionActions(q) {
   const quizCard = document.querySelector(".quiz-card");
   const actionsDiv = document.createElement("div");
@@ -264,7 +338,6 @@ function renderQuestionActions(q) {
   actionsDiv.setAttribute("role", "group");
   actionsDiv.setAttribute("aria-label", "Question actions");
 
-  // Suggest, Report, Flag, Rate
   actionsDiv.appendChild(createSuggestBtn());
   actionsDiv.appendChild(createReportBtn());
   actionsDiv.appendChild(createFlagBtn());
@@ -273,6 +346,9 @@ function renderQuestionActions(q) {
   quizCard.appendChild(actionsDiv);
 }
 
+/**
+ * Create the "Suggest a Question" button and modal.
+ */
 function createSuggestBtn() {
   const btn = document.createElement("button");
   btn.textContent = "Suggest a Question";
@@ -312,6 +388,9 @@ function createSuggestBtn() {
   return btn;
 }
 
+/**
+ * Create the "Report Question" button and modal.
+ */
 function createReportBtn() {
   const btn = document.createElement("button");
   btn.textContent = "Report Question";
@@ -340,6 +419,9 @@ function createReportBtn() {
   return btn;
 }
 
+/**
+ * Create the "Flag as Unclear" button.
+ */
 function createFlagBtn() {
   const btn = document.createElement("button");
   btn.textContent = "Flag as Unclear";
@@ -354,6 +436,9 @@ function createFlagBtn() {
   return btn;
 }
 
+/**
+ * Create the star rating UI for the current question.
+ */
 function createRateDiv(qid) {
   const rateDiv = document.createElement("div");
   rateDiv.className = "rate-question";
@@ -385,6 +470,9 @@ function createRateDiv(qid) {
   return rateDiv;
 }
 
+/**
+ * Handle answer selection, update streak, feedback, and progress.
+ */
 function handleAnswerClick(isCorrect, btn) {
   if (!quiz[current]) return;
   btn.classList.add(isCorrect ? "correct" : "incorrect");
@@ -432,27 +520,39 @@ function handleAnswerClick(isCorrect, btn) {
   }, 1500);
 }
 
+/**
+ * Update the user's streak and check for badge unlocks.
+ */
 function updateStreak(isCorrect) {
   streak = isCorrect ? streak + 1 : 0;
   document.getElementById("quizStreak").textContent = streak;
   checkBadges();
 }
 
+/**
+ * Update the quiz progress bar and percentage.
+ */
 function updateProgress(current, total) {
   const progress = Math.round((current / total) * 100);
   document.querySelector(".progress-fill").style.width = `${progress}%`;
   document.querySelector(".progress-section span:last-child").textContent = `${progress}%`;
 }
 
+/**
+ * Show quiz summary and review/smart review buttons if needed.
+ */
 function showSummary() {
   const accuracy = quiz.length > 0 ? Math.round((correct / quiz.length) * 100) : 0;
   showNotification("Quiz Summary", `You answered ${correct} out of ${quiz.length} questions correctly (${accuracy}% accuracy).`, "badges/summary.png");
   checkBadges();
   if (missedQuestions.length > 0) showReviewMissedBtn();
-  if (getSmartReviewQuestions().length > 0) showSmartReviewBtn();
+  if (getQuestionsForSmartReview().length > 0) showSmartReviewBtn();
   saveQuizResult();
 }
 
+/**
+ * Show a button to review missed questions after quiz.
+ */
 function showReviewMissedBtn() {
   const reviewBtn = document.createElement("button");
   reviewBtn.textContent = "Review Missed Questions";
@@ -470,12 +570,15 @@ function showReviewMissedBtn() {
   }, 500);
 }
 
+/**
+ * Show a button to smart review questions after quiz.
+ */
 function showSmartReviewBtn() {
   const smartReviewBtn = document.createElement("button");
   smartReviewBtn.textContent = "Smart Review Questions";
   smartReviewBtn.className = "modal-btn";
   smartReviewBtn.onclick = () => {
-    quiz = getSmartReviewQuestions();
+    quiz = getQuestionsForSmartReview();
     current = 0; correct = 0; streak = 0;
     document.querySelector(".quiz-card").classList.remove("hidden");
     renderQuestion();
@@ -488,6 +591,12 @@ function showSmartReviewBtn() {
 }
 
 // --- MODALS ---
+/**
+ * Open a modal dialog with the given title and content.
+ * @param {string} title
+ * @param {string} content
+ * @param {boolean} [toggle=false]
+ */
 function openModal(title, content, toggle = false) {
   const existingModal = document.querySelector(".modal-overlay");
   if (toggle && existingModal) {
@@ -522,6 +631,9 @@ function openModal(title, content, toggle = false) {
   setTimeout(() => document.querySelector('.modal').scrollTop = 0, 0);
 }
 
+/**
+ * Show the Smart Learning modal with badge grid.
+ */
 function showSmartLearningModal(e) {
   e.preventDefault();
   openModal("Smart Learning", `
@@ -537,6 +649,9 @@ function showSmartLearningModal(e) {
   `, true);
 }
 
+/**
+ * Show the Analytics modal with charts and mastery stats.
+ */
 function showAnalyticsModal(e) {
   e.preventDefault();
   const totalQuestions = quiz.length;
@@ -569,14 +684,18 @@ function showAnalyticsModal(e) {
       <canvas id="historyChart" width="300" height="120"></canvas>
     </div>
   `);
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     renderAccuracyChart(stats.correctAnswers, stats.incorrectAnswers, stats.unansweredQuestions);
     renderHistoryChart();
-  }, 0);
+  });
 }
 
+/**
+ * Show the Settings modal and handle settings save/reset.
+ */
 function showSettingsModal(e) {
   e.preventDefault();
+  // Store settings as an object for easier management
   openModal("Settings", `
     <p>Customize your quiz experience. Adjust difficulty, topics, and more.</p>
     <form id="settingsForm">
@@ -609,18 +728,29 @@ function showSettingsModal(e) {
     </button>
   `);
   const form = document.getElementById("settingsForm");
+  // Load settings as an object
+  const settings = JSON.parse(localStorage.getItem("settings") || "{}");
+  document.getElementById("difficultySelect").value = settings.difficulty || "easy";
+  document.getElementById("timerToggle").checked = !!settings.timerEnabled;
+  document.getElementById("adaptiveModeToggle").checked = settings.adaptiveMode !== false;
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    localStorage.setItem("adaptiveMode", document.getElementById("adaptiveModeToggle").checked);
-    // ...other settings...
+    const newSettings = {
+      difficulty: document.getElementById("difficultySelect").value,
+      timerEnabled: document.getElementById("timerToggle").checked,
+      adaptiveMode: document.getElementById("adaptiveModeToggle").checked
+    };
+    localStorage.setItem("settings", JSON.stringify(newSettings));
+    showNotification("Settings Saved", "Your preferences have been saved.", "badges/summary.png");
   });
   document.getElementById("resetAllButton").addEventListener("click", resetAll);
-  document.getElementById("difficultySelect").value = localStorage.getItem("difficulty") || "easy";
-  document.getElementById("timerToggle").checked = JSON.parse(localStorage.getItem("timerEnabled") || "false");
-  document.getElementById("adaptiveModeToggle").checked = JSON.parse(localStorage.getItem("adaptiveMode") || "true");
 }
 
 // --- CHARTS ---
+/**
+ * Render charts on load (accuracy and history).
+ */
 function renderChartsOnLoad() {
   const stats = {
     correct: correct,
@@ -631,11 +761,18 @@ function renderChartsOnLoad() {
   renderHistoryChart();
 }
 
+/**
+ * Render the accuracy doughnut chart.
+ */
 function renderAccuracyChart(correct, incorrect, unanswered) {
   const ctxElem = document.getElementById("accuracyChart");
   if (!ctxElem) return;
+  // Destroy previous chart if it exists
+  if (accuracyChart) {
+    accuracyChart.destroy();
+    accuracyChart = null;
+  }
   const ctx = ctxElem.getContext("2d");
-  if (accuracyChart) accuracyChart.destroy();
   accuracyChart = new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -658,6 +795,9 @@ function renderAccuracyChart(correct, incorrect, unanswered) {
   });
 }
 
+/**
+ * Render the quiz history line chart.
+ */
 function renderHistoryChart() {
   const results = JSON.parse(localStorage.getItem("quizResults")) || [];
   const ctx = document.getElementById("historyChart")?.getContext("2d");
@@ -695,6 +835,9 @@ function renderHistoryChart() {
 }
 
 // --- NOTIFICATIONS ---
+/**
+ * Show a notification with title, message, and image.
+ */
 function showNotification(title, message, imageUrl) {
   let container = document.getElementById("notification-container");
   if (!container) {
@@ -712,10 +855,13 @@ function showNotification(title, message, imageUrl) {
   setTimeout(() => {
     notification.remove();
     if (container.children.length === 0) container.remove();
-  }, 3500);
+  }, 300);
 }
 
 // --- BADGES ---
+/**
+ * Check if any badges are earned and show modal if so.
+ */
 function checkBadges() {
   badges.forEach(badge => {
     if (!earnedBadges.includes(badge.id) && badge.condition()) {
@@ -726,6 +872,9 @@ function checkBadges() {
   });
 }
 
+/**
+ * Show a modal for a newly earned badge.
+ */
 function showBadgeModal(badge) {
   openModal("New Achievement Unlocked!", `
     <h3>${badge.name}</h3>
@@ -735,11 +884,17 @@ function showBadgeModal(badge) {
 }
 
 // --- STORAGE & DATA ---
+/**
+ * Save user stats to localStorage.
+ */
 function saveStats() {
   const stats = { correct, streak, current, quizLength: quiz.length };
   localStorage.setItem("userStats", JSON.stringify(stats));
 }
 
+/**
+ * Load user stats from localStorage.
+ */
 function loadStats() {
   const savedStats = JSON.parse(localStorage.getItem("userStats"));
   if (savedStats) {
@@ -750,14 +905,23 @@ function loadStats() {
   }
 }
 
+/**
+ * Save missed questions to localStorage.
+ */
 function saveUserData() {
   localStorage.setItem("missedQuestions", JSON.stringify(missedQuestions));
 }
 
+/**
+ * Load missed questions from localStorage.
+ */
 function loadUserData() {
   missedQuestions = JSON.parse(localStorage.getItem("missedQuestions")) || [];
 }
 
+/**
+ * Save quiz result to localStorage and update history chart.
+ */
 function saveQuizResult() {
   const results = JSON.parse(localStorage.getItem("quizResults")) || [];
   results.push({ streak, total: quiz.length, score: correct, date: new Date().toISOString() });
@@ -766,6 +930,10 @@ function saveQuizResult() {
 }
 
 // --- ANALYTICS ---
+/**
+ * Get mastery stats for each topic.
+ * @returns {Object}
+ */
 function getTopicMastery() {
   const topicStats = {};
   questions.forEach(q => {
@@ -778,17 +946,27 @@ function getTopicMastery() {
   return topicStats;
 }
 
+/**
+ * Get color for topic mastery based on accuracy.
+ */
 function masteryColor(accuracy) {
   if (accuracy >= 0.85) return "#6BCB77";
   if (accuracy >= 0.6) return "#FFD93D";
   return "#FF6B6B";
 }
 
-function getSmartReviewQuestions() {
+/**
+ * Get questions that need smart review (low accuracy or multiple misses).
+ * @returns {Array}
+ */
+function getQuestionsForSmartReview() {
   return questions.filter(q => (q.stats?.incorrect || 0) > 1 || ((q.stats?.correct || 0) / ((q.stats?.correct || 0) + (q.stats?.incorrect || 0))) < 0.7);
 }
 
 // --- BOOKMARKS ---
+/**
+ * Toggle bookmark state for a question.
+ */
 function toggleBookmark(questionId) {
   let bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
   if (bookmarks.includes(questionId)) bookmarks = bookmarks.filter(id => id !== questionId);
@@ -796,49 +974,25 @@ function toggleBookmark(questionId) {
   localStorage.setItem("bookmarkedQuestions", JSON.stringify(bookmarks));
 }
 
+/**
+ * Get all bookmarked questions from the full question list.
+ */
 function getBookmarkedQuestions(allQuestions) {
   const bookmarks = JSON.parse(localStorage.getItem("bookmarkedQuestions")) || [];
   return allQuestions.filter(q => bookmarks.includes(q.id));
 }
 
 // --- MANIFEST & TOPIC DROPDOWN ---
+/**
+ * Fetch manifest paths for external question modules.
+ */
 async function getManifestPaths() {
   const res = await fetch('manifestquestions.json');
   return await res.json();
 }
 
-async function populateTopicDropdown() {
-  const dropdown = document.querySelector('.control[data-topic]');
-  if (!dropdown) return;
-  dropdown.innerHTML = `
-    <option value="" disabled selected>-- Select Topic --</option>
-    <option value="unanswered">Unanswered Questions</option>
-    <option value="missed">Missed Questions</option>
-    <option value="bookmarked">Bookmarked Questions</option>
-  `;
-  try {
-    const manifestPaths = await getManifestPaths();
-    for (const path of manifestPaths) {
-      try {
-        const fileRes = await fetch(path);
-        const data = await fileRes.json();
-        const option = document.createElement('option');
-        option.value = path;
-        option.textContent = data.title || formatTitle(path.split('/').pop());
-        dropdown.appendChild(option);
-      } catch {
-        const option = document.createElement('option');
-        option.value = path;
-        option.textContent = formatTitle(path.split('/').pop());
-        dropdown.appendChild(option);
-      }
-    }
-  } catch (err) {
-    // fail silently
-  }
-}
-
 // --- FIREBASE CONFIG ---
+// NOTE: Do not commit real secrets to public repos. Use environment variables or config files for production.
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -847,20 +1001,37 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+/**
+ * Submit a suggested question to Firestore.
+ */
 async function submitSuggestionToFirestore(suggestion) {
   try {
     await db.collection("suggestedQuestions").add(suggestion);
   } catch (error) {
     showNotification("Error", "Failed to submit suggestion. Try again later.", "badges/summary.png");
+    console.error("Error submitting suggestion:", error);
   }
 }
 
+/**
+ * Submit a reported question to Firestore.
+ */
 async function submitReportToFirestore(report) {
   try {
     await db.collection("reportedQuestions").add(report);
   } catch (error) {
     showNotification("Error", "Failed to submit report. Try again later.", "badges/summary.png");
+    console.error("Error submitting report:", error);
   }
+}
+
+/**
+ * Reset all user progress and settings.
+ */
+function resetAll() {
+  if (!confirm("Are you sure you want to reset all progress and settings? This cannot be undone.")) return;
+  localStorage.clear();
+  location.reload();
 }
 
 // --- END OF FILE ---
