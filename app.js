@@ -691,6 +691,15 @@ function showAnalyticsModal(e) {
 }
 
 /**
+ * Reset all user progress and settings.
+ */
+function resetAll() {
+  if (!confirm("Are you sure you want to reset all progress and settings? This cannot be undone.")) return;
+  localStorage.clear();
+  location.reload();
+}
+
+/**
  * Show the Settings modal and handle settings save/reset.
  */
 function showSettingsModal(e) {
@@ -1024,14 +1033,4 @@ async function submitReportToFirestore(report) {
     console.error("Error submitting report:", error);
   }
 }
-
-/**
- * Reset all user progress and settings.
- */
-function resetAll() {
-  if (!confirm("Are you sure you want to reset all progress and settings? This cannot be undone.")) return;
-  localStorage.clear();
-  location.reload();
-}
-
 // --- END OF FILE ---
