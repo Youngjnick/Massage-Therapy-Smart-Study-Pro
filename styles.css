@@ -43,7 +43,6 @@ body {
   margin-bottom: 14px;
 }
 .control, .start-btn {
-  flex: 1;
   padding: 0px 2px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.08);
