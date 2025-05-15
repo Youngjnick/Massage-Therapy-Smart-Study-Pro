@@ -14,5 +14,5 @@ fileList.push('questions/' + path.relative(path.join(__dirname, '../questions'),
 }
 
 const allJsons = getAllJsonFiles(path.join(__dirname, '../questions'));
-fs.writeFileSync(path.join(__dirname, '../questions/manifest.json'), JSON.stringify(allJsons, null, 2));
+fs.writeFileSync(path.join(__dirname, '../questions/manifestquestions.json'), JSON.stringify(allJsons, null, 2));
 console.log('Manifest updated!');
