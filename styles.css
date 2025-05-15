@@ -803,8 +803,8 @@ select, .select-topic-btn {
 }
 
 select.control[data-topic] {
-  min-width: 30px;
-  max-width: 80px;
+  min-width: 60px;
+  max-width: 120px;
   width: auto;
   flex: 0 0 auto;
 }
