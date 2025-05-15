@@ -7,7 +7,7 @@ function getAllJsonFiles(dir, fileList = []) {
     if (fs.statSync(fullPath).isDirectory()) {
       getAllJsonFiles(fullPath, fileList);
     } else if (file.endsWith('.json')) {
-      fileList.push(path.relative(path.join(__dirname, '../questions'), fullPath).replace(/\\/g, '/'));
+fileList.push('questions/' + path.relative(path.join(__dirname, '../questions'), fullPath).replace(/\\/g, '/'));
     }
   });
   return fileList;
