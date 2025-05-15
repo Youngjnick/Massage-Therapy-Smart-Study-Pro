@@ -1074,7 +1074,7 @@ function getBookmarkedQuestions(allQuestions) {
 }
 
 async function loadManifest() {
-  const res = await fetch('questions/manifest.json');
+  const res = await fetch('questions/manifestquestions.json');
   return await res.json();
 }
 
