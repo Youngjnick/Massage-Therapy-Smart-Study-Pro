@@ -917,3 +917,10 @@ select, .select-topic-btn {
   width: auto;
   flex: unset;
 }
+
+select.control[data-topic] {
+  min-width: 160px;
+  max-width: 240px;
+  width: auto;
+  flex: 0 0 auto;
+}
