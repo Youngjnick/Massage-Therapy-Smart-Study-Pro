@@ -353,11 +353,19 @@ function renderAnswers(answerObjs) {
     const btn = document.createElement("div");
     btn.className = "answer";
     btn.textContent = `${String.fromCharCode(65 + i)}. ${ansObj.text}`;
+    btn.setAttribute("role", "button");
+    btn.setAttribute("tabindex", "0");
+    btn.setAttribute("aria-pressed", "false");
     btn.setAttribute("aria-label", `Answer ${String.fromCharCode(65 + i)}: ${ansObj.text}`);
-    btn.tabIndex = 0;
-    btn.addEventListener("click", () => handleAnswerClick(ansObj.isCorrect, btn));
+    btn.addEventListener("click", () => {
+      handleAnswerClick(ansObj.isCorrect, btn);
+      btn.setAttribute("aria-pressed", "true");
+    });
     btn.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") handleAnswerClick(ansObj.isCorrect, btn);
+      if (e.key === "Enter" || e.key === " ") {
+        handleAnswerClick(ansObj.isCorrect, btn);
+        btn.setAttribute("aria-pressed", "true");
+      }
     });
     answersDiv.appendChild(btn);
   });
@@ -420,6 +428,7 @@ function createSuggestBtn() {
       document.querySelector(".modal-overlay").remove();
     });
   });
+  btn.setAttribute("aria-pressed", "true");
   return btn;
 }
 
@@ -451,6 +460,7 @@ function createReportBtn() {
       document.querySelector(".modal-overlay").remove();
     });
   });
+  btn.setAttribute("aria-pressed", "true");
   return btn;
 }
 
@@ -468,6 +478,7 @@ function createFlagBtn() {
     localStorage.setItem("unclearFlags", JSON.stringify(unclearFlags));
     showNotification("Thank you!", "This question has been flagged as unclear.", "badges/summary.png");
   });
+  btn.setAttribute("aria-pressed", "true");
   return btn;
 }
 
