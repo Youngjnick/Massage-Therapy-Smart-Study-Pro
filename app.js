@@ -1237,12 +1237,17 @@ function formatTitle(filename) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
+// Utility: Get manifest paths (use this if you need the list elsewhere)
+async function getManifestPaths() {
+  const res = await fetch('manifestquestions.json');
+  return await res.json();
+}
+
 // Populate topic dropdown from manifestquestions.json
 async function populateTopicDropdown() {
   const dropdown = document.querySelector('.control[data-topic]');
   if (!dropdown) return;
 
-  // Keep your static options
   dropdown.innerHTML = `
     <option value="" disabled selected>-- Select Topic --</option>
     <option value="unanswered">Unanswered Questions</option>
@@ -1251,9 +1256,7 @@ async function populateTopicDropdown() {
   `;
 
   try {
-    const res = await fetch('manifestquestions.json');
-    const manifestPaths = await res.json();
-
+    const manifestPaths = await getManifestPaths();
     for (const path of manifestPaths) {
       try {
         const fileRes = await fetch(path);
