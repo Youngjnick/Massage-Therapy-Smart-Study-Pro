@@ -912,3 +912,8 @@ width: 100%;
 .header-bookmark {
   justify-content: flex-end;
 }
+
+select, .select-topic-btn {
+  width: auto;
+  flex: unset;
+}
