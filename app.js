@@ -160,12 +160,32 @@ document.addEventListener("DOMContentLoaded", function() {
   topicSelect.addEventListener('change', updateStartBtn);
   lengthSelect.addEventListener('change', updateStartBtn);
 
-  startBtn.addEventListener('click', function() {
-    // Get selected topic and quiz length
+  startBtn.addEventListener('click', async function() {
     const topic = topicSelect.value;
-    const length = lengthSelect.value === "all" ? questions.length : parseInt(lengthSelect.value, 10);
+    const length = lengthSelect.value === "all" ? 9999 : parseInt(lengthSelect.value, 10);
 
-    // Filter questions based on topic
+    // If the topic is a file path (ends with .json or .JSON), load questions from that file
+    if (topic && topic.match(/\.json$/i)) {
+      try {
+        const res = await fetch(topic);
+        const data = await res.json();
+        // If your JSON is an array of questions:
+        quiz = shuffle([...data]).slice(0, length);
+        // If your JSON has a property like { questions: [...] }, use: quiz = shuffle([...data.questions]).slice(0, length);
+        current = 0;
+        correct = 0;
+        streak = 0;
+        selectedTopic = formatTitle(topic.split('/').pop());
+        document.querySelector(".quiz-card").classList.remove("hidden");
+        renderQuestion();
+        return;
+      } catch (err) {
+        showNotification("Error", "Failed to load questions from file.", "badges/summary.png");
+        return;
+      }
+    }
+
+    // Otherwise, use your old logic for "unanswered", "missed", "bookmarked", etc.
     let quizPool = [];
     if (topic === "unanswered") {
       quizPool = unansweredQuestions;
@@ -177,13 +197,10 @@ document.addEventListener("DOMContentLoaded", function() {
       quizPool = questions.filter(q => q.topic === topic);
     }
 
-    // Shuffle and select the desired number of questions
     quiz = shuffle([...quizPool]).slice(0, length);
     current = 0;
     correct = 0;
     streak = 0;
-
-    // Show the quiz card and render the first question
     document.querySelector(".quiz-card").classList.remove("hidden");
     renderQuestion();
   });
@@ -1220,29 +1237,21 @@ function formatTitle(filename) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
-// Assume manifestPaths is an array of file paths and dropdown is your <select>
-manifestPaths.forEach(path => {
-  fetch(path)
-    .then(res => res.json())
-    .then(data => {
-      const option = document.createElement('option');
-      option.value = path;
-      // Prefer JSON's title, fallback to formatted filename
-      option.textContent = data.title || formatTitle(path.split('/').pop());
-      dropdown.appendChild(option);
-    })
-    .catch(() => {
-      // Fallback if fetch fails
-      const option = document.createElement('option');
-      option.value = path;
-      option.textContent = formatTitle(path.split('/').pop());
-      dropdown.appendChild(option);
-    });
-});
+// Populate topic dropdown from manifestquestions.json
+async function populateTopicDropdown() {
+  const dropdown = document.querySelector('.control[data-topic]');
+  if (!dropdown) return;
 
-async function populateDropdownFromManifest(dropdown) {
+  // Keep your static options
+  dropdown.innerHTML = `
+    <option value="" disabled selected>-- Select Topic --</option>
+    <option value="unanswered">Unanswered Questions</option>
+    <option value="missed">Missed Questions</option>
+    <option value="bookmarked">Bookmarked Questions</option>
+  `;
+
   try {
-    const res = await fetch("manifestquestions.json");
+    const res = await fetch('manifestquestions.json');
     const manifestPaths = await res.json();
 
     for (const path of manifestPaths) {
@@ -1261,14 +1270,11 @@ async function populateDropdownFromManifest(dropdown) {
       }
     }
   } catch (err) {
-    console.error("Failed to load manifestquestions.json", err);
+    console.error('Failed to load manifestquestions.json', err);
   }
 }
 
-// Usage example (after DOMContentLoaded):
-document.addEventListener("DOMContentLoaded", () => {
-  const dropdown = document.querySelector(".control[data-topic]");
-  if (dropdown) {
-    populateDropdownFromManifest(dropdown);
-  }
+// Call this after DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  populateTopicDropdown();
 });
