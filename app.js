@@ -1,14 +1,33 @@
+/** @type {number} */
 let current = 0;
+/** @type {string} */
 let selectedTopic = "";
+/** @type {Array<Object>} */
 let quiz = [];
+/** @type {number} */
 let correct = 0;
+/** @type {number} */
 let streak = 0;
+/** @type {Array<string>} */
 let missedQuestions = [];
+/** @type {Array<Object>} */
 let unansweredQuestions = [];
+/** @type {Array<Object>} */
 let bookmarkedQuestions = [];
+/** @type {Array<Object>} */
 let questions = [];
+/** @type {Chart|undefined} */
 let historyChart;
 
+/**
+ * @typedef {Object} Badge
+ * @property {string} id
+ * @property {string} name
+ * @property {string} description
+ * @property {() => boolean} condition
+ */
+
+/** @type {Badge[]} */
 const badges = [
   { id: "streak_10", name: "Streak Master", description: "Achieve a streak of 10 correct answers.", condition: () => streak >= 10 },
   { id: "accuracy_90", name: "Accuracy Pro", description: "Achieve 90% accuracy in a quiz.", condition: () => (correct / quiz.length) >= 0.9 },
@@ -86,22 +105,46 @@ function preloadImages(questionsArr) {
 
 // Event listeners for topic and quiz start
 document.addEventListener("DOMContentLoaded", () => {
-  // All your startup code here
-
-  // Example: initialize topic dropdown, event listeners, etc.
   loadQuestions();
 
   const topicSelect = document.querySelector(".control[data-topic]");
+  const lengthSelect = document.querySelector(".control[data-quiz-length]");
+  const startBtn = document.querySelector(".start-btn");
+
+  function updateStartBtn() {
+    startBtn.disabled = !(topicSelect.value && lengthSelect.value);
+  }
   topicSelect.addEventListener("change", () => {
     selectedTopic = topicSelect.value;
-    // ...rest of your logic...
+    updateStartBtn();
+  });
+  lengthSelect.addEventListener("change", updateStartBtn);
+
+  startBtn.addEventListener("click", function() {
+    // ...existing quiz start logic...
   });
 
-  document.querySelector(".start-btn").addEventListener("click", () => {
-    // ...start quiz logic...
+  // Smart Learning Modal
+  document.querySelector('.smart-learning a').addEventListener("click", (e) => {
+    e.preventDefault();
+    openModal(
+      "Smart Learning",
+      `
+        <p>Smart Learning helps you focus on missed or unanswered questions to improve your knowledge.</p>
+        <div class="badge-grid">
+          ${badges.map(badge => `
+            <div class="badge-item ${earnedBadges.includes(badge.id) ? "" : "unearned"}">
+              <img src="badges/${badge.id}.png" alt="${badge.name}" />
+              <p>${badge.name}</p>
+            </div>
+          `).join("")}
+        </div>
+      `,
+      true
+    );
   });
 
-  // ...any other startup code...
+  // ...other startup code...
 });
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -568,6 +611,10 @@ function openModal(title, content, toggle = false) {
       document.removeEventListener("keydown", escListener);
     }
   });
+
+  setTimeout(() => {
+    document.querySelector('.modal').scrollTop = 0;
+  }, 0);
 }
 
 // Smart Learning Modal
@@ -805,13 +852,21 @@ function renderHistoryChart() {
       datasets: [
         {
           label: "Accuracy (%)",
-          data: results.length ? results.map(r => Math.round((r.score / r.total) * 100)) : [0],
+          data: results.length
+            ? results.map(r =>
+                r.total > 0 && typeof r.score === "number"
+                  ? Math.max(0, Math.round((r.score / r.total) * 100))
+                  : 0
+              )
+            : [0],
           borderColor: "#007bff",
           fill: false,
         },
         {
           label: "Streak",
-          data: results.length ? results.map(r => r.streak) : [0],
+          data: results.length
+            ? results.map(r => typeof r.streak === "number" ? Math.max(0, r.streak) : 0)
+            : [0],
           borderColor: "#FFD93D",
           fill: false,
         }
