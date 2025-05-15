@@ -70,6 +70,15 @@ function formatTitle(filename) {
   return filename.replace(/_/g, ' ').replace(/\.json$/i, '').replace(/\b\w/g, c => c.toUpperCase());
 }
 
+function formatTopicName(topic) {
+  if (!topic) return "";
+  const cleaned = topic
+    .replace(/_/g, " ")
+    .replace(/\bsoap\b/gi, "SOAP") // force SOAP to be uppercase
+    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
+  return cleaned;
+}
+
 // --- QUESTION LOADING & INITIALIZATION ---
 /**
  * Load questions from localStorage or manifest.
@@ -266,7 +275,7 @@ function renderQuestion() {
 
   renderQuizHeader(q);
 
-  document.querySelector(".quiz-header strong").textContent = selectedTopic;
+  document.querySelector(".quiz-header strong").textContent = formatTopicName(selectedTopic);
   document.querySelector(".question-text").textContent = q.question;
   renderAnswers(answerObjs);
   document.querySelector(SELECTORS.feedback).textContent = "";
