@@ -1224,3 +1224,14 @@ function formatTitleFromPath(path) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+// Assume manifestPaths is an array of paths (from manifestquestions.json)
+// and dropdown is your <select> element
+
+manifestPaths.forEach(path => {
+  const displayTitle = formatTitleFromPath(path); // Use your formatting function
+  const option = document.createElement('option');
+  option.value = path;
+  option.textContent = displayTitle;
+  dropdown.appendChild(option);
+});
