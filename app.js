@@ -1213,25 +1213,29 @@ document.querySelector('.smart-learning .settings-link').addEventListener("click
   );
 });
 
-function formatTitleFromPath(path) {
-  // Get filename without extension
-  const file = path.split('/').pop().replace('.JSON', '');
-
-  // Replace underscores and dashes with spaces, capitalize each word
-  return file
-    .replace(/[_\-]/g, ' ')
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+function formatTitle(filename) {
+  return filename
+    .replace(/_/g, ' ')
+    .replace(/\.json$/i, '')
+    .replace(/\b\w/g, c => c.toUpperCase());
 }
 
-// Assume manifestPaths is an array of paths (from manifestquestions.json)
-// and dropdown is your <select> element
-
+// Assume manifestPaths is an array of file paths and dropdown is your <select>
 manifestPaths.forEach(path => {
-  const displayTitle = formatTitleFromPath(path); // Use your formatting function
-  const option = document.createElement('option');
-  option.value = path;
-  option.textContent = displayTitle;
-  dropdown.appendChild(option);
+  fetch(path)
+    .then(res => res.json())
+    .then(data => {
+      const option = document.createElement('option');
+      option.value = path;
+      // Prefer JSON's title, fallback to formatted filename
+      option.textContent = data.title || formatTitle(path.split('/').pop());
+      dropdown.appendChild(option);
+    })
+    .catch(() => {
+      // Fallback if fetch fails
+      const option = document.createElement('option');
+      option.value = path;
+      option.textContent = formatTitle(path.split('/').pop());
+      dropdown.appendChild(option);
+    });
 });
