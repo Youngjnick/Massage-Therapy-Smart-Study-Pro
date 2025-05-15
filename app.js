@@ -1212,3 +1212,15 @@ document.querySelector('.smart-learning .settings-link').addEventListener("click
     true
   );
 });
+
+function formatTitleFromPath(path) {
+  // Get filename without extension
+  const file = path.split('/').pop().replace('.JSON', '');
+
+  // Replace underscores and dashes with spaces, capitalize each word
+  return file
+    .replace(/[_\-]/g, ' ')
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
