@@ -64,7 +64,7 @@ function formatTitle(filename) {
 /**
  * Load questions from localStorage or manifest.
  */
-function loadQuestions() {
+async function loadQuestions() {
   const cachedQuestions = localStorage.getItem("questions");
   try {
     if (cachedQuestions) {
@@ -74,7 +74,6 @@ function loadQuestions() {
       questions.forEach(q => { q.bookmarked = bookmarks.includes(q.id); });
       unansweredQuestions = [...questions];
       loadUserData();
-      populateTopicDropdown(questions);
       document.querySelector(".start-btn").disabled = false;
       document.getElementById("loading").style.display = "none";
       preloadImages(questions);
@@ -100,10 +99,11 @@ function preloadImages(questionsArr) {
 }
 
 // --- EVENT LISTENERS & UI SETUP ---
-document.addEventListener("DOMContentLoaded", () => {
-  loadQuestions();
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadQuestions(); // Make loadQuestions async if needed
   setupUI();
-  populateTopicDropdown();
+  // Only call populateTopicDropdown ONCE, and always with the latest questions
+  populateTopicDropdown(questions);
   showNotification(
     "Welcome!",
     "Challenge your skills with Massage Therapy Smart Study PRO!",
@@ -144,32 +144,45 @@ function setupUI() {
   );
 }
 
-// --- TOPIC DROPDOWN LOGIC (CONSOLIDATED) ---
+// --- TOPIC DROPDOWN LOGIC (REFACTORED) ---
 /**
- * Populate the topic dropdown with topics from questions and manifest.
+ * Populate the topic dropdown with static and dynamic topics.
+ * Always clears previous options to prevent doubling.
  * @param {Array} [questionsArr]
  */
 async function populateTopicDropdown(questionsArr) {
   const dropdown = document.querySelector('.control[data-topic]');
   if (!dropdown) return;
-  dropdown.innerHTML = `
-    <option value="" disabled selected>-- Select Topic --</option>
-    <option value="unanswered">Unanswered Questions</option>
-    <option value="missed">Missed Questions</option>
-    <option value="bookmarked">Bookmarked Questions</option>
-  `;
+
+  // Always clear all options first
+  dropdown.innerHTML = "";
+
+  // Add static options
+  const staticOptions = [
+    { value: "", text: "-- Select Topic --", disabled: true, selected: true },
+    { value: "unanswered", text: "Unanswered Questions" },
+    { value: "missed", text: "Missed Questions" },
+    { value: "bookmarked", text: "Bookmarked Questions" }
+  ];
+  staticOptions.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt.value;
+    option.textContent = opt.text;
+    if (opt.disabled) option.disabled = true;
+    if (opt.selected) option.selected = true;
+    dropdown.appendChild(option);
+  });
+
+  // Use a Set to avoid duplicate topics
+  const topicSet = new Set();
+
   // Add topics from loaded questions
   if (questionsArr && questionsArr.length) {
-    const topics = [...new Set(questionsArr.map((q) => q.topic))]
-      .filter(Boolean)
-      .sort((a, b) => a.localeCompare(b));
-    topics.forEach((topic) => {
-      const option = document.createElement("option");
-      option.value = topic;
-      option.textContent = formatTitle(topic);
-      dropdown.appendChild(option);
+    questionsArr.forEach(q => {
+      if (q.topic) topicSet.add(q.topic);
     });
   }
+
   // Add topics from manifest (external .json files)
   try {
     const manifestPaths = await getManifestPaths();
@@ -177,21 +190,28 @@ async function populateTopicDropdown(questionsArr) {
       try {
         const fileRes = await fetch(path);
         const data = await fileRes.json();
-        const option = document.createElement('option');
-        option.value = path;
-        option.textContent = data.title || formatTitle(path.split('/').pop());
-        dropdown.appendChild(option);
+        if (data.topic) topicSet.add(data.topic);
+        // Also allow selection by file path if needed
+        topicSet.add(path);
       } catch (err) {
         console.error("Error loading manifest file:", err);
-        const option = document.createElement('option');
-        option.value = path;
-        option.textContent = formatTitle(path.split('/').pop());
-        dropdown.appendChild(option);
+        topicSet.add(path);
       }
     }
   } catch (err) {
     console.error("Error loading manifest paths:", err);
   }
+
+  // Add all unique topics to dropdown
+  Array.from(topicSet)
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b))
+    .forEach(topic => {
+      const option = document.createElement("option");
+      option.value = topic;
+      option.textContent = formatTitle(topic);
+      dropdown.appendChild(option);
+    });
 }
 
 // --- QUIZ LOGIC ---
