@@ -1,5 +1,4 @@
 [
-  "questions/modules/unit1/anatomy/anatomy-json/anatomy_compiled_mcq_questionsset.json",
   "questions/modules/unit1/anatomy/anatomy-json/anatomy_prefixes.json",
   "questions/modules/unit1/anatomy/anatomy-json/anatomy_suffixes.json",
   "questions/modules/unit1/anatomy/anatomy-json/common_hormones.json",
@@ -78,5 +77,4 @@
   "questions/modules/unit2/anatomy/cell-theory/cell-theory/proteins_in_plasma_membrane.json",
   "questions/modules/unit2/energy-work/energy-work/chakras.json",
   "questions/modules/unit2/energy-work/energy-work/somatic_therapy.json",
-  "questions/modules/unit2/notes/test-2-questions.json"
 ]
