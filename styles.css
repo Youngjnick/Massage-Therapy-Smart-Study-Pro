@@ -804,7 +804,7 @@ select, .select-topic-btn {
 
 select.control[data-topic] {
   min-width: 120px;
-  max-width: 180px;
+  max-width: 200px;
   width: auto;
   flex: 0 0 auto;
 }
