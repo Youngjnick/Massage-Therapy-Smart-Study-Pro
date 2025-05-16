@@ -830,3 +830,9 @@ select.control[data-topic] {
   font-size: 1rem;
   outline: 2px solid #fff;
 }
+
+.question-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
